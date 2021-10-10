@@ -11,7 +11,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project1_0.Controller">
    <children>
-      <Button fx:id="scButton" alignment="CENTER" layoutX="489.0" layoutY="650.0" mnemonicParsing="false" onAction="#goToGuiding" prefHeight="36.0" prefWidth="101.0" text="Confirm">
+      <Button fx:id="confirmButton" alignment="CENTER" layoutX="489.0" layoutY="650.0" mnemonicParsing="false" onAction="#goToGuiding" prefHeight="36.0" prefWidth="101.0" text="Confirm">
          <font>
             <Font size="18.0" />
          </font>
@@ -32,7 +32,7 @@
             <Font size="14.0" />
          </font>
       </Button>
-      <TextField fx:id="keywords" layoutX="172.0" layoutY="49.0" prefHeight="29.0" prefWidth="276.0" promptText="please input keywords:)" />
+      <TextField fx:id="keywords" layoutX="172.0" layoutY="49.0" prefHeight="29.0" prefWidth="276.0" promptText="please input keywords :)" />
       <TableView fx:id="selectTableView" layoutX="26.0" layoutY="87.0" prefHeight="249.0" prefWidth="479.0">
         <columns>
           <TableColumn prefWidth="75.0" text="ProductID" />
@@ -45,7 +45,7 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Button alignment="CENTER" layoutX="511.0" layoutY="194.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="80.0" text="Add">
+      <Button fx:id="addButton" alignment="CENTER" layoutX="511.0" layoutY="194.0" mnemonicParsing="false" onAction="#add" prefHeight="30.0" prefWidth="80.0" text="Add">
          <font>
             <Font size="18.0" />
          </font>
@@ -57,7 +57,7 @@
             <TableColumn prefWidth="75.0" text="yLocation" />
          </columns>
       </TableView>
-      <Button alignment="CENTER" layoutX="511.0" layoutY="488.0" mnemonicParsing="false" prefWidth="80.0" text="Delete">
+      <Button fx:id="deleteButton" alignment="CENTER" layoutX="511.0" layoutY="488.0" mnemonicParsing="false" onAction="#delete" prefWidth="80.0" text="Delete">
          <font>
             <Font size="18.0" />
          </font>

@@ -23,7 +23,7 @@ public class Controller implements Initializable {
     private Parent root;
 
     @FXML
-    private Button scButton, gbButton, searchButton;
+    private Button confirmButton, searchButton, addButton, deleteButton;
 
     @FXML
     private Label sLabel;
@@ -35,7 +35,7 @@ public class Controller implements Initializable {
     private TextField keywords;
 
     @FXML
-    private TableView<Item> selectTableView, checkTableView;
+    private TableView<Item> selectTable, checkTable;
 
 
     private String[] sort = {"ProductID", "Categories", "Name"};
@@ -72,6 +72,17 @@ public class Controller implements Initializable {
             text = keywords.getText();
 //        System.out.println(text);
         }
+    }
+
+    public void add(){
+
+    }
+
+    public void delete(){
+        ObservableList<Item> selectedItem, allItems;
+        allItems = checkTable.getItems();
+        selectedItem = checkTable.getSelectionModel().getSelectedItems();
+        selectedItem.forEach(allItems::remove);
     }
 
     public void goToGuiding(ActionEvent event) throws IOException {
