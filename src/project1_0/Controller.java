@@ -40,12 +40,22 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
-        choiceBox.getItems().addAll(sort);
-//        choiceBox.setValue("ProductID");
+        if(choiceBox!=null) {
+            choiceBox.getItems().addAll(sort);
+            choiceBox.getSelectionModel().selectFirst();
+
+            //for test
+            choiceBox.setOnAction(this::getSort);
+        }
 //        choiceBox.setOnAction(this::getFood);
 //        String sortBy = choiceBox.getValue();
     }
 
+    //for test
+    public void getSort(ActionEvent event){
+        String mysort = choiceBox.getValue();
+        sLabel.setText(mysort);
+    }
     public void search(ActionEvent event){
         if(keywords != null) {
             text = keywords.getText();
