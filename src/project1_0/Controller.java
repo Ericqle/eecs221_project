@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 
 import java.io.*;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,23 +28,26 @@ public class Controller implements Initializable {
     private Parent root;
 
     @FXML
-    private Button confirmButton, searchButton, addButton, deleteButton;
+    private Button confirmButton, searchButton, addButton, deleteButton, nextButton;
 
     @FXML
-    private Label sLabel;
+    private Label sLabel, progressLabel, instruction, currentLocation;
 
     @FXML
     private ChoiceBox<String> choiceBox;
+    private String[] sort = {"ProductID", "Categories", "Name"};
+    private String text;
+
+    @FXML
+    private ProgressBar progressBar;
+    BigDecimal progress = new BigDecimal(String.format("%.2f",0.0));
 
     @FXML
     private TextField keywords;
 
     @FXML
-    TableView<Product> selectTable, checkTable;
-
-
-    private String[] sort = {"ProductID", "Categories", "Name"};
-    private String text;
+    private TableView<Product> selectTable, checkTable;
+    private ObservableList<Product> products, selectedProduct;
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
@@ -54,16 +58,36 @@ public class Controller implements Initializable {
             choiceBox.setOnAction(this::getSort);
         }
         if(selectTable != null)
-            initSelectTable();
+            initTable();
     }
 
-    //for test
+    //test
     public void getSort(ActionEvent event){
         String mysort = choiceBox.getValue();
         sLabel.setText(mysort);
     }
 
-    public static  List  readTxtFile(String filePath) {
+    //test
+    public void printArray(String array[][]){
+//        for test
+        for(int i=0;i< 10;i++){
+//        for(int i=0;i< array.length;i++){
+            for(int j=0;j<array[i].length;j++){
+                if(j!=array[i].length-1){
+                    System.out.print("array["+i+"]["+j+"]="+array[i][j]+",");
+                }
+                else{
+                    System.out.print("array["+i+"]["+j+"]="+array[i][j]);
+                }
+            }
+            System.out.println();
+        }
+    }
+
+    /*
+    Read the contents of .txt file line by line and store them in the list
+     */
+    public List  readTxtFile(String filePath) {
         List<String> list = new ArrayList<String>();
         try {
             String encoding = "UTF-8";
@@ -87,7 +111,10 @@ public class Controller implements Initializable {
         return list;
     }
 
-    public static String[][] createArray(String filePath){
+    /*
+    Convert the contents of the linked list into array
+     */
+    public String[][] createArray(String filePath){
         List<String> list = readTxtFile(filePath);
         int s = list.size();
         int l = list.get(0).length();
@@ -103,38 +130,27 @@ public class Controller implements Initializable {
         return array;
     }
 
-    //test
-    public static void printArray(String array[][]){
-//        for test
-        for(int i=0;i< 10;i++){
-//        for(int i=0;i< array.length;i++){
-            for(int j=0;j<array[i].length;j++){
-                if(j!=array[i].length-1){
-                    System.out.print("array["+i+"]["+j+"]="+array[i][j]+",");
-                }
-                else{
-                    System.out.print("array["+i+"]["+j+"]="+array[i][j]);
-                }
-            }
-            System.out.println();
-        }
-    }
-
-    //Get all items
+    /*
+    Get all products and save in observableList
+     */
     public ObservableList<Product> getProducts(String array[][]){
-        ObservableList<Product> items = FXCollections.observableArrayList();
+        products = FXCollections.observableArrayList();
         int id, x, y;
         for(int i=0;i< array.length;i++){
             id = (int) Math.round(Double.parseDouble(array[i][0]));
             x = (int) Math.round(Double.parseDouble(array[i][1]));
             y = (int) Math.round(Double.parseDouble(array[i][2]));
             Product temp = new Product(id, x, y);
-            items.add(temp);
+            products.add(temp);
         }
-        return items;
+        return products;
     }
 
-    public void initSelectTable(){
+    /*
+    initialize the tableview, set up the name of each tableColumn
+    and input the warehouse's data
+     */
+    public void initTable(){
         TableColumn<Product, Integer> productIdColumn = new TableColumn<>("ProductID");
         productIdColumn.setMinWidth(100);
         productIdColumn.setCellValueFactory(new PropertyValueFactory<>("productID"));
@@ -156,6 +172,10 @@ public class Controller implements Initializable {
 
     }
 
+    /*
+    Search for products according to the keywords
+    from the warehouse directory
+     */
     public void search(ActionEvent event){
         if(keywords != null) {
             text = keywords.getText();
@@ -163,21 +183,40 @@ public class Controller implements Initializable {
         }
     }
 
+    /*
+    Add the selected product to the checking tableview
+     */
     public void add(){
-        ObservableList<Product> selectedItem, allItems;
-        allItems = selectTable.getItems();
-        selectedItem = selectTable.getSelectionModel().getSelectedItems();
-        checkTable.getItems().addAll(selectedItem.get(0));
+        products = selectTable.getItems();
+        selectedProduct = selectTable.getSelectionModel().getSelectedItems();
+        checkTable.getItems().addAll(selectedProduct.get(0));
        // selectedItem.forEach(allItems::remove);
     }
 
+    /*
+    delete the selected product from the checking tableview
+     */
     public void delete(){
-        ObservableList<Product> selectedItem, allItems;
-        allItems = checkTable.getItems();
-        selectedItem = checkTable.getSelectionModel().getSelectedItems();
-        selectedItem.forEach(allItems::remove);
+        products = checkTable.getItems();
+        selectedProduct = checkTable.getSelectionModel().getSelectedItems();
+        selectedProduct.forEach(products::remove);
     }
 
+    /*
+    show the next instruction and worker's location
+    update the progressbar and guiding graph
+     */
+    public void nextAndIncreaseProgress(){
+        if(progress.doubleValue() < 1) {
+            progress = new BigDecimal(String.format("%.2f",progress.doubleValue()+ 0.1));
+            progressBar.setProgress(progress.doubleValue());
+            progressLabel.setText(Integer.toString((int) Math.round(progress.doubleValue() * 100)) + "%");
+        }
+    }
+
+    /*
+    switch scene to Guiding view
+     */
     public void goToGuiding(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("Guiding.fxml"));
         stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
@@ -186,6 +225,9 @@ public class Controller implements Initializable {
         stage.show();
     }
 
+    /*
+    switch scene to Selecting view
+    */
     public void backToSelecting(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("Selecting.fxml"));
         stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
