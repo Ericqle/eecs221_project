@@ -3,13 +3,14 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressBar?>
-<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project1_0.Controller">
+<AnchorPane prefHeight="540.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project1_0.Controller">
    <children>
-      <Button fx:id="gbButton" alignment="CENTER" layoutX="11.0" layoutY="455.0" mnemonicParsing="false" onAction="#backToSelecting" text="Back">
+      <Button fx:id="gbButton" alignment="CENTER" layoutX="25.0" layoutY="490.0" mnemonicParsing="false" onAction="#backToSelecting" text="Back">
          <font>
             <Font size="18.0" />
          </font>
@@ -19,22 +20,26 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <ProgressBar fx:id="progressBar" layoutX="25.0" layoutY="35.0" prefHeight="32.0" prefWidth="110.0" progress="0.0" />
-      <Button fx:id="nextButton" alignment="CENTER" layoutX="456.0" layoutY="35.0" mnemonicParsing="false" onAction="#nextAndIncreaseProgress" prefHeight="31.0" prefWidth="87.0" text="Next">
+      <ProgressBar fx:id="progressBar" layoutX="20.0" layoutY="37.0" prefHeight="32.0" prefWidth="110.0" progress="0.25" />
+      <Button fx:id="nextButton" alignment="CENTER" layoutX="482.0" layoutY="35.0" mnemonicParsing="false" onAction="#nextAndIncreaseProgress" prefHeight="24.0" prefWidth="87.0" text="Next">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
-      <Label fx:id="instruction" alignment="CENTER" layoutX="135.0" layoutY="35.0" prefHeight="32.0" prefWidth="321.0" text="Instruction">
-         <font>
-            <Font size="24.0" />
-         </font>
-      </Label>
-      <Label fx:id="currentLocation" alignment="CENTER" layoutX="135.0" layoutY="74.0" prefHeight="24.0" prefWidth="321.0" text="Current Location">
+      <Label fx:id="instruction" alignment="CENTER" layoutX="135.0" layoutY="35.0" prefHeight="36.0" prefWidth="342.0" text="go down 2 steps and go right 2 steps">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <TableView layoutX="50.0" layoutY="112.0" prefHeight="334.0" prefWidth="499.0" />
+      <Label fx:id="currentLocation" layoutX="135.0" layoutY="74.0" prefHeight="24.0" prefWidth="321.0" text="  Current productID: 290         location: (17,10)">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <ImageView fx:id="image" fitHeight="387.0" fitWidth="498.0" layoutX="68.0" layoutY="98.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@image.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

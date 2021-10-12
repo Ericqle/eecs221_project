@@ -10,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 import javafx.event.ActionEvent;
@@ -35,7 +36,7 @@ public class Controller implements Initializable {
 
     @FXML
     private ChoiceBox<String> choiceBox;
-    private String[] sort = {"ProductID", "Categories", "Name"};
+    private String[] sort = {"ProductID"};
     private String text;
 
     @FXML
@@ -48,6 +49,9 @@ public class Controller implements Initializable {
     @FXML
     private TableView<Product> selectTable, checkTable;
     private ObservableList<Product> products, selectedProduct;
+
+    @FXML
+    private ImageView image;
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
@@ -166,7 +170,8 @@ public class Controller implements Initializable {
             String array[][] = createArray("E:\\JavaSpace\\project1.0\\src\\project1_0\\data_v1.txt");
             printArray(array);
             getProducts(array);
-        checkTable.getColumns().addAll(productIdColumn,xColumn,yColumn);
+
+        //checkTable.getColumns().addAll(productIdColumn,xColumn,yColumn);
         selectTable.setItems(getProducts(array));
         selectTable.getColumns().addAll(productIdColumn,xColumn,yColumn);
 
@@ -188,9 +193,8 @@ public class Controller implements Initializable {
      */
     public void add(){
         products = selectTable.getItems();
-        selectedProduct = selectTable.getSelectionModel().getSelectedItems();
-        checkTable.getItems().addAll(selectedProduct.get(0));
-       // selectedItem.forEach(allItems::remove);
+        Product selectedItem = selectTable.getSelectionModel().getSelectedItem();
+        checkTable.getItems().add(new Product(selectedItem.getProductID(),selectedItem.getX(),selectedItem.getY()));
     }
 
     /*
