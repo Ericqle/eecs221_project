@@ -130,7 +130,7 @@ class BFSShortestPath {
                 { '-', '-', 'X', 'X', '-', 'X', '-', 'X', 'X', '-' }};
 
         Coordinate source = new Coordinate(0, 0);
-        Coordinate dest = new Coordinate(1, 6);
+        Coordinate dest = new Coordinate(2, 71);
 
         BFSShortestPath bfs = new BFSShortestPath();
         ArrayList<Vertex> path = bfs.findBFSPath(testMatrix, source, dest);

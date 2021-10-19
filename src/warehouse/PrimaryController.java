@@ -220,22 +220,33 @@ public class PrimaryController {
         for (int i = 1; i < directionList.size(); i++) {
             if (directionList.get(i).equals(currDirection)) {
                 currentDirCount = currentDirCount + 1;
-                if (i == directionList.size() - 1) {
-                    instructions.append("Move " + currDirection + " " + currentDirCount + " unit(s) ");
+                if (i == directionList.size() - 1 && currentDirCount > 1) {
+                    instructions.append("Move " + currDirection + " " + currentDirCount + " units \n");
+                }
+                else if(i == directionList.size() - 1 && currentDirCount == 1) {
+                    instructions.append("Move " + currDirection + " " + currentDirCount + " units \n");
                 }
             }
             else {
-                instructions.append("Move " + currDirection + " " + currentDirCount + " units(s) ");
+                if(currentDirCount > 1) {
+                    instructions.append("Move " + currDirection + " " + currentDirCount + " units \n");
+                }
+                else if(currentDirCount == 1){
+                    instructions.append("Move " + currDirection + " " + currentDirCount + " unit \n");
+                }
                 currDirection = directionList.get(i);
                 currentDirCount = 1;
-                if (i == directionList.size() - 1) {
-                    instructions.append("Move " + currDirection + " " + currentDirCount + " unit(s) ");
+                if (i == directionList.size() - 1 && currentDirCount > 1) {
+                    instructions.append("Move " + currDirection + " " + currentDirCount + " units \n");
+                }
+                else if(i == directionList.size() - 1 && currentDirCount == 1){
+                    instructions.append("Move " + currDirection + " " + currentDirCount + " unit \n");
                 }
             }
 
         }
 
-        return "Path to Item: " + instructions.toString();
+        return "Path to Item: \n" + instructions.toString();
     }
 
 }

@@ -17,7 +17,7 @@ public class Main {
         /* Reading data from data file and setting graph
          */
         try {
-            primaryController.readAllItems("/Users/eric/Documents/EECS221/alphaTest/src/qvBox-warehouse-data-f21-v01.txt");
+            primaryController.readAllItems("src/warehouse/qvBox-warehouse-data-f21-v01.txt");
         }
         catch (IOException e){
             System.out.println("invalid file exception");
