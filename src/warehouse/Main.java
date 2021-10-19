@@ -23,13 +23,13 @@ public class Main {
             System.out.println("invalid file exception");
         }
         primaryController.setGraph();
-        System.out.println("All items from data file have been stored and set in warehouse map");
+        System.out.println("All items from data file have been stored and set in the warehouse map");
 
         /* Initiate user interaction
             - also show all warehouse data is reflected on map
          */
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Hello, here is a layout  of the warehouse");
+        System.out.println("Here is a layout of the warehouse with the loaded data");
         System.out.println("'U' = you | 'X' = shelves/items | '.' = open space");
         primaryController.printGraph();
         System.out.println();
@@ -59,7 +59,7 @@ public class Main {
             System.out.println();
 
             System.out.println("The item for id: " + itemID + " is marked as '$' on the map.");
-            System.out.println("The path to the item is marked with 'P' on the map.");
+            System.out.println("The path from your location 'U' to the item '$' is marked with 'P' on the map.");
             String shortestPathOutput = primaryController.findItemAndCallPath(itemID);
             System.out.println(shortestPathOutput);
             primaryController.markPathOnGraph();
