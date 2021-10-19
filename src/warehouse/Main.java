@@ -34,9 +34,12 @@ public class Main {
             primaryController.markItemInGraph(itemID);
             System.out.println();
 
+            System.out.println("The item you want is marked as '$' on the map.");
             String shortestPathOutput = primaryController.findItemAndCallPath(itemID);
             System.out.println(shortestPathOutput);
+            primaryController.markPathOnGraph();
             primaryController.printGraph();
+            primaryController.unmarkPathOnGraph();
             primaryController.unmarkItemInGraph(itemID);
             System.out.println();
 

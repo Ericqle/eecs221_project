@@ -10,6 +10,7 @@ public class PrimaryController {
     int COL = 25;
 
     ArrayList<Item> allItemsList = new ArrayList<>();
+    ArrayList<Node> currentShortestPath = new ArrayList<>();
     char[][] graph = new char[ROW][COL];
 
     void readAllItems(String filePath) throws IOException {
@@ -48,7 +49,7 @@ public class PrimaryController {
     void setGraph (){
         for (int i = 0; i < graph.length; i++) {
             for (int j = 0; j < graph[0].length; j++) {
-                graph[i][j] = '-';
+                graph[i][j] = '.';
             }
         }
 
@@ -94,15 +95,35 @@ public class PrimaryController {
         return false;
     }
 
-    String findPathToItem(Item start, Item finish) {
+    void markPathOnGraph(){
+        for (int i = 1; i < currentShortestPath.size() - 1; i++) {
+            int x = currentShortestPath.get(i).nodePoint.x;
+            int y = currentShortestPath.get(i).nodePoint.y;
+            graph[x][y] = '+';
+        }
+    }
+
+    void unmarkPathOnGraph(){
+        for (int i = 1; i < currentShortestPath.size() - 1; i++) {
+            int x = currentShortestPath.get(i).nodePoint.x;
+            int y = currentShortestPath.get(i).nodePoint.y;
+            graph[x][y] = '.';
+        }
+    }
+
+
+    ArrayList<Node> findPathToItem(Item start, Item finish) {
         NodePoint source = new NodePoint(0, 0);
         NodePoint dest = new NodePoint(finish.row, finish.col);
 
         BFSShortestPath bfs = new BFSShortestPath();
-        ArrayList<Node> path = bfs.backtrackPath(graph, source, dest);
 
+        return bfs.findBFSPath(graph, source, dest);
+    }
+
+    String makeUserInstruction() {
         StringBuilder instructions = new StringBuilder();
-        for (Node node: path) {
+        for (Node node: currentShortestPath) {
             instructions.append( "(" + String.valueOf(node.nodePoint.x) + " "
                     + String.valueOf(node.nodePoint.y) + ") ");
         }
@@ -113,7 +134,9 @@ public class PrimaryController {
     String findItemAndCallPath(int id) {
         if (itemExist(id)) {
             Item neededItem = getItemByID(id);
-            return findPathToItem(new Item(0,0,0), neededItem);
+            currentShortestPath = findPathToItem(new Item(0,0,0), neededItem);
+
+            return makeUserInstruction();
         }
 
         else {

@@ -31,16 +31,16 @@ class BFSShortestPath {
     }
 
     // Find and return the shortest path
-    ArrayList<Node> backtrackPath(char[][] mat, NodePoint src, NodePoint dest) {
+    ArrayList<Node> findBFSPath(char[][] mat, NodePoint src, NodePoint dest) {
+
+        // Holds visited nodes
+        boolean [][]visited = new boolean[ROW][COL];
 
         // Make sure src and dest are not a shelf
         if ((mat[src.x][src.y] == 'X') || (mat[dest.x][dest.y] == 'X')) {
             System.out.println("Source or Dest X");
             return null;
         }
-
-        // Holds visited nodes
-        boolean [][]visited = new boolean[ROW][COL];
 
         // Set root to visited
         visited[src.x][src.y] = true;
@@ -108,7 +108,7 @@ class BFSShortestPath {
         NodePoint dest = new NodePoint(1, 6);
 
         BFSShortestPath bfs = new BFSShortestPath();
-        ArrayList<Node> path = bfs.backtrackPath(testMatrix, source, dest);
+        ArrayList<Node> path = bfs.findBFSPath(testMatrix, source, dest);
 
         for (Node node: path) {
             System.out.println(String.valueOf(node.nodePoint.x) + " " + node.nodePoint.y);
