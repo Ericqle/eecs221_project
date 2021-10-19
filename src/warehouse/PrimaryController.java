@@ -69,14 +69,19 @@ public class PrimaryController {
         }
     }
 
-    void markItemInGraph(int id) {
-        Item item = getItemByID(id);
-        graph[item.row][item.col] = '$';
+    boolean markItemInGraph(int id) {
+        if (itemExist(id)) {
+            Item item = getItemByID(id);
+            graph[item.row][item.col] = '$';
+            return true;
+        }else {
+            return false;
+        }
     }
 
     void unmarkItemInGraph(int id) {
-        Item item = getItemByID(id);
-        graph[item.row][item.col] = 'X';
+            Item item = getItemByID(id);
+            graph[item.row][item.col] = 'X';
     }
 
     Item getItemByID(int id) {

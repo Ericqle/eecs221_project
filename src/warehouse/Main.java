@@ -9,7 +9,7 @@ public class Main {
         PrimaryController primaryController = new PrimaryController();
 
         try {
-            primaryController.readAllItems("/Users/eric/Documents/EECS221/alphaTest/src/warehouse/qvBox-warehouse-data-f21-v01.txt");
+            primaryController.readAllItems("src/warehouse/qvBox-warehouse-data-f21-v01.txt");
         }
         catch (IOException e){
             System.out.println("invalid file exception");
@@ -32,7 +32,10 @@ public class Main {
         while (choice != 2) {
             System.out.println("Enter item id: ");
             int itemID = scanner.nextInt();
-            primaryController.markItemInGraph(itemID);
+            if (!primaryController.markItemInGraph(itemID)) {
+                System.out.println("The item you are looking for does NOT exist!");
+                continue;
+            }
             System.out.println();
 
             System.out.println("The item for id: " + itemID + " is marked as '$' on the map.");
