@@ -79,7 +79,6 @@ public class PrimaryController {
         }
     }
 
-
     void unmarkItemInGraph(int id) {
             Item item = getItemByID(id);
             graph[item.row][item.col] = 'X';
