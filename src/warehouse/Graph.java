@@ -1,6 +1,6 @@
 package warehouse;
 
-// Class depricated for now
+/* For future implementation
+ */
 public class Graph {
-
 }
