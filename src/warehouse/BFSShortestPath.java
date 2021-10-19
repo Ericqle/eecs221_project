@@ -45,7 +45,7 @@ class BFSShortestPath {
         - All open spaces on map are abstracted as vertices on the
         - Returns the path to the dest as list of vertices
      */
-    ArrayList<Vertex> findBFSPath(char[][] mat, Coordinate src, Coordinate dest) {
+    ArrayList<Vertex> findBFSPath(char[][] graph, Coordinate src, Coordinate dest) {
 
         /* Holds visited vertices
          */
@@ -53,7 +53,7 @@ class BFSShortestPath {
 
         /* Make sure src and dest are not a shelf
          */
-        if ((mat[src.x][src.y] == 'X') || (mat[dest.x][dest.y] == 'X')) {
+        if ((graph[src.x][src.y] == 'X') || (graph[dest.x][dest.y] == 'X')) {
             System.out.println("Source or Dest X");
             return null;
         }
@@ -97,7 +97,7 @@ class BFSShortestPath {
                 int row = pt.x + rowNum[i];
                 int col = pt.y + colNum[i];
 
-                if (isValid(row, col) && (mat[row][col] != 'X') &&
+                if (isValid(row, col) && (graph[row][col] != 'X') &&
                         !visited[row][col])
                 {
                     /* Enqueue now visited vertices, save vertices parent for path backtracking
