@@ -1,12 +1,12 @@
 package warehouse;
 
 public class Node {
-    NodePoint nodePoint;
+    Coordinate coordinate;
     Node parent = null;
 
-    public Node(NodePoint nodePoint, Node prev)
+    public Node(Coordinate coordinate, Node prev)
     {
-        this.nodePoint = nodePoint;
+        this.coordinate = coordinate;
         this.parent = prev;
     }
 }

@@ -31,7 +31,7 @@ class BFSShortestPath {
     }
 
     // Find and return the shortest path
-    ArrayList<Node> findBFSPath(char[][] mat, NodePoint src, NodePoint dest) {
+    ArrayList<Node> findBFSPath(char[][] mat, Coordinate src, Coordinate dest) {
 
         // Holds visited nodes
         boolean [][]visited = new boolean[ROW][COL];
@@ -55,10 +55,9 @@ class BFSShortestPath {
         // Perform BFS from source
         while (!q.isEmpty())
         {
-            Node curr = q.peek();
-            NodePoint pt = curr.nodePoint;
-
             // End condition id we arrive at dest cell
+            Node curr = q.peek();
+            Coordinate pt = curr.coordinate;
             if (pt.x == dest.x && pt.y == dest.y) {
                 ArrayList<Node> returnPath = backtrackPath(curr);
                 returnPath.add(new Node(src, null));
@@ -79,7 +78,7 @@ class BFSShortestPath {
                 {
                     // Enqueue now visited cells, set Nodes parent for path backtraacking
                     visited[row][col] = true;
-                    Node adjacentNode = new Node(new NodePoint(row, col), p);
+                    Node adjacentNode = new Node(new Coordinate(row, col), p);
                     q.add(adjacentNode);
 
                 }
@@ -104,14 +103,14 @@ class BFSShortestPath {
                 { 'X', 'X', '-', '-', '-', '-', 'X', '-', '-', '-' },
                 { '-', '-', 'X', 'X', '-', 'X', '-', 'X', 'X', '-' }};
 
-        NodePoint source = new NodePoint(0, 0);
-        NodePoint dest = new NodePoint(1, 6);
+        Coordinate source = new Coordinate(0, 0);
+        Coordinate dest = new Coordinate(1, 6);
 
         BFSShortestPath bfs = new BFSShortestPath();
         ArrayList<Node> path = bfs.findBFSPath(testMatrix, source, dest);
 
         for (Node node: path) {
-            System.out.println(String.valueOf(node.nodePoint.x) + " " + node.nodePoint.y);
+            System.out.println(String.valueOf(node.coordinate.x) + " " + node.coordinate.y);
         }
     }
 }

@@ -61,9 +61,9 @@ public class PrimaryController {
     }
 
     void printGraph(){
-        for (int i = 0; i < graph.length ; i++) {
-            for (int j = 0; j < graph[0].length; j++) {
-                System.out.print(" " + String.valueOf(graph[i][j]) + " ");
+        for (int i = COL - 1; i >= 0 ; i--) {
+            for (int j = 0; j < ROW; j++) {
+                System.out.print(" " + String.valueOf(graph[j][i]) + " ");
             }
             System.out.println();
         }
@@ -97,24 +97,23 @@ public class PrimaryController {
 
     void markPathOnGraph(){
         for (int i = 1; i < currentShortestPath.size() - 1; i++) {
-            int x = currentShortestPath.get(i).nodePoint.x;
-            int y = currentShortestPath.get(i).nodePoint.y;
-            graph[x][y] = '+';
+            int x = currentShortestPath.get(i).coordinate.x;
+            int y = currentShortestPath.get(i).coordinate.y;
+            graph[x][y] = 'P';
         }
     }
 
     void unmarkPathOnGraph(){
         for (int i = 1; i < currentShortestPath.size() - 1; i++) {
-            int x = currentShortestPath.get(i).nodePoint.x;
-            int y = currentShortestPath.get(i).nodePoint.y;
+            int x = currentShortestPath.get(i).coordinate.x;
+            int y = currentShortestPath.get(i).coordinate.y;
             graph[x][y] = '.';
         }
     }
 
-
     ArrayList<Node> findPathToItem(Item start, Item finish) {
-        NodePoint source = new NodePoint(0, 0);
-        NodePoint dest = new NodePoint(finish.row, finish.col);
+        Coordinate source = new Coordinate(0, 0);
+        Coordinate dest = new Coordinate(finish.row, finish.col);
 
         BFSShortestPath bfs = new BFSShortestPath();
 
@@ -123,9 +122,46 @@ public class PrimaryController {
 
     String makeUserInstruction() {
         StringBuilder instructions = new StringBuilder();
-        for (Node node: currentShortestPath) {
-            instructions.append( "(" + String.valueOf(node.nodePoint.x) + " "
-                    + String.valueOf(node.nodePoint.y) + ") ");
+
+        ArrayList<String> directionList = new ArrayList<>();
+        for (int i = 1; i < currentShortestPath.size(); i++) {
+            String xDirection = "East";
+            String yDirection = "North";
+            int x0 = currentShortestPath.get(i - 1).coordinate.x;
+            int x1 = currentShortestPath.get(i).coordinate.x;
+            int y0 = currentShortestPath.get(i - 1).coordinate.y;
+            int y1 = currentShortestPath.get(i).coordinate.y;
+            if ((x1 - x0) == 0) {
+                if ((y1 - y0) < 0)
+                    yDirection = "South";
+                directionList.add(yDirection);
+            }
+            else if ((y1 - y0) == 0){
+                if ((x1 - x0) < 0)
+                    xDirection = "West";
+                directionList.add(xDirection);
+            }
+        }
+
+        String currDirection = directionList.get(0);
+        int currentDirCount = 1;
+
+        for (int i = 1; i < directionList.size(); i++) {
+            if (directionList.get(i).equals(currDirection)) {
+                currentDirCount = currentDirCount + 1;
+                if (i == directionList.size() - 1) {
+                    instructions.append("Move " + currDirection + " " + currentDirCount + " unit(s) ");
+                }
+            }
+            else {
+                instructions.append("Move " + currDirection + " " + currentDirCount + " units(s) ");
+                currDirection = directionList.get(i);
+                currentDirCount = 1;
+                if (i == directionList.size() - 1) {
+                    instructions.append("Move " + currDirection + " " + currentDirCount + " unit(s) ");
+                }
+            }
+
         }
 
         return "Path to Item: " + instructions.toString();

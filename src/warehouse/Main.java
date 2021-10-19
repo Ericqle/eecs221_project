@@ -19,6 +19,7 @@ public class Main {
 
         Scanner scanner = new Scanner(System.in);
         System.out.println("Hello, here is a layout  of the warehouse:");
+        System.out.println("'U' = you | 'X' = shelves | '.' = open space");
         primaryController.printGraph();
         System.out.println();
 
@@ -34,7 +35,8 @@ public class Main {
             primaryController.markItemInGraph(itemID);
             System.out.println();
 
-            System.out.println("The item you want is marked as '$' on the map.");
+            System.out.println("The item for id: " + itemID + " is marked as '$' on the map.");
+            System.out.println("The path to the item is marked with 'P' on the map.");
             String shortestPathOutput = primaryController.findItemAndCallPath(itemID);
             System.out.println(shortestPathOutput);
             primaryController.markPathOnGraph();
