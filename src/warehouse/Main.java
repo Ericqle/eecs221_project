@@ -13,12 +13,21 @@ public class Main {
         /* Member to make backed function calls
          */
         PrimaryController primaryController = new PrimaryController();
-
+        Scanner scanner = new Scanner(System.in);
         /* Reading data from data file and setting graph
          */
         try {
-            primaryController.readAllItems("src/warehouse/qvBox-warehouse-data-f21-v01.txt");
+            System.out.println("please input the DataFile's address");
+            String filepath = scanner.nextLine();
+            while(!filepath.endsWith("txt")) {
+                System.out.println("your address is invalid, please input again:");
+                filepath = scanner.nextLine();
+            }
+            primaryController.readAllItems(filepath);
         }
+//        try {
+//            primaryController.readAllItems("src/warehouse/qvBox-warehouse-data-f21-v01.txt");
+//        }
         catch (IOException e){
             System.out.println("invalid file exception");
         }
@@ -28,7 +37,7 @@ public class Main {
         /* Initiate user interaction
             - also show all warehouse data is reflected on map
          */
-        Scanner scanner = new Scanner(System.in);
+//        Scanner scanner = new Scanner(System.in);
         System.out.println("Here is a layout of the warehouse with the loaded data");
         System.out.println("'U' = you | 'X' = shelves/items | '.' = open space");
         primaryController.printGraph();
