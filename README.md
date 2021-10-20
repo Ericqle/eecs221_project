@@ -14,6 +14,6 @@ Overview of tasks completed:
         from the start point(0,0) and show the instructions step by step.
 Overview of known bugs:
 
-    1.  Not Found
+    Not Found
 
     
