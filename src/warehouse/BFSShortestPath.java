@@ -14,7 +14,7 @@ class BFSShortestPath {
     int ROW = 40;
     int COL = 25;
 
-    /* Used to index the 4 neighbours of a given cell
+    /* Used to index the 4 neighbours of a given vertex
      */
     int[] rowNum = {-1, 0, 0, 1};
     int[] colNum = {0, -1, 1, 0};
