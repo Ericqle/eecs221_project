@@ -1,5 +1,8 @@
 package warehouse;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -14,16 +17,19 @@ public class Main {
          */
         PrimaryController primaryController = new PrimaryController();
         Scanner scanner = new Scanner(System.in);
+
         /* Reading data from data file and setting graph
          */
         try {
             System.out.println("please input the DataFile's address");
-            String filepath = scanner.nextLine();
-            while(!filepath.endsWith("txt")) {
-                System.out.println("your address is invalid, please input again:");
-                filepath = scanner.nextLine();
+            String filePath = scanner.nextLine();
+
+            while(!filePath.endsWith("txt")) {
+                System.out.println("your DataFile is wrong, please input again:");
+                filePath = scanner.nextLine();
             }
-            primaryController.readAllItems(filepath);
+
+            primaryController.readAllItems(filePath);
         }
 //        try {
 //            primaryController.readAllItems("src/warehouse/qvBox-warehouse-data-f21-v01.txt");
@@ -31,6 +37,7 @@ public class Main {
         catch (IOException e){
             System.out.println("invalid file exception");
         }
+
         primaryController.setGraph();
         System.out.println("All items from data file have been stored and set in the warehouse map");
 
