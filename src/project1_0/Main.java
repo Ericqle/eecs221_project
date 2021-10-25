@@ -7,13 +7,15 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.util.Scanner;
 
 public class Main extends Application {
+
 
     @Override
     public void start(Stage Stage) throws IOException {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("Selecting.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("Loading.fxml"));
             Scene scene = new Scene(root);
             Stage.setScene(scene);
             Stage.show();

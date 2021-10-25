@@ -9,9 +9,9 @@ import java.util.List;
 
 public class Product {
 
-    private Integer productID;
-    private Integer x;
-    private Integer y;
+    private Integer productID = 0;
+    private Integer x = 0;
+    private Integer y = 0;
 
     public Product(){
         this.productID = 0;

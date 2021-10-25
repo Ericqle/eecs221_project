@@ -10,7 +10,7 @@
 
 <AnchorPane prefHeight="540.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project1_0.Controller">
    <children>
-      <Button fx:id="gbButton" alignment="CENTER" layoutX="25.0" layoutY="490.0" mnemonicParsing="false" onAction="#backToSelecting" text="Back">
+      <Button fx:id="gbButton2" alignment="CENTER" layoutX="25.0" layoutY="490.0" mnemonicParsing="false" onAction="#backToSelecting" text="Back">
          <font>
             <Font size="18.0" />
          </font>
@@ -20,13 +20,13 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <ProgressBar fx:id="progressBar" layoutX="20.0" layoutY="37.0" prefHeight="32.0" prefWidth="110.0" progress="0.25" />
+      <ProgressBar fx:id="progressBar" layoutX="20.0" layoutY="37.0" prefHeight="32.0" prefWidth="110.0" progress="0.2" />
       <Button fx:id="nextButton" alignment="CENTER" layoutX="482.0" layoutY="35.0" mnemonicParsing="false" onAction="#nextAndIncreaseProgress" prefHeight="24.0" prefWidth="87.0" text="Next">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
-      <Label fx:id="instruction" alignment="CENTER" layoutX="135.0" layoutY="35.0" prefHeight="36.0" prefWidth="342.0" text="go down 2 steps and go right 2 steps">
+      <Label fx:id="instruction" alignment="CENTER" layoutX="135.0" layoutY="35.0" prefHeight="36.0" prefWidth="342.0" text="go up 2 steps and go left 2 steps">
          <font>
             <Font size="18.0" />
          </font>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="861.0" prefWidth="1090.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project1_0.Controller">
+   <children>
+      <Label fx:id="loadLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="108.0" layoutY="14.0" prefHeight="55.0" prefWidth="638.0" text="Loading">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Button fx:id="loadButton" layoutX="748.0" layoutY="67.0" mnemonicParsing="false" onAction="#Load" prefHeight="37.0" prefWidth="87.0" text="Load">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
+      <TextField fx:id="loadTextField" layoutX="9.0" layoutY="67.0" prefHeight="37.0" prefWidth="732.0" promptText="Please input the path of the txt file:">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </TextField>
+      <TableView fx:id="loadTable" layoutX="22.0" layoutY="127.0" prefHeight="714.0" prefWidth="1042.0">
+         <columns>
+            <TableColumn fx:id="c0" minWidth="20.0" prefWidth="25.0" text="0" />
+            <TableColumn fx:id="c1" minWidth="20.0" prefWidth="25.0" text="1" />
+            <TableColumn fx:id="c2" minWidth="20.0" prefWidth="25.0" text="2" />
+            <TableColumn fx:id="c3" minWidth="20.0" prefWidth="25.0" text="3" />
+            <TableColumn fx:id="c4" minWidth="20.0" prefWidth="25.0" text="4" />
+            <TableColumn fx:id="c5" minWidth="20.0" prefWidth="25.0" text="5" />
+            <TableColumn fx:id="c6" minWidth="20.0" prefWidth="25.0" text="6" />
+            <TableColumn fx:id="c7" minWidth="20.0" prefWidth="25.0" text="7" />
+            <TableColumn fx:id="c8" minWidth="20.0" prefWidth="25.0" text="8" />
+            <TableColumn fx:id="c9" minWidth="20.0" prefWidth="25.0" text="9" />
+            <TableColumn fx:id="c10" minWidth="20.0" prefWidth="25.0" text="10" />
+            <TableColumn fx:id="c11" minWidth="20.0" prefWidth="25.0" text="11" />
+            <TableColumn fx:id="c12" minWidth="20.0" prefWidth="25.0" text="12" />
+            <TableColumn fx:id="c13" minWidth="20.0" prefWidth="25.0" text="13" />
+            <TableColumn fx:id="c14" minWidth="20.0" prefWidth="25.0" text="14" />
+            <TableColumn fx:id="c15" minWidth="20.0" prefWidth="25.0" text="15" />
+            <TableColumn fx:id="c16" minWidth="20.0" prefWidth="25.0" text="16" />
+            <TableColumn fx:id="c17" minWidth="20.0" prefWidth="25.0" text="17" />
+            <TableColumn fx:id="c18" minWidth="20.0" prefWidth="25.0" text="18" />
+            <TableColumn fx:id="c19" minWidth="20.0" prefWidth="25.0" text="19" />
+            <TableColumn fx:id="c20" minWidth="20.0" prefWidth="25.0" text="20" />
+            <TableColumn fx:id="c21" minWidth="20.0" prefWidth="25.0" text="21" />
+            <TableColumn fx:id="c22" minWidth="20.0" prefWidth="25.0" text="22" />
+            <TableColumn fx:id="c23" minWidth="20.0" prefWidth="25.0" text="23" />
+            <TableColumn fx:id="c24" minWidth="20.0" prefWidth="25.0" text="24" />
+            <TableColumn fx:id="c25" minWidth="20.0" prefWidth="25.0" text="25" />
+            <TableColumn fx:id="c26" minWidth="20.0" prefWidth="25.0" text="26" />
+            <TableColumn fx:id="c27" minWidth="20.0" prefWidth="25.0" text="27" />
+            <TableColumn fx:id="c28" minWidth="20.0" prefWidth="25.0" text="28" />
+            <TableColumn fx:id="c29" minWidth="20.0" prefWidth="25.0" text="29" />
+            <TableColumn fx:id="c30" minWidth="20.0" prefWidth="25.0" text="30" />
+            <TableColumn fx:id="c31" minWidth="20.0" prefWidth="25.0" text="31" />
+            <TableColumn fx:id="c32" minWidth="20.0" prefWidth="25.0" text="32" />
+            <TableColumn fx:id="c33" minWidth="20.0" prefWidth="25.0" text="33" />
+            <TableColumn fx:id="c34" minWidth="20.0" prefWidth="25.0" text="34" />
+            <TableColumn fx:id="c35" minWidth="20.0" prefWidth="25.0" text="35" />
+            <TableColumn fx:id="c36" minWidth="20.0" prefWidth="25.0" text="36" />
+            <TableColumn fx:id="c37" minWidth="20.0" prefWidth="25.0" text="37" />
+            <TableColumn fx:id="c38" minWidth="20.0" prefWidth="25.0" text="38" />
+            <TableColumn fx:id="c39" minWidth="20.0" prefWidth="25.0" text="39" />
+            <TableColumn fx:id="c40" minWidth="20.0" prefWidth="25.0" text="40" />
+         </columns></TableView>
+   </children>
+</AnchorPane>
