@@ -27,7 +27,7 @@ public class Main {
         boolean readSuccessful = false;
         while (!readSuccessful){
             try {
-                System.out.println("Please input the file of the txt file:");
+                System.out.println("Please input the path of the txt file:");
                 String filePath = scanner.nextLine();
 
                 primaryController.readAllItems(filePath);
