@@ -7,6 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -20,12 +21,14 @@ import javafx.util.Callback;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Controller {
+public class Controller implements Initializable {
 
     private Stage stage;
     private Scene scene;
@@ -83,17 +86,23 @@ public class Controller {
      */
     char[][] graph = new char[ROW][COL];
     String[][] printFigure = new String[COL+1][ROW+1];
-//    @Override
-//    public void initialize(URL arg0, ResourceBundle arg1) {
-//        if(choiceBox!=null) {
-//            choiceBox.getItems().addAll(sort);
-//            choiceBox.getSelectionModel().selectFirst();
-//            //for test
-//            choiceBox.setOnAction(this::getSort);
-//        }
-//        if(selectTable != null)
-//            initTable();
-//    }
+
+    @Override
+    public void initialize(URL arg0, ResourceBundle arg1) {
+        if(choiceBox!=null) {
+            choiceBox.getItems().addAll(sort);
+            choiceBox.getSelectionModel().selectFirst();
+            //for test
+            choiceBox.setOnAction(this::getSort);
+        }
+        if(selectTable != null) {
+            try {
+                initTable();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     //test
     public void getSort(ActionEvent event){
@@ -184,7 +193,7 @@ public class Controller {
     initialize the tableview, set up the name of each tableColumn
     and input the warehouse's data
      */
-    public void initTable(){
+    public void initTable() throws IOException {
         selectProductID.setCellValueFactory(new PropertyValueFactory<Product, Integer>("productID"));
         selectXLocation.setCellValueFactory(new PropertyValueFactory<Product, Integer>("x"));
         selectYLocation.setCellValueFactory(new PropertyValueFactory<Product, Integer>("y"));
@@ -208,6 +217,7 @@ public class Controller {
             String array[][] = createArray("E:\\JavaSpace\\project1.0\\src\\project1_0\\data_v1.txt");
             printArray(array);
             getProducts(array);
+            readAllItems("E:\\JavaSpace\\project1.0\\src\\project1_0\\data_v1.txt");
         selectTable.setItems(getProducts(array));
         //selectTable.getColumns().addAll(productIdColumn,xColumn,yColumn);
         //selectTable.getColumns().addAll(selectProductID,selectXLocation,selectYLocation);
@@ -233,29 +243,36 @@ public class Controller {
     Search for products according to the keywords
     from the warehouse directory
      */
-    public void search(){
-//        if(keywords != null) {
-//            text = keywords.getText();
-//            Integer i = Integer.valueOf(text);
-//            int j = 0;
-//            while(!products.isEmpty()){
-//
-//                if(products.get(j).getProductID() == i){
-//                    selectTable.getItems().removeAll();
-//                }
-//                j++;
-//            }
-
-//            for(int i=0;i< array.length;i++){
-//                id = (int) Math.round(Double.parseDouble(array[i][0]));
-//                x = (int) Math.round(Double.parseDouble(array[i][1]));
-//                y = (int) Math.round(Double.parseDouble(array[i][2]));
-//                Product temp = new Product(id, x, y);
-//                products.add(temp);
-//            }
-//            return products;
+    public void search() {
+        if (keywords != null) {
+            text = keywords.getText();
+            Integer id = Integer.valueOf(text);
+            System.out.println(id);
+            if(!markItemInGraph(id)){
+                sLabel.setText("The item you are looking for does NOT exist!");
+            }
+            products = FXCollections.observableArrayList();
+            products.add(getItemByID(id));
+            selectTable.setItems(products);
         }
-//        System.out.println(text);
+
+//        if (scanner.hasNextInt()) {
+//
+//            System.out.println("The item for id: " + itemID + " is marked as '$' on the map.");
+//            System.out.println("The path from your location 'U' to the item '$' is marked with 'P' on the map.");
+//            String shortestPathOutput = primaryController.findItemAndCallPath(itemID);
+//            System.out.println(shortestPathOutput);
+//            primaryController.markPathOnGraph();
+//            primaryController.printGraph();
+//            primaryController.unmarkPathOnGraph();
+//            primaryController.unmarkItemInGraph(itemID);
+//            System.out.println();
+//        } else {
+//            String str = scanner.next();
+//            System.out.println("Invalid input! Please input a number.");
+//        }
+
+    }
 
     /*
     Add the selected product to the checking tableview
@@ -382,7 +399,7 @@ public class Controller {
     }
 
     /* Print ascii representation of graph
-        - prints the transpose and horizontally flibbed grraph matrix
+        - prints the transpose and horizontally flibbed graph matrix
             to get the more familiar x-y coordinate orientation
      */
     void printGraph(){
@@ -400,23 +417,15 @@ public class Controller {
             //  System.out.print("\t" + k + "\t");
         }
 
-        for(int i = 0 ; i<COL+1 ; i++) {
-            for (int j = 0; j < ROW + 1; j++) {
-                System.out.print("\t" + printFigure[i][j] + "\t");
-            }
-            System.out.println("");
-        }
+//        for(int i = 0 ; i<COL+1 ; i++) {
+//            for (int j = 0; j < ROW + 1; j++) {
+//                System.out.print("\t" + printFigure[i][j] + "\t");
+//            }
+//            System.out.println("");
+//        }
     }
 
     void createMap() {
-//        selectProductID.setCellValueFactory(new PropertyValueFactory<Product, Integer>("productID"));
-//        selectXLocation.setCellValueFactory(new PropertyValueFactory<Product, Integer>("x"));
-//        selectYLocation.setCellValueFactory(new PropertyValueFactory<Product, Integer>("y"));
-//
-//        String array[][] = createArray("E:\\JavaSpace\\project1.0\\src\\project1_0\\data_v1.txt");
-//        printArray(array);
-//        getProducts(array);
-//        selectTable.setItems(getProducts(array));
         c0.setCellValueFactory(cellData -> cellData.getValue().col_0Property());
         c1.setCellValueFactory(cellData -> cellData.getValue().col_1Property());
         c2.setCellValueFactory(cellData -> cellData.getValue().col_2Property());
@@ -468,6 +477,7 @@ public class Controller {
                 c10, c11, c12,c13,c14,c15,c16,c17, c18,c19,
                 c20, c21, c22,c23,c24,c25,c26,c27, c28,c29,
                 c30, c31, c32,c33,c34,c35,c36,c37, c38,c39, c40;
+
         for(int i=0;i< printFigure.length;i++){
             c0 = new SimpleStringProperty (printFigure[i][0]);
             c1 = new SimpleStringProperty (printFigure[i][1]);
@@ -516,14 +526,52 @@ public class Controller {
                     c20, c21, c22,c23,c24,c25,c26,c27, c28,c29,
                     c30, c31, c32,c33,c34,c35,c36,c37, c38,c39, c40);
 
-            System.out.println(c1+ "" +printFigure[i][1]);
+//            System.out.println(c1+ "" +printFigure[i][1]);
             maps.add(temp);
         }
         return maps;
     }
 
+    public void gotoSelecting(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("Selecting.fxml"));
+        stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
 
     /* Set needed item to '$' on graph
-        - return true if exist
-     */
+    - return true if exist
+ */
+    boolean markItemInGraph(int id) {
+        if (itemExist(id)) {
+            Product item = getItemByID(id);
+            graph[item.getX()][item.getY()] = '$';
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    void unmarkItemInGraph(int id) {
+        Product item = getItemByID(id);
+        graph[item.getX()][item.getY()] = 'X';
+    }
+
+    Product getItemByID(int id) {
+        for (Product item: allItemsList) {
+            if (id == item.getProductID())
+                return item;
+        }
+        return null;
+    }
+
+    boolean itemExist(int id) {
+        for (Product item: allItemsList) {
+            if (id == item.getProductID())
+                return true;
+        }
+        return false;
+    }
+
 }

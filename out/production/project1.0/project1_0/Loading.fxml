@@ -10,17 +10,17 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="861.0" prefWidth="1090.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project1_0.Controller">
    <children>
-      <Label fx:id="loadLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="108.0" layoutY="14.0" prefHeight="55.0" prefWidth="638.0" text="Loading">
+      <Label fx:id="loadLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="224.0" layoutY="14.0" prefHeight="55.0" prefWidth="638.0" text="Loading">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
-      <Button fx:id="loadButton" layoutX="748.0" layoutY="67.0" mnemonicParsing="false" onAction="#Load" prefHeight="37.0" prefWidth="87.0" text="Load">
+      <Button fx:id="loadButton" layoutX="767.0" layoutY="69.0" mnemonicParsing="false" onAction="#Load" prefHeight="37.0" prefWidth="135.0" text="Load">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
-      <TextField fx:id="loadTextField" layoutX="9.0" layoutY="67.0" prefHeight="37.0" prefWidth="732.0" promptText="Please input the path of the txt file:">
+      <TextField fx:id="loadTextField" layoutX="22.0" layoutY="69.0" prefHeight="37.0" prefWidth="732.0" promptText="Please input the path of the txt file:">
          <font>
             <Font size="18.0" />
          </font>
@@ -69,5 +69,10 @@
             <TableColumn fx:id="c39" minWidth="20.0" prefWidth="25.0" text="39" />
             <TableColumn fx:id="c40" minWidth="20.0" prefWidth="25.0" text="40" />
          </columns></TableView>
+      <Button fx:id="gsButton" layoutX="928.0" layoutY="69.0" mnemonicParsing="false" onAction="#gotoSelecting" prefHeight="37.0" prefWidth="135.0" text="Next">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>
