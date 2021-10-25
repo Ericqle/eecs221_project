@@ -52,7 +52,7 @@ public class Controller implements Initializable {
     @FXML
     private TextField keywords, loadTextField;
     @FXML
-    private TableView<Map> loadTable;
+    private TableView<Map> loadTable, guideTable;
 
     @FXML
     private TableView<Product> selectTable, checkTable;
@@ -230,7 +230,7 @@ public class Controller implements Initializable {
 //        loadTable.setOpacity(1);
         setGraph();
         printGraph();
-        createMap();
+        createMap(loadTable);
 
 //        Parent root = FXMLLoader.load(getClass().getResource("Selecting.fxml"));
 //        stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
@@ -425,7 +425,7 @@ public class Controller implements Initializable {
 //        }
     }
 
-    void createMap() {
+    void createMap(TableView<Map> table) {
         c0.setCellValueFactory(cellData -> cellData.getValue().col_0Property());
         c1.setCellValueFactory(cellData -> cellData.getValue().col_1Property());
         c2.setCellValueFactory(cellData -> cellData.getValue().col_2Property());
@@ -468,7 +468,7 @@ public class Controller implements Initializable {
         c39.setCellValueFactory(cellData -> cellData.getValue().col_39Property());
         c40.setCellValueFactory(cellData -> cellData.getValue().col_40Property());
 
-        loadTable.setItems(getMap(printFigure));
+        table.setItems(getMap(printFigure));
     }
 
     private ObservableList<Map> getMap(String[][] printFigure) {

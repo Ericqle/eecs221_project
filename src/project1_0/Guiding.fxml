@@ -3,14 +3,14 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressBar?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="540.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project1_0.Controller">
+<AnchorPane prefHeight="887.0" prefWidth="1103.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project1_0.Controller">
    <children>
-      <Button fx:id="gbButton2" alignment="CENTER" layoutX="25.0" layoutY="490.0" mnemonicParsing="false" onAction="#backToSelecting" text="Back">
+      <Button fx:id="gbButton2" alignment="CENTER" layoutX="43.0" layoutY="37.0" mnemonicParsing="false" onAction="#backToSelecting" text="Back">
          <font>
             <Font size="18.0" />
          </font>
@@ -20,26 +20,66 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <ProgressBar fx:id="progressBar" layoutX="20.0" layoutY="37.0" prefHeight="32.0" prefWidth="110.0" progress="0.2" />
-      <Button fx:id="nextButton" alignment="CENTER" layoutX="482.0" layoutY="35.0" mnemonicParsing="false" onAction="#nextAndIncreaseProgress" prefHeight="24.0" prefWidth="87.0" text="Next">
+      <ProgressBar fx:id="progressBar" layoutX="256.0" layoutY="39.0" prefHeight="32.0" prefWidth="110.0" progress="0.2" />
+      <Button fx:id="nextButton" alignment="CENTER" layoutX="975.0" layoutY="37.0" mnemonicParsing="false" onAction="#nextAndIncreaseProgress" prefHeight="24.0" prefWidth="87.0" text="Next">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
-      <Label fx:id="instruction" alignment="CENTER" layoutX="135.0" layoutY="35.0" prefHeight="36.0" prefWidth="342.0" text="go up 2 steps and go left 2 steps">
+      <Label fx:id="instruction" alignment="CENTER" layoutX="366.0" layoutY="35.0" prefHeight="36.0" prefWidth="342.0" text="go up 2 steps and go left 2 steps">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="currentLocation" layoutX="135.0" layoutY="74.0" prefHeight="24.0" prefWidth="321.0" text="  Current productID: 290         location: (17,10)">
+      <Label fx:id="currentLocation" layoutX="376.0" layoutY="73.0" prefHeight="24.0" prefWidth="321.0" text="  Current productID: 290         location: (17,10)">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <ImageView fx:id="image" fitHeight="387.0" fitWidth="498.0" layoutX="68.0" layoutY="98.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@image.png" />
-         </image>
-      </ImageView>
+      <TableView fx:id="guideTable" layoutX="31.0" layoutY="105.0" prefHeight="743.0" prefWidth="1042.0">
+         <columns>
+            <TableColumn fx:id="c0" minWidth="20.0" prefWidth="25.0" text="0" />
+            <TableColumn fx:id="c1" minWidth="20.0" prefWidth="25.0" text="1" />
+            <TableColumn fx:id="c2" minWidth="20.0" prefWidth="25.0" text="2" />
+            <TableColumn fx:id="c3" minWidth="20.0" prefWidth="25.0" text="3" />
+            <TableColumn fx:id="c4" minWidth="20.0" prefWidth="25.0" text="4" />
+            <TableColumn fx:id="c5" minWidth="20.0" prefWidth="25.0" text="5" />
+            <TableColumn fx:id="c6" minWidth="20.0" prefWidth="25.0" text="6" />
+            <TableColumn fx:id="c7" minWidth="20.0" prefWidth="25.0" text="7" />
+            <TableColumn fx:id="c8" minWidth="20.0" prefWidth="25.0" text="8" />
+            <TableColumn fx:id="c9" minWidth="20.0" prefWidth="25.0" text="9" />
+            <TableColumn fx:id="c10" minWidth="20.0" prefWidth="25.0" text="10" />
+            <TableColumn fx:id="c11" minWidth="20.0" prefWidth="25.0" text="11" />
+            <TableColumn fx:id="c12" minWidth="20.0" prefWidth="25.0" text="12" />
+            <TableColumn fx:id="c13" minWidth="20.0" prefWidth="25.0" text="13" />
+            <TableColumn fx:id="c14" minWidth="20.0" prefWidth="25.0" text="14" />
+            <TableColumn fx:id="c15" minWidth="20.0" prefWidth="25.0" text="15" />
+            <TableColumn fx:id="c16" minWidth="20.0" prefWidth="25.0" text="16" />
+            <TableColumn fx:id="c17" minWidth="20.0" prefWidth="25.0" text="17" />
+            <TableColumn fx:id="c18" minWidth="20.0" prefWidth="25.0" text="18" />
+            <TableColumn fx:id="c19" minWidth="20.0" prefWidth="25.0" text="19" />
+            <TableColumn fx:id="c20" minWidth="20.0" prefWidth="25.0" text="20" />
+            <TableColumn fx:id="c21" minWidth="20.0" prefWidth="25.0" text="21" />
+            <TableColumn fx:id="c22" minWidth="20.0" prefWidth="25.0" text="22" />
+            <TableColumn fx:id="c23" minWidth="20.0" prefWidth="25.0" text="23" />
+            <TableColumn fx:id="c24" minWidth="20.0" prefWidth="25.0" text="24" />
+            <TableColumn fx:id="c25" minWidth="20.0" prefWidth="25.0" text="25" />
+            <TableColumn fx:id="c26" minWidth="20.0" prefWidth="25.0" text="26" />
+            <TableColumn fx:id="c27" minWidth="20.0" prefWidth="25.0" text="27" />
+            <TableColumn fx:id="c28" minWidth="20.0" prefWidth="25.0" text="28" />
+            <TableColumn fx:id="c29" minWidth="20.0" prefWidth="25.0" text="29" />
+            <TableColumn fx:id="c30" minWidth="20.0" prefWidth="25.0" text="30" />
+            <TableColumn fx:id="c31" minWidth="20.0" prefWidth="25.0" text="31" />
+            <TableColumn fx:id="c32" minWidth="20.0" prefWidth="25.0" text="32" />
+            <TableColumn fx:id="c33" minWidth="20.0" prefWidth="25.0" text="33" />
+            <TableColumn fx:id="c34" minWidth="20.0" prefWidth="25.0" text="34" />
+            <TableColumn fx:id="c35" minWidth="20.0" prefWidth="25.0" text="35" />
+            <TableColumn fx:id="c36" minWidth="20.0" prefWidth="25.0" text="36" />
+            <TableColumn fx:id="c37" minWidth="20.0" prefWidth="25.0" text="37" />
+            <TableColumn fx:id="c38" minWidth="20.0" prefWidth="25.0" text="38" />
+            <TableColumn fx:id="c39" minWidth="20.0" prefWidth="25.0" text="39" />
+            <TableColumn fx:id="c40" minWidth="20.0" prefWidth="25.0" text="40" />
+         </columns>
+      </TableView>
    </children>
 </AnchorPane>
