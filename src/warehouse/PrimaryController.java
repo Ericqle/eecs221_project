@@ -89,11 +89,14 @@ public class PrimaryController {
      */
     void printGraph(){
         for (int i = COL - 1; i >= 0 ; i--) {
+            System.out.print("\t" + (i+1) + "\t");
             for (int j = 0; j < ROW; j++) {
-                System.out.print(" " + String.valueOf(graph[j][i]) + " ");
+                System.out.print("\t" + String.valueOf(graph[j][i]) + "\t");
             }
-            System.out.println();
+            System.out.println("");
         }
+        for(int k=0; k<=ROW; k++)
+            System.out.print("\t"+ k + "\t");
     }
 
     /* Set needed item to '$' on graph
