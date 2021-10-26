@@ -30,7 +30,6 @@ public class Main extends Application {
     public static void main(String[] args) {
         int ROW = 40;
         int COL = 25;
-
         /* All items in warehouse list
          */
         ArrayList<Product> allItemsList = new ArrayList<>();

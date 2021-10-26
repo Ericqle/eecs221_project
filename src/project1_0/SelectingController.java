@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 public class SelectingController implements Initializable {
 
+    static ArrayList<String> checklist = new ArrayList<String>();
     private Stage stage;
     private Scene scene;
 
@@ -40,9 +41,13 @@ public class SelectingController implements Initializable {
 
     @FXML
     private Button deleteButton;
+
     @FXML
-    private TableView<Product> selectTable, checkTable;
-    private ObservableList<Product> products;
+    TableView<Product> checkTable;
+
+    @FXML
+    TableView<Product> selectTable;
+    ObservableList<Product> products;
 
     @FXML
     private TableColumn<Product, Integer> checkProductID, checkXLocation , checkYLocation ;
@@ -211,8 +216,9 @@ public class SelectingController implements Initializable {
                     i = 1;
                 }
                 }
-        if(i == 0)
+        if(i == 0) {
             checkTable.getItems().add(selectedItem);
+        }
         }else {
             if(checkTable.getItems().isEmpty()){
                 deleteButton.setDisable(false);
@@ -244,11 +250,17 @@ public class SelectingController implements Initializable {
     switch scene to Guiding view
     */
     public void goToGuiding(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("Guiding.fxml"));
-        stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        if(!checkTable.getItems().isEmpty()) {
+            setCheckingList();
+            Parent root = FXMLLoader.load(getClass().getResource("Guiding.fxml"));
+            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        }
+        else{
+            cLabel.setText("There is nothing in the checklist!");
+        }
     }
 
     public void goToLoading(ActionEvent event) throws IOException {
@@ -266,5 +278,15 @@ public class SelectingController implements Initializable {
             return false;
         }
         return true;
+    }
+
+    public void setCheckingList(){
+        for(Product product:checkTable.getItems()){
+            checklist.add(product.getProductID().toString());
+        }
+    }
+
+    public static ArrayList<String> getCheckingList(){
+        return checklist;
     }
 }

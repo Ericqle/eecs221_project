@@ -8,9 +8,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="887.0" prefWidth="1103.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project1_0.GuidingController">
+<AnchorPane prefHeight="923.0" prefWidth="1103.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project1_0.GuidingController">
    <children>
-      <Button fx:id="gbButton2" alignment="CENTER" layoutX="43.0" layoutY="37.0" mnemonicParsing="false" onAction="#backToSelecting" text="Back">
+      <Button fx:id="gbButton2" alignment="CENTER" layoutX="8.0" layoutY="867.0" mnemonicParsing="false" onAction="#backToSelecting" prefHeight="36.0" prefWidth="65.0" text="Back">
          <font>
             <Font size="18.0" />
          </font>
@@ -20,15 +20,15 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <ProgressBar fx:id="progressBar" layoutX="256.0" layoutY="39.0" prefHeight="32.0" prefWidth="110.0" progress="0.2" />
-      <Label fx:id="instruction" alignment="CENTER" layoutX="366.0" layoutY="35.0" prefHeight="36.0" prefWidth="342.0" text="go up 2 steps and go left 2 steps">
+      <ProgressBar fx:id="progressBar" layoutX="31.0" layoutY="37.0" prefHeight="36.0" prefWidth="100.0" progress="0.2" />
+      <Label fx:id="instruction" alignment="CENTER" layoutX="135.0" layoutY="37.0" prefHeight="36.0" prefWidth="833.0" text="Instructions">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="currentLocation" layoutX="376.0" layoutY="73.0" prefHeight="24.0" prefWidth="321.0" text="  Current productID: 290         location: (17,10)">
+      <Label fx:id="currentLocation" alignment="CENTER" layoutX="128.0" layoutY="73.0" prefHeight="24.0" prefWidth="848.0">
          <font>
-            <Font size="14.0" />
+            <Font size="18.0" />
          </font>
       </Label>
       <TableView fx:id="guideTable" layoutX="31.0" layoutY="105.0" prefHeight="743.0" prefWidth="1042.0">
@@ -76,7 +76,7 @@
             <TableColumn fx:id="c40" minWidth="20.0" prefWidth="25.0" text="40" />
          </columns>
       </TableView>
-      <Button fx:id="nextButton" alignment="CENTER" layoutX="975.0" layoutY="37.0" mnemonicParsing="false" onAction="#nextAndIncreaseProgress" prefHeight="24.0" prefWidth="87.0" text="Next">
+      <Button fx:id="nextButton" alignment="CENTER" layoutX="985.0" layoutY="37.0" mnemonicParsing="false" onAction="#nextAndIncreaseProgress" prefHeight="36.0" prefWidth="87.0" text="Next">
          <font>
             <Font size="18.0" />
          </font>

@@ -1,10 +1,15 @@
 package project1_0;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
+/* Implementation of Lee's Algorithm / Dungeon Problem Algorithm
+    - This algorithm will return the shortest path between two vertices of a grid
+        oriented graph -as in vertices are aligned in a grid and are connected to
+        vertices adjacent to them in the 4 cardinal directions-.
+    - It is basically a modification to BFS to find a path
+    - It will be used to find the path between two Item vertices in warehouseGraph
+        and for finding the weights of the warehouseGraph edges
+ */
 class BFSShortestPath {
     int ROW = 40;
     int COL = 25;
@@ -107,5 +112,31 @@ class BFSShortestPath {
 
         System.out.println("Dest cant be reached");
         return null;
+    }
+
+    /* Test bfs shortest path algorithm
+     */
+    public static void main(String[] args)
+    {
+        char testMatrix[][] = {
+                { '-', '-', '-', '-', '-', '-', 'X', '-', '-', 'X' },
+                { '-', 'X', '-', 'X', '-', '-', '-', 'X', '-', '-' },
+                { '-', '-', '-', '-', '-', '-', 'X', '-', 'X', '-' },
+                { 'X', 'X', 'X', '-', '-', '-', '-', 'X', 'X', '-' },
+                { '-', 'X', '-', 'X', '-', '-', '-', 'X', '-', 'X' },
+                { '-', '-', '-', '-', '-', '-', 'X', '-', 'X', 'X' },
+                { '-', 'X', 'X', 'X', 'X', 'X', '-', 'X', 'X', '-' },
+                { 'X', 'X', '-', '-', '-', '-', 'X', '-', '-', '-' },
+                { '-', '-', 'X', 'X', '-', 'X', '-', 'X', 'X', '-' }};
+
+        Coordinate source = new Coordinate(0, 0);
+        Coordinate dest = new Coordinate(2,2);
+
+        BFSShortestPath bfs = new BFSShortestPath();
+        ArrayList<Vertex> path = bfs.findBFSPath(testMatrix, source, dest);
+
+        for (Vertex vertex : path) {
+            System.out.println(String.valueOf(vertex.coordinate.x) + " " + vertex.coordinate.y);
+        }
     }
 }
