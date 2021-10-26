@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main extends Application {
@@ -27,6 +28,27 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
+        int ROW = 40;
+        int COL = 25;
+
+        /* All items in warehouse list
+         */
+        ArrayList<Product> allItemsList = new ArrayList<>();
+
+    /* Holds current path between only two vertice
+        - takes place of ShortestPath module for future implementation
+     */
+        ArrayList<Vertex> currentShortestPath = new ArrayList<>();
+
+    /* Abstraction of graph for the warehouse
+        - all index-able spaces are considered vertices
+     */
+        char[][] graph = new char[ROW][COL];
+        String[][] printFigure = new String[COL+1][ROW+1];
+
+        String path;
+
+
         launch(args);
     }
 }

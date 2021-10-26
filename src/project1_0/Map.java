@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class Map {
+    String col0;
     StringProperty col_0;
     StringProperty col_1;
     StringProperty col_2;
@@ -260,4 +261,5 @@ public class Map {
     public StringProperty col_40Property() {
         return col_40;
     }
+
 }

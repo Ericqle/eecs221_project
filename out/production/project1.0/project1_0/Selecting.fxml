@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project1_0.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project1_0.SelectingController">
    <children>
       <Button fx:id="confirmButton" alignment="CENTER" layoutX="495.0" layoutY="641.0" mnemonicParsing="false" onAction="#goToGuiding" prefHeight="36.0" prefWidth="95.0" text="Confirm">
          <font>
@@ -39,7 +39,7 @@
             <TableColumn fx:id="selectXLocation" prefWidth="75.0" text="xLocation" />
             <TableColumn fx:id="selectYLocation" prefWidth="75.0" text="yLocation" />
          </columns></TableView>
-      <Label layoutX="14.0" layoutY="346.0" text="Checking">
+      <Label fx:id="cLabel" layoutX="14.0" layoutY="346.0" text="Checking">
          <font>
             <Font size="18.0" />
          </font>
@@ -55,7 +55,7 @@
             <TableColumn fx:id="checkXLocation" prefWidth="75.0" text="xLocation" />
             <TableColumn fx:id="checkYLocation" prefWidth="75.0" text="yLocation" />
          </columns></TableView>
-      <Button fx:id="deleteButton" alignment="CENTER" layoutX="511.0" layoutY="488.0" mnemonicParsing="false" onAction="#delete" prefWidth="80.0" text="Delete">
+      <Button fx:id="deleteButton" alignment="CENTER" disable="true" layoutX="511.0" layoutY="488.0" mnemonicParsing="false" onAction="#delete" prefWidth="80.0" text="Delete">
          <font>
             <Font size="18.0" />
          </font>
