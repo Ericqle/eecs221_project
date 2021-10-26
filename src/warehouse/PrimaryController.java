@@ -27,6 +27,7 @@ public class PrimaryController {
         - all index-able spaces are considered vertices
      */
     char[][] graph = new char[ROW][COL];
+    String[][] printFigure = new String[COL+1][ROW+1];
 
     /* Read warehouse data and save it in allItemsList
      */
@@ -97,6 +98,8 @@ public class PrimaryController {
         }
         for(int k=0; k<=ROW; k++)
             System.out.print("\t"+ k + "\t");
+            System.out.println("");
+
     }
 
     /* Set needed item to '$' on graph
@@ -198,7 +201,7 @@ public class PrimaryController {
         StringBuilder instructions = new StringBuilder();
 
         ArrayList<String> directionList = new ArrayList<>();
-        for (int i = 1; i < currentShortestPath.size(); i++) {
+        for (int i = 1; i < currentShortestPath.size()-1; i++) {
             String xDirection = "East";
             String yDirection = "North";
             int x0 = currentShortestPath.get(i - 1).coordinate.x;

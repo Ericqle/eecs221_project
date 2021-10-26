@@ -24,22 +24,21 @@ public class Main {
         /*
         Loop until successfully read the txt file
          */
-        boolean readSuccessful = false;
-        while (!readSuccessful){
-            try {
-                System.out.println("Please input the path of the txt file:");
-                String filePath = scanner.nextLine();
-
-                primaryController.readAllItems(filePath);
-                readSuccessful = true;
-            }
-//        try {
-//            primaryController.readAllItems("src/warehouse/qvBox-warehouse-data-f21-v01.txt");
-//        }
-            catch (IOException e){
-                System.out.println("Invalid file path!");
-            }
+//        boolean readSuccessful = false;
+//        while (!readSuccessful){
+//            try {
+//                System.out.println("Please input the path of the txt file:");
+//                String filePath = scanner.nextLine();
+//
+//                primaryController.readAllItems(filePath);
+//                readSuccessful = true;
+//            }
+        try {
+            primaryController.readAllItems("C:\\Users\\10720\\Desktop\\v01.txt");
+        } catch (IOException e) {
+            System.out.println("Invalid file path!");
         }
+//    }
 
 
         primaryController.setGraph();
