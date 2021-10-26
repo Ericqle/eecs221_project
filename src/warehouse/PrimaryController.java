@@ -27,7 +27,6 @@ public class PrimaryController {
         - all index-able spaces are considered vertices
      */
     char[][] graph = new char[ROW][COL];
-    String[][] printFigure = new String[COL+1][ROW+1];
 
     /* Read warehouse data and save it in allItemsList
      */
@@ -97,10 +96,6 @@ public class PrimaryController {
             }
             System.out.println();
         }
-        for(int k=0; k<=ROW; k++)
-            System.out.print("\t"+ k + "\t");
-            System.out.println("");
-
         for(int k = 0; k <= ROW; k++)
             System.out.print(k < 10 ? k + "  " : k + " ");
     }

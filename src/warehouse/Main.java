@@ -24,21 +24,22 @@ public class Main {
         /*
         Loop until successfully read the txt file
          */
-//        boolean readSuccessful = false;
-//        while (!readSuccessful){
-//            try {
-//                System.out.println("Please input the path of the txt file:");
-//                String filePath = scanner.nextLine();
-//
-//                primaryController.readAllItems(filePath);
-//                readSuccessful = true;
-//            }
-        try {
-            primaryController.readAllItems("C:\\Users\\10720\\Desktop\\v01.txt");
-        } catch (IOException e) {
-            System.out.println("Invalid file path!");
+        boolean readSuccessful = false;
+        while (!readSuccessful){
+            try {
+                System.out.println("Please input the path of the txt file:");
+                String filePath = scanner.nextLine();
+
+                primaryController.readAllItems(filePath);
+                readSuccessful = true;
+            }
+//        try {
+//            primaryController.readAllItems("src/warehouse/qvBox-warehouse-data-f21-v01.txt");
+//        }
+            catch (IOException e){
+                System.out.println("Invalid file path!");
+            }
         }
-//    }
 
 
         primaryController.setGraph();
@@ -68,7 +69,7 @@ public class Main {
             System.out.println("1: find object");
             System.out.println("2: exit");
             if (scanner.hasNextInt()) {
-                 choice = scanner.nextInt();
+                choice = scanner.nextInt();
             } else {
                 String str = scanner.next();
                 System.out.println("Invalid input! Please input '1' or '2'.");
