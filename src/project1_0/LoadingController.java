@@ -30,7 +30,6 @@ import java.util.regex.Pattern;
 public class LoadingController implements Initializable {
     private Stage stage;
     private Scene scene;
-    private Parent root;
 
     @FXML
     private TableView<Map> loadTable;
@@ -50,12 +49,10 @@ public class LoadingController implements Initializable {
 
     static ArrayList<Product> allItemsList = new ArrayList<>();
 
-    ArrayList<Vertex> currentShortestPath = new ArrayList<>();
-
     static char[][] graph = new char[ROW][COL];
     String[][] printFigure = new String[COL+1][ROW+1];
 
-    String path = null;
+    static String path = null;
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
@@ -299,4 +296,7 @@ public class LoadingController implements Initializable {
         return false;
     }
 
+    static String getPath(){
+        return path;
+    }
 }

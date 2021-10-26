@@ -26,7 +26,6 @@ public class SelectingController implements Initializable {
 
     private Stage stage;
     private Scene scene;
-    private Parent root;
 
     @FXML
     private Label sLabel, cLabel;
@@ -43,7 +42,7 @@ public class SelectingController implements Initializable {
     private Button deleteButton;
     @FXML
     private TableView<Product> selectTable, checkTable;
-    private ObservableList<Product> products, selectedProduct;
+    private ObservableList<Product> products;
 
     @FXML
     private TableColumn<Product, Integer> checkProductID, checkXLocation , checkYLocation ;
@@ -52,12 +51,12 @@ public class SelectingController implements Initializable {
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
-        if(choiceBox!=null) {
-            choiceBox.getItems().addAll(sort);
-            choiceBox.getSelectionModel().selectFirst();
-            //for test
-            choiceBox.setOnAction(this::getSort);
-        }
+//        if(choiceBox!=null) {
+//            choiceBox.getItems().addAll(sort);
+//            choiceBox.getSelectionModel().selectFirst();
+//            //for test
+//            choiceBox.setOnAction(this::getSort);
+//        }
         if(selectTable != null) {
             try {
                 initTable();
@@ -66,12 +65,11 @@ public class SelectingController implements Initializable {
             }
         }
     }
-    //
 //    //test
-    public void getSort(ActionEvent event){
-        String mysort = choiceBox.getValue();
-        sLabel.setText(mysort);
-    }
+//    public void getSort(ActionEvent event){
+//        String mysort = choiceBox.getValue();
+//        sLabel.setText(mysort);
+//    }
 
     //test
     public void printArray(String array[][]){
@@ -231,7 +229,7 @@ public class SelectingController implements Initializable {
     public void delete(){
             if(!checkTable.getItems().isEmpty() && checkTable.getItems().size() > 1) {
                 products = checkTable.getItems();
-                selectedProduct = checkTable.getSelectionModel().getSelectedItems();
+                ObservableList<Product> selectedProduct = checkTable.getSelectionModel().getSelectedItems();
                 selectedProduct.forEach(products::remove);
             }
             else if(checkTable.getItems().size() == 1){
@@ -254,7 +252,7 @@ public class SelectingController implements Initializable {
     }
 
     public void goToLoading(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("Loading.fxml"));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Loading.fxml")));
         stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);

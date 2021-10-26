@@ -41,7 +41,12 @@ public class GuidingController implements Initializable{
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
-        if(guideTable!= null) {
+        if(guideTable!= null && !loadingController.getPath().isEmpty()) {
+            try {
+                loadingController.readAllItems(loadingController.getPath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             loadingController.setGraph();
             loadingController.graphToFigure();
             loadingController.createMap(guideTable);
