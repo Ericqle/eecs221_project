@@ -58,7 +58,7 @@
             <Font size="18.0" />
          </font>
       </Button>
-      <Button fx:id="gbButton1" alignment="CENTER" layoutX="14.0" layoutY="641.0" mnemonicParsing="false" onAction="#goToLoading" prefHeight="36.0" prefWidth="95.0" text="Back">
+      <Button fx:id="gbButton1" alignment="CENTER" layoutX="14.0" layoutY="641.0" mnemonicParsing="false" onAction="#backToLoading" prefHeight="36.0" prefWidth="95.0" text="Back">
          <font>
             <Font size="18.0" />
          </font>

@@ -18,19 +18,33 @@ public class PrimaryController {
     static int ROW = 40;
     static int COL = 25;
 
-    private ArrayList<Item> allItemsList = new ArrayList<>();
-    private static ArrayList<String> checklist = new ArrayList<String>();
-    private ObservableList<Map> maps;
-    private ObservableList<Item> items;
-    private char[][] graph = new char[ROW][COL];
-    private String[][] printFigure = new String[COL+1][ROW+1];
-    String shortestPathOutput;
 
-    /* Holds current path between only two vertice
-- takes place of ShortestPath module for future implementation
-*/
+    ObservableList<Map> maps;
+    ObservableList<Item> items;
+    char[][] graph = new char[ROW][COL];
+    /*
+    store the real location info for the overview map
+     */
+    String[][] printFigure = new String[COL+1][ROW+1];
+
+    /* Holds current path between only two vertices
+    - takes place of ShortestPath module for future implementation
+    */
     ArrayList<Vertex> currentShortestPath = new ArrayList<Vertex>();
 
+    /*
+    hold all items from the txt file
+    */
+    ArrayList<Item> allItemsList = new ArrayList<>();
+
+    /*
+    hold all selected items in the checktable
+    */
+    static ArrayList<String> checklist = new ArrayList<>();
+
+    /*
+    check if the file store the wrong data or the path of it is wrong
+     */
     boolean checkFile() {
         try {
             File file = new File(path);
@@ -45,6 +59,9 @@ public class PrimaryController {
         }
     }
 
+    /*
+    read the txt file and store all items into allitemslist
+     */
     void setAllItemsList() throws IOException {
         ArrayList<String> tempItemData;
 
@@ -52,7 +69,7 @@ public class PrimaryController {
         BufferedReader br = new BufferedReader(new FileReader(file));
 
         br.readLine();
-        String itemData = null;
+        String itemData;
 
         while ((itemData = br.readLine()) != null){
             tempItemData = getFloatsFromString(itemData);
@@ -83,7 +100,7 @@ public class PrimaryController {
     /* Initialize the graph based off allAddedItems
     - marks items/shelves as 'X'
     - marks user as 'U'
- */
+    */
     void setGraph (){
         for (int i = 0; i < graph.length; i++) {
             for (int j = 0; j < graph[0].length; j++) {
@@ -101,7 +118,7 @@ public class PrimaryController {
     /* Print ascii representation of graph
     - prints the transpose and horizontally flibbed graph matrix
         to get the more familiar x-y coordinate orientation
- */
+        */
      void graphToFigure(){
         printFigure[0][0] = Integer.toString(COL);
         for (int i = COL - 1; i >= 0 ; i--) {
@@ -116,20 +133,11 @@ public class PrimaryController {
         }
     }
 
+    /*
+    other controllers can call functions here by this way
+     */
     void setPrimaryControllor(PrimaryController p){
         p = this;
-    }
-
-    void setPath(String path){
-        this.path = path;
-    }
-
-    String getPath(){
-        return path;
-    }
-
-    ArrayList<Item> getAllItemsList(){
-        return allItemsList;
     }
 
 
@@ -138,7 +146,7 @@ public class PrimaryController {
     - calls shortest path algorithm
     - saves path into currentShortestPath
     - calls makeUserInstructions
- */
+    */
     String findItemAndCallPath(int id) {
         if (itemExist(id)) {
             Item neededItem = getItemByID(id);
@@ -152,7 +160,8 @@ public class PrimaryController {
         }
     }
 
-    /* Make user traversal insrtuctions from currentShortestPath
+    /*
+    Make user traversal insrtuctions from currentShortestPath
      */
     String makeUserInstruction() {
         StringBuilder instructions = new StringBuilder();
@@ -212,20 +221,9 @@ public class PrimaryController {
     }
 
 
-    /* Mark the path using 'P' on graph
-- path coordinates from currentShortestPath
-*/
-    void markPathOnGraph(){
-        for (int i = 1; i < currentShortestPath.size() - 1; i++) {
-            int x = currentShortestPath.get(i).coordinate.x;
-            int y = currentShortestPath.get(i).coordinate.y;
-            graph[x][y] = 'P';
-        }
-    }
-
     /* Call BFSShortestPath function
-- returns the path as a list of vertices
-*/
+    - returns the path as a list of vertices
+    */
     ArrayList<Vertex> findPathToItem(Item start, @NotNull Item finish) {
         Coordinate source = new Coordinate(0, 0);
         Coordinate dest = new Coordinate(finish.getX(), finish.getY());
@@ -235,11 +233,12 @@ public class PrimaryController {
         return bfs.findBFSPath(graph, source, dest);
     }
 
-
+    /*
+    return the items
+     */
     ObservableList<Item> getProducts(){
         return items;
     }
-
     /*
     Get all products and save in observableList
     */
@@ -256,6 +255,9 @@ public class PrimaryController {
         return items;
     }
 
+    /*
+    set maps according to the printfigure
+     */
     public ObservableList<Map> getMap() {
         maps = FXCollections.observableArrayList();
         StringProperty c0, c1, c2,c3,c4,c5,c6 ,c7, c8,c9,
@@ -263,59 +265,62 @@ public class PrimaryController {
                 c20, c21, c22,c23,c24,c25,c26,c27, c28,c29,
                 c30, c31, c32,c33,c34,c35,c36,c37, c38,c39, c40;
 
-        for(int i=0;i< printFigure.length;i++){
-            c0 = new SimpleStringProperty(printFigure[i][0]);
-            c1 = new SimpleStringProperty (printFigure[i][1]);
-            c2 = new SimpleStringProperty (printFigure[i][2]);
-            c3 = new SimpleStringProperty (printFigure[i][3]);
-            c4 = new SimpleStringProperty (printFigure[i][4]);
-            c5 = new SimpleStringProperty (printFigure[i][5]);
-            c6 = new SimpleStringProperty (printFigure[i][6]);
-            c7 = new SimpleStringProperty (printFigure[i][7]);
-            c8 = new SimpleStringProperty (printFigure[i][8]);
-            c9 = new SimpleStringProperty (printFigure[i][9]);
-            c10 = new SimpleStringProperty (printFigure[i][10]);
-            c11 = new SimpleStringProperty (printFigure[i][11]);
-            c12 = new SimpleStringProperty (printFigure[i][12]);
-            c13 = new SimpleStringProperty (printFigure[i][13]);
-            c14 = new SimpleStringProperty (printFigure[i][14]);
-            c15 = new SimpleStringProperty (printFigure[i][15]);
-            c16 = new SimpleStringProperty (printFigure[i][16]);
-            c17 = new SimpleStringProperty (printFigure[i][17]);
-            c18 = new SimpleStringProperty (printFigure[i][18]);
-            c19 = new SimpleStringProperty (printFigure[i][19]);
-            c20 = new SimpleStringProperty (printFigure[i][20]);
-            c21 = new SimpleStringProperty (printFigure[i][21]);
-            c22 = new SimpleStringProperty (printFigure[i][22]);
-            c23 = new SimpleStringProperty (printFigure[i][23]);
-            c24 = new SimpleStringProperty (printFigure[i][24]);
-            c25 = new SimpleStringProperty (printFigure[i][25]);
-            c26 = new SimpleStringProperty (printFigure[i][26]);
-            c27 = new SimpleStringProperty (printFigure[i][27]);
-            c28 = new SimpleStringProperty (printFigure[i][28]);
-            c29 = new SimpleStringProperty (printFigure[i][29]);
-            c30 = new SimpleStringProperty (printFigure[i][30]);
-            c31 = new SimpleStringProperty (printFigure[i][31]);
-            c32 = new SimpleStringProperty (printFigure[i][32]);
-            c33 = new SimpleStringProperty (printFigure[i][33]);
-            c34 = new SimpleStringProperty (printFigure[i][34]);
-            c35 = new SimpleStringProperty (printFigure[i][35]);
-            c36 = new SimpleStringProperty (printFigure[i][36]);
-            c37 = new SimpleStringProperty (printFigure[i][37]);
-            c38 = new SimpleStringProperty (printFigure[i][38]);
-            c39 = new SimpleStringProperty (printFigure[i][39]);
-            c40 = new SimpleStringProperty (printFigure[i][40]);
+        for (String[] strings : printFigure) {
+            c0 = new SimpleStringProperty(strings[0]);
+            c1 = new SimpleStringProperty(strings[1]);
+            c2 = new SimpleStringProperty(strings[2]);
+            c3 = new SimpleStringProperty(strings[3]);
+            c4 = new SimpleStringProperty(strings[4]);
+            c5 = new SimpleStringProperty(strings[5]);
+            c6 = new SimpleStringProperty(strings[6]);
+            c7 = new SimpleStringProperty(strings[7]);
+            c8 = new SimpleStringProperty(strings[8]);
+            c9 = new SimpleStringProperty(strings[9]);
+            c10 = new SimpleStringProperty(strings[10]);
+            c11 = new SimpleStringProperty(strings[11]);
+            c12 = new SimpleStringProperty(strings[12]);
+            c13 = new SimpleStringProperty(strings[13]);
+            c14 = new SimpleStringProperty(strings[14]);
+            c15 = new SimpleStringProperty(strings[15]);
+            c16 = new SimpleStringProperty(strings[16]);
+            c17 = new SimpleStringProperty(strings[17]);
+            c18 = new SimpleStringProperty(strings[18]);
+            c19 = new SimpleStringProperty(strings[19]);
+            c20 = new SimpleStringProperty(strings[20]);
+            c21 = new SimpleStringProperty(strings[21]);
+            c22 = new SimpleStringProperty(strings[22]);
+            c23 = new SimpleStringProperty(strings[23]);
+            c24 = new SimpleStringProperty(strings[24]);
+            c25 = new SimpleStringProperty(strings[25]);
+            c26 = new SimpleStringProperty(strings[26]);
+            c27 = new SimpleStringProperty(strings[27]);
+            c28 = new SimpleStringProperty(strings[28]);
+            c29 = new SimpleStringProperty(strings[29]);
+            c30 = new SimpleStringProperty(strings[30]);
+            c31 = new SimpleStringProperty(strings[31]);
+            c32 = new SimpleStringProperty(strings[32]);
+            c33 = new SimpleStringProperty(strings[33]);
+            c34 = new SimpleStringProperty(strings[34]);
+            c35 = new SimpleStringProperty(strings[35]);
+            c36 = new SimpleStringProperty(strings[36]);
+            c37 = new SimpleStringProperty(strings[37]);
+            c38 = new SimpleStringProperty(strings[38]);
+            c39 = new SimpleStringProperty(strings[39]);
+            c40 = new SimpleStringProperty(strings[40]);
 
-            Map temp = new Map(c0, c1, c2,c3,c4,c5,c6,c7, c8,c9,
-                    c10, c11, c12,c13,c14,c15,c16,c17, c18,c19,
-                    c20, c21, c22,c23,c24,c25,c26,c27, c28,c29,
-                    c30, c31, c32,c33,c34,c35,c36,c37, c38,c39, c40);
+            Map temp = new Map(c0, c1, c2, c3, c4, c5, c6, c7, c8, c9,
+                    c10, c11, c12, c13, c14, c15, c16, c17, c18, c19,
+                    c20, c21, c22, c23, c24, c25, c26, c27, c28, c29,
+                    c30, c31, c32, c33, c34, c35, c36, c37, c38, c39, c40);
 
             maps.add(temp);
         }
         return maps;
     }
 
+    /*
+    set the mapping relations between tablecolumns and maps' info
+     */
     void createMap(TableView<Map> table, TableColumn<Map, String> c0, TableColumn<Map, String> c1,
                    TableColumn<Map, String> c2, TableColumn<Map, String> c3,TableColumn<Map, String> c4,
                    TableColumn<Map, String> c5,TableColumn<Map, String> c6,TableColumn<Map, String> c7,TableColumn<Map, String> c8,
@@ -372,6 +377,20 @@ public class PrimaryController {
         table.setItems(getMap());
     }
 
+    /* Mark the path using 'P' on graph
+- path coordinates from currentShortestPath
+*/
+    void markPathOnGraph(){
+        for (int i = 1; i < currentShortestPath.size() - 1; i++) {
+            int x = currentShortestPath.get(i).coordinate.x;
+            int y = currentShortestPath.get(i).coordinate.y;
+            graph[x][y] = 'P';
+        }
+    }
+    /*
+    Set needed item to '$' on graph
+        - return true if exist
+     */
     boolean markItemInGraph(int id) {
         if (itemExist(id)) {
             Item item = getItemByID(id);
@@ -382,6 +401,9 @@ public class PrimaryController {
         }
     }
 
+    /*
+    Reset found item to a shelf 'X' on graph
+     */
     void unmarkItemInGraph(int id) {
         Item item = getItemByID(id);
         graph[item.getX()][item.getY()] = 'X';
@@ -397,7 +419,9 @@ public class PrimaryController {
             graph[x][y] = '.';
         }
     }
-
+    /*
+    Item lookup for ID
+     */
     Item getItemByID(int id) {
         for (Item item: allItemsList) {
             if (id == item.getProductID())
@@ -405,7 +429,9 @@ public class PrimaryController {
         }
         return null;
     }
-
+    /*
+    Check if item exists in allItemsList
+     */
     boolean itemExist(int id) {
         for (Item item: allItemsList) {
             if (id == item.getProductID())
@@ -413,18 +439,37 @@ public class PrimaryController {
         }
         return false;
     }
-
-    String getShortestPathOutput(){
-        return shortestPathOutput;
-    }
-
+    /*
+    return the checklist
+     */
     ArrayList<String> getCheckList(){
         return checklist;
     }
-
+    /*
+    store the info of checklist in selectingcontroller
+     */
     void setChecklist(ArrayList<String> checklist) {
-        this.checklist = checklist;
-        System.out.println(getCheckList());
+        PrimaryController.checklist = checklist;
+    }
+    /*
+    store the correct path of txt file
+    */
+    void setPath(String path){
+        PrimaryController.path = path;
+    }
+
+    /*
+    return the correct path
+     */
+    String getPath(){
+        return path;
+    }
+
+    /*
+    return the allitemslist
+     */
+    ArrayList<Item> getAllItemsList(){
+        return allItemsList;
     }
 
 }

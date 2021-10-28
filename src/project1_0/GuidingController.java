@@ -55,7 +55,6 @@ public class GuidingController implements Initializable{
 
     PrimaryController primaryController;
 
-
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
         File file = new File("src/project1_0/directions.jpg");
@@ -92,7 +91,10 @@ public class GuidingController implements Initializable{
         }
     }
 
-
+    /*
+    when press it, it will increase steps by steps.
+    the percentage is depended on the total number of items
+     */
     public void nextAndIncreaseProgress(){
         double i = primaryController.getCheckList().size();
         double j = 1/i;
@@ -103,6 +105,9 @@ public class GuidingController implements Initializable{
         }
     }
 
+    /*
+    switch scene to Selecting view
+    */
     public void backToSelecting(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Selecting.fxml")));
         stage = (Stage) ((Node)event.getSource()).getScene().getWindow();

@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Main extends Application {
 
@@ -15,7 +16,7 @@ public class Main extends Application {
     @Override
     public void start(Stage Stage) throws IOException {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("Loading.fxml"));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Loading.fxml")));
             Scene scene = new Scene(root);
             Stage.setScene(scene);
             Stage.show();

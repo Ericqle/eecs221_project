@@ -1,9 +1,5 @@
 package project1_0;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,17 +13,13 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 public class LoadingController implements Initializable {
+
     private Stage stage;
     private Scene scene;
 
@@ -65,7 +57,9 @@ public class LoadingController implements Initializable {
         }
     }
 
-
+    /*
+    read the txt file, store all the items in the allitemlist and create map
+     */
     @FXML
     void Load(ActionEvent event) throws IOException {
         if(loadTextField.getText().endsWith("txt")) {
@@ -90,6 +84,9 @@ public class LoadingController implements Initializable {
         }
     }
 
+    /*
+    switch scene to Selecting view
+    */
     @FXML
     void gotoSelecting(ActionEvent event) throws IOException {
         if(loadTextField.getText().endsWith("txt")) {

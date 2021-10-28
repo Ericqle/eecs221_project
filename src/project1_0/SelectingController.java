@@ -71,13 +71,13 @@ public class SelectingController implements Initializable {
     and input the warehouse's data
      */
     public void initTable() throws IOException {
-        selectProductID.setCellValueFactory(new PropertyValueFactory<Item, Integer>("productID"));
-        selectXLocation.setCellValueFactory(new PropertyValueFactory<Item, Integer>("x"));
-        selectYLocation.setCellValueFactory(new PropertyValueFactory<Item, Integer>("y"));
+        selectProductID.setCellValueFactory(new PropertyValueFactory<>("productID"));
+        selectXLocation.setCellValueFactory(new PropertyValueFactory<>("x"));
+        selectYLocation.setCellValueFactory(new PropertyValueFactory<>("y"));
 
-        checkProductID.setCellValueFactory(new PropertyValueFactory<Item, Integer>("productID"));
-        checkXLocation.setCellValueFactory(new PropertyValueFactory<Item, Integer>("x"));
-        checkYLocation.setCellValueFactory(new PropertyValueFactory<Item, Integer>("y"));
+        checkProductID.setCellValueFactory(new PropertyValueFactory<>("productID"));
+        checkXLocation.setCellValueFactory(new PropertyValueFactory<>("x"));
+        checkYLocation.setCellValueFactory(new PropertyValueFactory<>("y"));
 
         primaryController.setAllItemsList();
         primaryController.setProducts(primaryController.getAllItemsList());
@@ -88,12 +88,11 @@ public class SelectingController implements Initializable {
     Search for products according to the keywords
     from the warehouse directory
      */
-
     public void search() throws NumberFormatException {
         if (keywords != null && !keywords.getText().isEmpty()) {
             text = keywords.getText();
             if (isNumeric(text)) {
-                Integer id = Integer.valueOf(text);
+                int id = Integer.parseInt(text);
 
                 if (!primaryController.markItemInGraph(id)) {
                     sLabel.setText("The item you are looking for does NOT exist!");
@@ -143,7 +142,6 @@ public class SelectingController implements Initializable {
         }
     }
 
-
     /*
     delete the selected product from the checking tableview
      */
@@ -171,9 +169,9 @@ public class SelectingController implements Initializable {
     */
     public void goToGuiding(ActionEvent event) throws IOException {
         if(!checkTable.getItems().isEmpty()) {
-            setCheckingList();
+            setCheckList();
             primaryController.setChecklist(checklist);
-            Parent root = FXMLLoader.load(getClass().getResource("Guiding.fxml"));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Guiding.fxml")));
             stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             scene = new Scene(root);
             stage.setScene(scene);
@@ -184,7 +182,10 @@ public class SelectingController implements Initializable {
         }
     }
 
-    public void goToLoading(ActionEvent event) throws IOException {
+    /*
+    switch scene to Loading view
+    */
+    public void backToLoading(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Loading.fxml")));
         stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
@@ -192,6 +193,9 @@ public class SelectingController implements Initializable {
         stage.show();
     }
 
+    /*
+    check if the inputs are numeric
+     */
     public boolean isNumeric(String str){
         Pattern pattern = Pattern.compile("[0-9]*");
         Matcher isNum = pattern.matcher(str);
@@ -201,7 +205,10 @@ public class SelectingController implements Initializable {
         return true;
     }
 
-    void setCheckingList(){
+    /*
+    store all the items from checktable into checklist
+     */
+    void setCheckList(){
         for(Item item :checkTable.getItems()){
             checklist.add(item.getProductID().toString());
         }
