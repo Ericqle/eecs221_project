@@ -7,19 +7,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Product {
+public class Item {
 
     Integer productID = 0;
     Integer x = 0;
     Integer y = 0;
 
-    public Product(){
+    public Item(){
         this.productID = 0;
         this.x = 0;
         this.y = 0;
     }
 
-    public Product(Integer id, Integer x, Integer y){
+    public Item(Integer id, Integer x, Integer y){
         this.productID = id;
         this.x = x;
         this.y = y;

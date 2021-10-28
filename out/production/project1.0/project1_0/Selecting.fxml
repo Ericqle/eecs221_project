@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -21,8 +20,7 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <ChoiceBox fx:id="choiceBox" layoutX="76.0" layoutY="49.0" prefHeight="29.0" prefWidth="95.0" />
-      <Label layoutX="26.0" layoutY="54.0" text="Sort by">
+      <Label layoutX="24.0" layoutY="48.0" prefHeight="29.0" prefWidth="140.0" text="Sort by ProductID">
          <font>
             <Font size="14.0" />
          </font>

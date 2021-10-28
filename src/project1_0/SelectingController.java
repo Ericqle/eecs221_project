@@ -16,7 +16,6 @@ import javafx.stage.Stage;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
@@ -24,17 +23,11 @@ import java.util.regex.Pattern;
 
 public class SelectingController implements Initializable {
 
-    static ArrayList<String> checklist = new ArrayList<String>();
     private Stage stage;
     private Scene scene;
 
     @FXML
     private Label sLabel, cLabel;
-
-    @FXML
-    private ChoiceBox<String> choiceBox;
-    private String[] sort = {"ProductID"};
-    private String text;
 
     @FXML
     private TextField keywords;
@@ -43,25 +36,26 @@ public class SelectingController implements Initializable {
     private Button deleteButton;
 
     @FXML
-    TableView<Product> checkTable;
+    TableView<Item> checkTable;
 
     @FXML
-    TableView<Product> selectTable;
-    ObservableList<Product> products;
+    TableView<Item> selectTable;
 
     @FXML
-    private TableColumn<Product, Integer> checkProductID, checkXLocation , checkYLocation ;
+    private TableColumn<Item, Integer> checkProductID, checkXLocation , checkYLocation ;
     @FXML
-    private TableColumn<Product, Integer> selectProductID, selectXLocation, selectYLocation;
+    private TableColumn<Item, Integer> selectProductID, selectXLocation, selectYLocation;
+
+    ObservableList<Item> items;
+    ArrayList<String> checklist = new ArrayList<>();
+    String text;
+
+    PrimaryController primaryController;
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
-//        if(choiceBox!=null) {
-//            choiceBox.getItems().addAll(sort);
-//            choiceBox.getSelectionModel().selectFirst();
-//            //for test
-//            choiceBox.setOnAction(this::getSort);
-//        }
+        primaryController = new PrimaryController();
+        primaryController.setPrimaryControllor(primaryController);
         if(selectTable != null) {
             try {
                 initTable();
@@ -70,107 +64,24 @@ public class SelectingController implements Initializable {
             }
         }
     }
-//    //test
-//    public void getSort(ActionEvent event){
-//        String mysort = choiceBox.getValue();
-//        sLabel.setText(mysort);
-//    }
 
-    //test
-    public void printArray(String array[][]){
-//        for test
-        for(int i=0;i< 10;i++){
-//        for(int i=0;i< array.length;i++){
-            for(int j=0;j<array[i].length;j++){
-                if(j!=array[i].length-1){
-                    System.out.print("array["+i+"]["+j+"]="+array[i][j]+",");
-                }
-                else{
-                    System.out.print("array["+i+"]["+j+"]="+array[i][j]);
-                }
-            }
-            System.out.println();
-        }
-    }
-
-    /*
-    Read the contents of .txt file line by line and store them in the list
-     */
-    public List readTxtFile(String filePath) {
-        List<String> list = new ArrayList<String>();
-        try {
-            String encoding = "UTF-8";
-            File file = new File(filePath);
-            if (file.isFile() && file.exists()) {
-                InputStreamReader read = new InputStreamReader(
-                        new FileInputStream(file), encoding);
-                BufferedReader bufferedReader = new BufferedReader(read);
-                String lineTxt = null;
-                while ((lineTxt = bufferedReader.readLine()) != null) {
-                    if (!lineTxt.startsWith("P"))
-                        list.add(lineTxt);
-                }
-                read.close();
-            } else {
-                System.out.println("can't find the file");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
-
-    /*
-    Convert the contents of the linked list into array
-     */
-    public String[][] createArray(String filePath){
-        List<String> list = readTxtFile(filePath);
-        int s = list.size();
-        int l = list.get(0).length();
-        String array[][] = new String[s][l];
-        for(int i=0;i<s;i++){
-            array[i] = new String[l-2];
-            String line=list.get(i);
-            String[] temp = line.split("\t");
-            for(int j=0;j< l-2;j++){
-                array[i][j]=temp[j];
-            }
-        }
-        return array;
-    }
-
-    /*
-    Get all products and save in observableList
-     */
-    public ObservableList<Product> getProducts(String array[][]){
-        products = FXCollections.observableArrayList();
-        int id, x, y;
-        for(int i=0;i< array.length;i++){
-            id = (int) Math.round(Double.parseDouble(array[i][0]));
-            x = (int) Math.round(Double.parseDouble(array[i][1]));
-            y = (int) Math.round(Double.parseDouble(array[i][2]));
-            Product temp = new Product(id, x, y);
-            products.add(temp);
-        }
-        return products;
-    }
 
     /*
     initialize the tableview, set up the name of each tableColumn
     and input the warehouse's data
      */
     public void initTable() throws IOException {
-        selectProductID.setCellValueFactory(new PropertyValueFactory<Product, Integer>("productID"));
-        selectXLocation.setCellValueFactory(new PropertyValueFactory<Product, Integer>("x"));
-        selectYLocation.setCellValueFactory(new PropertyValueFactory<Product, Integer>("y"));
+        selectProductID.setCellValueFactory(new PropertyValueFactory<Item, Integer>("productID"));
+        selectXLocation.setCellValueFactory(new PropertyValueFactory<Item, Integer>("x"));
+        selectYLocation.setCellValueFactory(new PropertyValueFactory<Item, Integer>("y"));
 
-        checkProductID.setCellValueFactory(new PropertyValueFactory<Product, Integer>("productID"));
-        checkXLocation.setCellValueFactory(new PropertyValueFactory<Product, Integer>("x"));
-        checkYLocation.setCellValueFactory(new PropertyValueFactory<Product, Integer>("y"));
+        checkProductID.setCellValueFactory(new PropertyValueFactory<Item, Integer>("productID"));
+        checkXLocation.setCellValueFactory(new PropertyValueFactory<Item, Integer>("x"));
+        checkYLocation.setCellValueFactory(new PropertyValueFactory<Item, Integer>("y"));
 
-
-        String array[][] = createArray("E:\\JavaSpace\\project1.0\\src\\project1_0\\data_v1.txt");
-        selectTable.setItems(getProducts(array));
+        primaryController.setAllItemsList();
+        primaryController.setProducts(primaryController.getAllItemsList());
+        selectTable.setItems(primaryController.getProducts());
     }
 
     /*
@@ -184,13 +95,13 @@ public class SelectingController implements Initializable {
             if (isNumeric(text)) {
                 Integer id = Integer.valueOf(text);
 
-                if (!LoadingController.markItemInGraph(id)) {
+                if (!primaryController.markItemInGraph(id)) {
                     sLabel.setText("The item you are looking for does NOT exist!");
                 }else {
                     sLabel.setText("Selecting");
-                    ObservableList<Product> temp = products;
+                    ObservableList<Item> temp = items;
                     temp = FXCollections.observableArrayList();
-                    temp.add(LoadingController.getItemByID(id));
+                    temp.add(primaryController.getItemByID(id));
                     selectTable.setItems(temp);
                 }
             }
@@ -199,50 +110,59 @@ public class SelectingController implements Initializable {
             }
         }
         else {
-                selectTable.setItems(products);
+                selectTable.setItems(primaryController.getProducts());
         }
     }
 
     /*
     Add the selected product to the checking tableview
     */
-    public void add(){
-        Product selectedItem = selectTable.getSelectionModel().getSelectedItem();
-        int i = 0;
-        if(!checkTable.getItems().isEmpty()){
-            for(Product product:checkTable.getItems()){
-                if(Objects.equals(product.getProductID(), selectedItem.getProductID())) {
-                    cLabel.setText("the product is already in the checkTable");
+    public void add() {
+        Item selectedItem = selectTable.getSelectionModel().getSelectedItem();
+        int flag = 0;
+        if (selectedItem == null) {
+            sLabel.setText("Please select an item before press the button");
+        } else if (!checkTable.getItems().isEmpty() || flag == 0) {
+            int i = 0;
+            for (Item item : checkTable.getItems()) {
+                if (Objects.equals(item.getProductID(), selectedItem.getProductID())) {
+                    sLabel.setText("the product is already in the checkTable");
                     i = 1;
                 }
-                }
-        if(i == 0) {
-            checkTable.getItems().add(selectedItem);
-        }
-        }else {
-            if(checkTable.getItems().isEmpty()){
+            }
+            if (i == 0) {
+                checkTable.getItems().add(selectedItem);
+                sLabel.setText("Added successfully");
+                flag = 1;
                 deleteButton.setDisable(false);
             }
-            checkTable.getItems().add(selectedItem);
-            cLabel.setText("Added successfully");
-
+        }
+        else if (checkTable.getItems().isEmpty()) {
+            deleteButton.setDisable(true);
+            sLabel.setText("deleteButton is disable");
         }
     }
+
 
     /*
     delete the selected product from the checking tableview
      */
     public void delete(){
-            if(!checkTable.getItems().isEmpty() && checkTable.getItems().size() > 1) {
-                products = checkTable.getItems();
-                ObservableList<Product> selectedProduct = checkTable.getSelectionModel().getSelectedItems();
-                selectedProduct.forEach(products::remove);
+        if(checkTable.getSelectionModel().getSelectedItem() == null){
+            cLabel.setText("Please select an item before press the button");
+        }
+        else if(!checkTable.getItems().isEmpty() && checkTable.getItems().size() > 1) {
+                items = checkTable.getItems();
+                ObservableList<Item> selectedItem = checkTable.getSelectionModel().getSelectedItems();
+                selectedItem.forEach(items::remove);
+                cLabel.setText("Deleted successfully");
             }
             else if(checkTable.getItems().size() == 1){
-                products = checkTable.getItems();
-                Product selectedItem = checkTable.getSelectionModel().getSelectedItem();
+                items = checkTable.getItems();
+                Item selectedItem = checkTable.getSelectionModel().getSelectedItem();
                 checkTable.getItems().remove(selectedItem);
                 deleteButton.setDisable(true);
+                cLabel.setText("Deleted successfully");
             }
     }
 
@@ -252,6 +172,7 @@ public class SelectingController implements Initializable {
     public void goToGuiding(ActionEvent event) throws IOException {
         if(!checkTable.getItems().isEmpty()) {
             setCheckingList();
+            primaryController.setChecklist(checklist);
             Parent root = FXMLLoader.load(getClass().getResource("Guiding.fxml"));
             stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             scene = new Scene(root);
@@ -280,13 +201,10 @@ public class SelectingController implements Initializable {
         return true;
     }
 
-    public void setCheckingList(){
-        for(Product product:checkTable.getItems()){
-            checklist.add(product.getProductID().toString());
+    void setCheckingList(){
+        for(Item item :checkTable.getItems()){
+            checklist.add(item.getProductID().toString());
         }
     }
 
-    public static ArrayList<String> getCheckingList(){
-        return checklist;
-    }
 }

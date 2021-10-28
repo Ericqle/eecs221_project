@@ -38,265 +38,69 @@ public class LoadingController implements Initializable {
     private TextField loadTextField;
 
     @FXML
-    Label loadLabel;
+    Label loadLabel, hint1, hint2;
 
     @FXML
     TableColumn<Map, String> c0, c1, c2,c3,c4,c5,c6,c7, c8,c9, c10, c11, c12,c13,c14,c15,c16,c17, c18,c19, c20, c21, c22,c23,c24,c25,c26,c27, c28,c29, c30, c31, c32,c33,c34,c35,c36,c37, c38,c39, c40;
-    ObservableList<Map> maps;
 
-    static int ROW = 40;
-    static int COL = 25;
 
-    static ArrayList<Product> allItemsList = new ArrayList<>();
-
-    static char[][] graph = new char[ROW][COL];
-    String[][] printFigure = new String[COL+1][ROW+1];
-
-    static String path = null;
+    PrimaryController primaryController;
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
-        if(loadTable!= null || path!=null ||!path.endsWith("txt")) {
+        primaryController = new PrimaryController();
+        String path = primaryController.getPath();
+        primaryController.setPrimaryControllor(primaryController);
+        if(loadTable!= null || path !=null ||!path.endsWith("txt")) {
             path = loadTextField.getText();
-            setGraph();
-            graphToFigure();
-            createMap(loadTable);
+            primaryController.setPath(path);
+            primaryController.setGraph();
+            primaryController.graphToFigure();
+            primaryController.createMap(loadTable,c0, c1, c2,c3,c4,c5,c6,c7, c8,c9, c10,
+                    c11, c12,c13,c14,c15,c16,c17, c18,c19, c20,
+                    c21, c22,c23,c24,c25,c26,c27, c28,c29, c30,
+                    c31, c32,c33,c34,c35,c36,c37, c38,c39, c40);
+            hint1.setText("Here is a layout of the warehouse without items/shelves");
+            hint2.setText("'U' = you | '.' = open space");
         }
     }
 
-    public void Load(ActionEvent event) throws IOException {
+
+    @FXML
+    void Load(ActionEvent event) throws IOException {
         if(loadTextField.getText().endsWith("txt")) {
             loadLabel.setText("Loading");
-            path = loadTextField.getText();
-            readAllItems(path);
-            setGraph();
-            graphToFigure();
-            createMap(loadTable);
+            primaryController.setPath(loadTextField.getText());
+            if(!primaryController.checkFile()){
+                loadLabel.setText("Please input the path of correct txt file:");
+                return;
+            }
+            primaryController.setAllItemsList();
+            primaryController.setGraph();
+            primaryController.graphToFigure();
+            primaryController.createMap(loadTable,c0, c1, c2,c3,c4,c5,c6,c7, c8,c9, c10,
+                    c11, c12,c13,c14,c15,c16,c17, c18,c19, c20,
+                    c21, c22,c23,c24,c25,c26,c27, c28,c29, c30,
+                    c31, c32,c33,c34,c35,c36,c37, c38,c39, c40);
+            hint1.setText("Here is a layout of the warehouse with the loaded data ");
+            hint2.setText("'U' = you | 'X' = shelves/items | '.' = open space");
         }
         else{
             loadLabel.setText("Please input the valid path of the txt file:");
         }
     }
 
-    void readAllItems(String filePath) throws IOException {
-        ArrayList<String> tempItemData;
-
-        File file = new File(filePath);
-        BufferedReader br = new BufferedReader(new FileReader(file));
-
-        br.readLine();
-        String itemData = null;
-
-        while ((itemData = br.readLine()) != null){
-            tempItemData = getFloatsFromString(itemData);
-            int id = (int) Float.parseFloat(tempItemData.get(0));
-            int x = (int) Float.parseFloat(tempItemData.get(1));
-            int y = (int) Float.parseFloat(tempItemData.get(2));
-            Product tempItem = new Product(id, x, y);
-            allItemsList.add(tempItem);
-
-        }
-    }
-
-    /* Helper for readAllItems to extract numbers from a line of data
-     */
-    ArrayList<String> getFloatsFromString(String raw) {
-        ArrayList<String> listBuffer = new ArrayList<String>();
-
-        Pattern p = Pattern.compile("[0-9]*\\.?[0-9]+");
-        Matcher m = p.matcher(raw);
-
-        while (m.find()) {
-            listBuffer.add(m.group());
-        }
-
-        return listBuffer;
-    }
-
-    /* Initialize the graph based off allAddedItems
-        - marks items/shelves as 'X'
-        - marks user as 'U'
-     */
-    void setGraph (){
-        for (int i = 0; i < graph.length; i++) {
-            for (int j = 0; j < graph[0].length; j++) {
-                graph[i][j] = '.';
-            }
-        }
-
-        for (Product item: allItemsList) {
-            graph[item.getX()][item.getY()] = 'X';
-        }
-
-        graph[0][0] = 'U';
-    }
-
-    /* Print ascii representation of graph
-        - prints the transpose and horizontally flibbed graph matrix
-            to get the more familiar x-y coordinate orientation
-     */
-    void graphToFigure(){
-        printFigure[0][0] = Integer.toString(COL);
-        for (int i = COL - 1; i >= 0 ; i--) {
-            printFigure[COL-i][0] = Integer.toString(i);
-            for (int j = 0; j < ROW; j++) {
-                printFigure[COL-i-1][j+1] = String.valueOf(graph[j][i]);
-            }
-            //System.out.println("");
-        }
-        for(int k = 0; k<=ROW; k++) {
-            printFigure[COL][k] = Integer.toString(k);
-        }
-
-    }
-
-    void createMap(TableView<Map> table) {
-//      c0.setCellValueFactory(new PropertyValueFactory<Map, String>("col0"));
-        c0.setCellValueFactory(cellData -> cellData.getValue().col_0Property());
-        c1.setCellValueFactory(cellData -> cellData.getValue().col_1Property());
-        c2.setCellValueFactory(cellData -> cellData.getValue().col_2Property());
-        c3.setCellValueFactory(cellData -> cellData.getValue().col_3Property());
-        c4.setCellValueFactory(cellData -> cellData.getValue().col_4Property());
-        c5.setCellValueFactory(cellData -> cellData.getValue().col_5Property());
-        c6.setCellValueFactory(cellData -> cellData.getValue().col_6Property());
-        c7.setCellValueFactory(cellData -> cellData.getValue().col_7Property());
-        c8.setCellValueFactory(cellData -> cellData.getValue().col_8Property());
-        c9.setCellValueFactory(cellData -> cellData.getValue().col_9Property());
-        c10.setCellValueFactory(cellData -> cellData.getValue().col_10Property());
-        c11.setCellValueFactory(cellData -> cellData.getValue().col_11Property());
-        c12.setCellValueFactory(cellData -> cellData.getValue().col_12Property());
-        c13.setCellValueFactory(cellData -> cellData.getValue().col_13Property());
-        c14.setCellValueFactory(cellData -> cellData.getValue().col_14Property());
-        c15.setCellValueFactory(cellData -> cellData.getValue().col_15Property());
-        c16.setCellValueFactory(cellData -> cellData.getValue().col_16Property());
-        c17.setCellValueFactory(cellData -> cellData.getValue().col_17Property());
-        c18.setCellValueFactory(cellData -> cellData.getValue().col_18Property());
-        c19.setCellValueFactory(cellData -> cellData.getValue().col_19Property());
-        c20.setCellValueFactory(cellData -> cellData.getValue().col_20Property());
-        c21.setCellValueFactory(cellData -> cellData.getValue().col_21Property());
-        c22.setCellValueFactory(cellData -> cellData.getValue().col_22Property());
-        c23.setCellValueFactory(cellData -> cellData.getValue().col_23Property());
-        c24.setCellValueFactory(cellData -> cellData.getValue().col_24Property());
-        c25.setCellValueFactory(cellData -> cellData.getValue().col_25Property());
-        c26.setCellValueFactory(cellData -> cellData.getValue().col_26Property());
-        c27.setCellValueFactory(cellData -> cellData.getValue().col_27Property());
-        c28.setCellValueFactory(cellData -> cellData.getValue().col_28Property());
-        c29.setCellValueFactory(cellData -> cellData.getValue().col_29Property());
-        c30.setCellValueFactory(cellData -> cellData.getValue().col_30Property());
-        c31.setCellValueFactory(cellData -> cellData.getValue().col_31Property());
-        c32.setCellValueFactory(cellData -> cellData.getValue().col_32Property());
-        c33.setCellValueFactory(cellData -> cellData.getValue().col_33Property());
-        c34.setCellValueFactory(cellData -> cellData.getValue().col_34Property());
-        c35.setCellValueFactory(cellData -> cellData.getValue().col_35Property());
-        c36.setCellValueFactory(cellData -> cellData.getValue().col_36Property());
-        c37.setCellValueFactory(cellData -> cellData.getValue().col_37Property());
-        c38.setCellValueFactory(cellData -> cellData.getValue().col_38Property());
-        c39.setCellValueFactory(cellData -> cellData.getValue().col_39Property());
-        c40.setCellValueFactory(cellData -> cellData.getValue().col_40Property());
-
-        table.setItems(getMap(printFigure));
-    }
-
-    public ObservableList<Map> getMap(String[][] printFigure) {
-        maps = FXCollections.observableArrayList();
-        StringProperty c0, c1, c2,c3,c4,c5,c6 ,c7, c8,c9,
-                c10, c11, c12,c13,c14,c15,c16,c17, c18,c19,
-                c20, c21, c22,c23,c24,c25,c26,c27, c28,c29,
-                c30, c31, c32,c33,c34,c35,c36,c37, c38,c39, c40;
-
-        for(int i=0;i< printFigure.length;i++){
-            c0 = new SimpleStringProperty(printFigure[i][0]);
-            c1 = new SimpleStringProperty (printFigure[i][1]);
-            c2 = new SimpleStringProperty (printFigure[i][2]);
-            c3 = new SimpleStringProperty (printFigure[i][3]);
-            c4 = new SimpleStringProperty (printFigure[i][4]);
-            c5 = new SimpleStringProperty (printFigure[i][5]);
-            c6 = new SimpleStringProperty (printFigure[i][6]);
-            c7 = new SimpleStringProperty (printFigure[i][7]);
-            c8 = new SimpleStringProperty (printFigure[i][8]);
-            c9 = new SimpleStringProperty (printFigure[i][9]);
-            c10 = new SimpleStringProperty (printFigure[i][10]);
-            c11 = new SimpleStringProperty (printFigure[i][11]);
-            c12 = new SimpleStringProperty (printFigure[i][12]);
-            c13 = new SimpleStringProperty (printFigure[i][13]);
-            c14 = new SimpleStringProperty (printFigure[i][14]);
-            c15 = new SimpleStringProperty (printFigure[i][15]);
-            c16 = new SimpleStringProperty (printFigure[i][16]);
-            c17 = new SimpleStringProperty (printFigure[i][17]);
-            c18 = new SimpleStringProperty (printFigure[i][18]);
-            c19 = new SimpleStringProperty (printFigure[i][19]);
-            c20 = new SimpleStringProperty (printFigure[i][20]);
-            c21 = new SimpleStringProperty (printFigure[i][21]);
-            c22 = new SimpleStringProperty (printFigure[i][22]);
-            c23 = new SimpleStringProperty (printFigure[i][23]);
-            c24 = new SimpleStringProperty (printFigure[i][24]);
-            c25 = new SimpleStringProperty (printFigure[i][25]);
-            c26 = new SimpleStringProperty (printFigure[i][26]);
-            c27 = new SimpleStringProperty (printFigure[i][27]);
-            c28 = new SimpleStringProperty (printFigure[i][28]);
-            c29 = new SimpleStringProperty (printFigure[i][29]);
-            c30 = new SimpleStringProperty (printFigure[i][30]);
-            c31 = new SimpleStringProperty (printFigure[i][31]);
-            c32 = new SimpleStringProperty (printFigure[i][32]);
-            c33 = new SimpleStringProperty (printFigure[i][33]);
-            c34 = new SimpleStringProperty (printFigure[i][34]);
-            c35 = new SimpleStringProperty (printFigure[i][35]);
-            c36 = new SimpleStringProperty (printFigure[i][36]);
-            c37 = new SimpleStringProperty (printFigure[i][37]);
-            c38 = new SimpleStringProperty (printFigure[i][38]);
-            c39 = new SimpleStringProperty (printFigure[i][39]);
-            c40 = new SimpleStringProperty (printFigure[i][40]);
-
-            Map temp = new Map(c0, c1, c2,c3,c4,c5,c6,c7, c8,c9,
-                    c10, c11, c12,c13,c14,c15,c16,c17, c18,c19,
-                    c20, c21, c22,c23,c24,c25,c26,c27, c28,c29,
-                    c30, c31, c32,c33,c34,c35,c36,c37, c38,c39, c40);
-
-//            System.out.println(c1+ "" +printFigure[i][1]);
-            maps.add(temp);
-        }
-        return maps;
-    }
-
-    public void gotoSelecting(ActionEvent event) throws IOException {
+    @FXML
+    void gotoSelecting(ActionEvent event) throws IOException {
+        if(loadTextField.getText().endsWith("txt")) {
         Parent root = FXMLLoader.load(getClass().getResource("Selecting.fxml"));
         stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
     }
-    static boolean markItemInGraph(int id) {
-        if (itemExist(id)) {
-            Product item = getItemByID(id);
-            graph[item.getX()][item.getY()] = '$';
-            return true;
-        }else {
-            return false;
+        else{
+            loadLabel.setText("Please input the txt file before you go to the next page");
         }
-    }
-
-    void unmarkItemInGraph(int id) {
-        Product item = getItemByID(id);
-        graph[item.getX()][item.getY()] = 'X';
-    }
-
-    static Product getItemByID(int id) {
-        for (Product item: allItemsList) {
-            if (id == item.getProductID())
-                return item;
-        }
-        return null;
-    }
-
-    static boolean itemExist(int id) {
-        for (Product item: allItemsList) {
-            if (id == item.getProductID())
-                return true;
-        }
-        return false;
-    }
-
-    static String getPath(){
-        return path;
     }
 }

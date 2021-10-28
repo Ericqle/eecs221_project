@@ -5,33 +5,29 @@
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="923.0" prefWidth="1103.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project1_0.GuidingController">
+<AnchorPane prefHeight="894.0" prefWidth="1094.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project1_0.GuidingController">
    <children>
-      <Button fx:id="gbButton2" alignment="CENTER" layoutX="8.0" layoutY="867.0" mnemonicParsing="false" onAction="#backToSelecting" prefHeight="36.0" prefWidth="65.0" text="Back">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Button>
-      <Label fx:id="progressLabel" layoutX="41.0" layoutY="6.0" text="Guiding">
+      <Label fx:id="progressLabel" layoutX="38.0" layoutY="23.0" text="Guiding">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <ProgressBar fx:id="progressBar" layoutX="31.0" layoutY="37.0" prefHeight="36.0" prefWidth="100.0" progress="0.2" />
-      <Label fx:id="instruction" alignment="CENTER" layoutX="135.0" layoutY="37.0" prefHeight="36.0" prefWidth="833.0" text="Instructions">
+      <ProgressBar fx:id="progressBar" layoutX="28.0" layoutY="54.0" prefHeight="36.0" prefWidth="100.0" progress="0.2" />
+      <Label fx:id="instruction" alignment="CENTER" layoutX="192.0" layoutY="54.0" prefHeight="36.0" prefWidth="713.0" text="Instructions">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Label fx:id="currentLocation" alignment="CENTER" layoutX="158.0" layoutY="105.0" prefHeight="24.0" prefWidth="778.0">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="currentLocation" alignment="CENTER" layoutX="128.0" layoutY="73.0" prefHeight="24.0" prefWidth="848.0">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
-      <TableView fx:id="guideTable" layoutX="31.0" layoutY="105.0" prefHeight="743.0" prefWidth="1042.0">
+      <TableView fx:id="guideTable" layoutX="26.0" layoutY="146.0" prefHeight="679.0" prefWidth="1042.0">
          <columns>
             <TableColumn fx:id="c0" minWidth="20.0" prefWidth="25.0" text="0" />
             <TableColumn fx:id="c1" minWidth="20.0" prefWidth="25.0" text="1" />
@@ -76,10 +72,26 @@
             <TableColumn fx:id="c40" minWidth="20.0" prefWidth="25.0" text="40" />
          </columns>
       </TableView>
-      <Button fx:id="nextButton" alignment="CENTER" layoutX="985.0" layoutY="37.0" mnemonicParsing="false" onAction="#nextAndIncreaseProgress" prefHeight="36.0" prefWidth="87.0" text="Next">
+      <Button fx:id="nextButton" alignment="CENTER" layoutX="28.0" layoutY="96.0" mnemonicParsing="false" onAction="#nextAndIncreaseProgress" prefHeight="36.0" prefWidth="100.0" text="Next">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
+      <Button fx:id="backButton" alignment="CENTER" layoutX="14.0" layoutY="846.0" mnemonicParsing="false" onAction="#backToSelecting" prefHeight="36.0" prefWidth="87.0" text="Back">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
+      <ImageView fx:id="imageView" fitHeight="109.0" fitWidth="131.0" layoutX="936.0" layoutY="26.0" pickOnBounds="true" preserveRatio="true" />
+      <Label fx:id="hint1" alignment="CENTER" layoutX="158.0" layoutY="834.0" prefHeight="24.0" prefWidth="778.0">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="hint2" alignment="CENTER" layoutX="158.0" layoutY="858.0" prefHeight="24.0" prefWidth="778.0">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

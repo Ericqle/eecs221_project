@@ -8,7 +8,6 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Main extends Application {
 
@@ -32,7 +31,7 @@ public class Main extends Application {
         int COL = 25;
         /* All items in warehouse list
          */
-        ArrayList<Product> allItemsList = new ArrayList<>();
+        ArrayList<Item> allItemsList = new ArrayList<>();
 
     /* Holds current path between only two vertice
         - takes place of ShortestPath module for future implementation
