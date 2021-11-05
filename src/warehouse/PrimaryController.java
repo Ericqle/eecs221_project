@@ -89,14 +89,14 @@ public class PrimaryController {
      */
     void printGraph(){
         for (int i = COL - 1; i >= 0 ; i--) {
-            int c = i + 1;
-            System.out.print( c < 10 ? c + "  " : c + " ");
+            System.out.print( i < 10 ? i + "  " : i + " ");
             for (int j = 0; j < ROW; j++) {
                 System.out.print(String.valueOf(graph[j][i]) + "  ");
             }
             System.out.println();
         }
-        for(int k = 0; k <= ROW; k++)
+        System.out.print("   ");
+        for(int k = 0; k <= ROW - 1; k++)
             System.out.print(k < 10 ? k + "  " : k + " ");
     }
 
