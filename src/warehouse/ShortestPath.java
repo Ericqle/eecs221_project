@@ -5,12 +5,11 @@ import java.util.ArrayList;
 /* For future implementation
  */
 public class ShortestPath {
-    ArrayList<Item> currentShortestPath;
-    ArrayList<String> uiStepInstructions;
+    ArrayList<Integer> shortestPathVertices;
+    int shortestPathDistance;
 
-    void findShortestPath(){
-    }
-
-    void makeUITraversalInstructions(){
+    ShortestPath(ArrayList<Integer> shortestPathVertices, int shortestPathDistance) {
+        this.shortestPathVertices = shortestPathVertices;
+        this.shortestPathDistance = shortestPathDistance;
     }
 }

@@ -98,6 +98,7 @@ public class PrimaryController {
         System.out.print("   ");
         for(int k = 0; k <= ROW - 1; k++)
             System.out.print(k < 10 ? k + "  " : k + " ");
+        System.out.println();
     }
 
     /* Set needed item to '$' on graph
@@ -166,12 +167,11 @@ public class PrimaryController {
         - returns the path as a list of vertices
      */
     ArrayList<Vertex> findPathToItem(Item start, Item finish) {
-        Coordinate source = new Coordinate(0, 0);
+        Coordinate source = new Coordinate(start.row, start.col);
         Coordinate dest = new Coordinate(finish.row, finish.col);
 
-        BFSShortestPath bfs = new BFSShortestPath();
 
-        return bfs.findBFSPath(graph, source, dest);
+        return BFSShortestPath.findBFSPath(graph, source, dest);
     }
 
     /* Wrapper for findPathToItem
@@ -253,4 +253,90 @@ public class PrimaryController {
         return "Path to Item: \n" + instructions.toString();
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    Graph currentOrderGraph = null;
+    ArrayList<Item> currentOrderItems = new ArrayList<>();
+
+    void setCurrentOrderGraph(){
+        int orderSize = currentOrderItems.size();
+        currentOrderGraph = new Graph(orderSize);
+
+        for (Item item: currentOrderItems) {
+            markItemInGraph(item.id);
+        }
+
+        for (int i = 0; i < orderSize - 1; i++) {
+
+            for (int j = i + 1; j < orderSize; j++) {
+                Item start = currentOrderItems.get(i);
+                Item finish = currentOrderItems.get(j);
+                Coordinate source = new Coordinate(start.row, start.col);
+                Coordinate dest = new Coordinate(finish.row, finish.col);
+
+                ArrayList<Vertex> item2ItemPath = BFSShortestPath.findBFSPath(graph, source, dest);
+
+                int weight = item2ItemPath.size() - 1;
+                currentOrderGraph.addEdge(i, j, weight);
+            }
+        }
+    }
+
+    void printCurrentOrderGraph(){
+        currentOrderGraph.printGraph();
+    }
+
+    public static void main(String[] args) {
+        String filePath = "/Users/eric/Desktop/eecs221_project/src/warehouse/qvBox-warehouse-data-f21-v01.txt";
+        PrimaryController primaryController = new PrimaryController();
+        try {
+            primaryController.readAllItems(filePath);
+        }
+        catch (Exception e) {
+            System.out.println("file error");
+        }
+        primaryController.setGraph();
+
+        primaryController.currentOrderItems.add(new Item(0,0,0));
+        primaryController.currentOrderItems.add(primaryController.allItemsList.get(0));
+        primaryController.currentOrderItems.add(primaryController.allItemsList.get(1));
+        primaryController.currentOrderItems.add(primaryController.allItemsList.get(5));
+        primaryController.currentOrderItems.add(primaryController.allItemsList.get(36));
+
+        for (Item item:
+                primaryController.currentOrderItems) {
+            System.out.println(item.id + " " + item.row + " " + item.col);
+        };
+
+        primaryController.setCurrentOrderGraph();
+        System.out.println();
+        primaryController.printGraph();
+        System.out.println();
+        primaryController.printCurrentOrderGraph();
+
+        ShortestPath path = BruteForce.travllingSalesmanProblem(primaryController.currentOrderGraph.matrix, 0);
+        System.out.println(path.shortestPathVertices);
+        System.out.println(path.shortestPathDistance);
+
+        for (int i = 0; i < path.shortestPathVertices.size() - 1; i++) {
+            Item start = primaryController.currentOrderItems.get(path.shortestPathVertices.get(i));
+            Item finish = primaryController.currentOrderItems.get(path.shortestPathVertices.get(i + 1));
+            Coordinate source = new Coordinate(start.row, start.col);
+            Coordinate dest = new Coordinate(finish.row, finish.col);
+            primaryController.currentShortestPath = BFSShortestPath.findBFSPath(primaryController.graph, source, dest);
+            primaryController.markPathOnGraph();
+        }
+        Item start = primaryController.currentOrderItems.get(path.shortestPathVertices.get
+                (path.shortestPathVertices.get(path.shortestPathVertices.size()-1)));
+        Item finish = primaryController.currentOrderItems.get(path.shortestPathVertices.get(0));
+        Coordinate source = new Coordinate(start.row, start.col);
+        Coordinate dest = new Coordinate(finish.row, finish.col);
+        primaryController.currentShortestPath = BFSShortestPath.findBFSPath(primaryController.graph, source, dest);
+        primaryController.markPathOnGraph();
+
+
+        System.out.println();
+        primaryController.printGraph();
+
+    }
 }

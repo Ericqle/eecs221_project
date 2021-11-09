@@ -11,24 +11,24 @@ import java.util.*;
         and for finding the weights of the warehouseGraph edges
  */
 class BFSShortestPath {
-    int ROW = 40;
-    int COL = 25;
+    static int ROW = 40;
+    static int COL = 25;
 
     /* Used to index the 4 neighbours of a given vertex
      */
-    int[] rowNum = {-1, 0, 0, 1};
-    int[] colNum = {0, -1, 1, 0};
+    static int[] rowNum = {-1, 0, 0, 1};
+    static int[] colNum = {0, -1, 1, 0};
 
     /* Check if vertex is within the bounds of the matrix
      */
-    boolean isValid(int row, int col) {
+    static boolean isValid(int row, int col) {
         return (row >= 0) && (row < ROW) &&
                 (col >= 0) && (col < COL);
     }
 
     /* Backtrack parent pointers to get path
      */
-    ArrayList<Vertex> backtrackPath(Vertex q) {
+    static ArrayList<Vertex> backtrackPath(Vertex q) {
         ArrayList<Vertex> vertexPath = new ArrayList<>();
         Vertex tempVertex = q;
 
@@ -45,7 +45,7 @@ class BFSShortestPath {
         - All open spaces on map are abstracted as vertices on the
         - Returns the path to the dest as list of vertices
      */
-    ArrayList<Vertex> findBFSPath(char[][] graph, Coordinate src, Coordinate dest) {
+    static ArrayList<Vertex> findBFSPath(char[][] graph, Coordinate src, Coordinate dest) {
 
         /* Holds visited vertices
          */
