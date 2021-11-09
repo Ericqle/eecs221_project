@@ -97,7 +97,7 @@ class BFSShortestPath {
                 int row = pt.x + rowNum[i];
                 int col = pt.y + colNum[i];
 
-                if (isValid(row, col) && (graph[row][col] != 'X') &&
+                if (isValid(row, col) && (graph[row][col] != 'X') && (graph[row][col] != '$') &&
                         !visited[row][col])
                 {
                     /* Enqueue now visited vertices, save vertices parent for path backtracking
@@ -106,6 +106,15 @@ class BFSShortestPath {
                     Vertex adjacentVertex = new Vertex(new Coordinate(row, col), p);
                     q.add(adjacentVertex);
 
+                }
+
+                if(isValid(row, col) && (graph[row][col] != 'X') && (graph[row][col] == '$') &&
+                        !visited[row][col]) {
+                    if(row == dest.x && col == dest.y) {
+                        visited[row][col] = true;
+                        Vertex adjacentVertex = new Vertex(new Coordinate(row, col), p);
+                        q.add(adjacentVertex);
+                    }
                 }
             }
         }

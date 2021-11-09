@@ -219,6 +219,7 @@ public class PrimaryController {
         }
 
         String currDirection = directionList.get(0);
+        System.out.println(directionList);
         int currentDirCount = 1;
 
         for (int i = 1; i < directionList.size(); i++) {
@@ -307,12 +308,12 @@ public class PrimaryController {
         primaryController.currentOrderItems.add(primaryController.getItemByID(396879));
         primaryController.currentOrderItems.add(primaryController.getItemByID(16880));
         primaryController.currentOrderItems.add(primaryController.getItemByID(208660));
-        primaryController.currentOrderItems.add(primaryController.getItemByID(105912));
-        primaryController.currentOrderItems.add(primaryController.getItemByID(332555));
-        primaryController.currentOrderItems.add(primaryController.getItemByID(227534));
-        primaryController.currentOrderItems.add(primaryController.getItemByID(68048));
-        primaryController.currentOrderItems.add(primaryController.getItemByID(188856));
-        primaryController.currentOrderItems.add(primaryController.getItemByID(736830));
+//        primaryController.currentOrderItems.add(primaryController.getItemByID(105912));
+//        primaryController.currentOrderItems.add(primaryController.getItemByID(332555));
+//        primaryController.currentOrderItems.add(primaryController.getItemByID(227534));
+//        primaryController.currentOrderItems.add(primaryController.getItemByID(68048));
+//        primaryController.currentOrderItems.add(primaryController.getItemByID(188856));
+//        primaryController.currentOrderItems.add(primaryController.getItemByID(736830));
 
         for (Item item:
                 primaryController.currentOrderItems) {
@@ -334,7 +335,6 @@ public class PrimaryController {
         System.out.println();
         System.out.println(path.shortestPathDistance);
 
-
         for (int i = 0; i < path.shortestPathVertices.length - 1; i++) {
             Item start = primaryController.currentOrderItems.get(path.shortestPathVertices[i]);
             Item finish = primaryController.currentOrderItems.get(path.shortestPathVertices[i+1]);
@@ -354,6 +354,5 @@ public class PrimaryController {
 
         System.out.println();
         primaryController.printGraph();
-
     }
 }

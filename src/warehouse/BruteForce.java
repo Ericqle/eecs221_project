@@ -6,7 +6,7 @@ package warehouse;
 import java.util.*;
 class BruteForce{
 
-    static int V = 12;
+    static int V = 10;
 
     // implementation of traveling
 // Salesman Problem
