@@ -21,12 +21,12 @@ public class PrimaryController {
     /* Holds current path between only two vertice
         - takes place of ShortestPath module for future implementation
      */
-    ArrayList<Vertex> currentShortestPath = new ArrayList<>();
+    ArrayList<Vertex> currentItem2ItemPath = new ArrayList<>();
 
     /* Abstraction of graph for the warehouse
         - all index-able spaces are considered vertices
      */
-    char[][] graph = new char[ROW][COL];
+    char[][] warehouseMatrix = new char[ROW][COL];
 
     /* Read warehouse data and save it in allItemsList
      */
@@ -70,17 +70,17 @@ public class PrimaryController {
         - marks user as 'U'
      */
     void setGraph (){
-        for (int i = 0; i < graph.length; i++) {
-            for (int j = 0; j < graph[0].length; j++) {
-                graph[i][j] = '.';
+        for (int i = 0; i < warehouseMatrix.length; i++) {
+            for (int j = 0; j < warehouseMatrix[0].length; j++) {
+                warehouseMatrix[i][j] = '.';
             }
         }
 
         for (Item item: allItemsList) {
-            graph[item.row][item.col] = 'X';
+            warehouseMatrix[item.row][item.col] = 'X';
         }
 
-        graph[0][0] = 'U';
+        warehouseMatrix[0][0] = 'U';
     }
 
     /* Print ascii representation of graph
@@ -91,7 +91,7 @@ public class PrimaryController {
         for (int i = COL - 1; i >= 0 ; i--) {
             System.out.print( i < 10 ? i + "  " : i + " ");
             for (int j = 0; j < ROW; j++) {
-                System.out.print(String.valueOf(graph[j][i]) + "  ");
+                System.out.print(String.valueOf(warehouseMatrix[j][i]) + "  ");
             }
             System.out.println();
         }
@@ -107,7 +107,7 @@ public class PrimaryController {
     boolean markItemInGraph(int id) {
         if (itemExist(id)) {
             Item item = getItemByID(id);
-            graph[item.row][item.col] = '$';
+            warehouseMatrix[item.row][item.col] = '$';
             return true;
         }else {
             return false;
@@ -118,7 +118,7 @@ public class PrimaryController {
      */
     void unmarkItemInGraph(int id) {
         Item item = getItemByID(id);
-        graph[item.row][item.col] = 'X';
+        warehouseMatrix[item.row][item.col] = 'X';
     }
 
     /* Item lookup for ID
@@ -145,10 +145,10 @@ public class PrimaryController {
         - path coordinates from currentShortestPath
      */
     void markPathOnGraph(){
-        for (int i = 1; i < currentShortestPath.size() - 1; i++) {
-            int x = currentShortestPath.get(i).coordinate.x;
-            int y = currentShortestPath.get(i).coordinate.y;
-            graph[x][y] = 'P';
+        for (int i = 1; i < currentItem2ItemPath.size() - 1; i++) {
+            int x = currentItem2ItemPath.get(i).coordinate.x;
+            int y = currentItem2ItemPath.get(i).coordinate.y;
+            warehouseMatrix[x][y] = 'P';
         }
     }
 
@@ -156,10 +156,10 @@ public class PrimaryController {
         - path coordinates from currentShortestPath
      */
     void unmarkPathOnGraph(){
-        for (int i = 1; i < currentShortestPath.size() - 1; i++) {
-            int x = currentShortestPath.get(i).coordinate.x;
-            int y = currentShortestPath.get(i).coordinate.y;
-            graph[x][y] = '.';
+        for (int i = 1; i < currentItem2ItemPath.size() - 1; i++) {
+            int x = currentItem2ItemPath.get(i).coordinate.x;
+            int y = currentItem2ItemPath.get(i).coordinate.y;
+            warehouseMatrix[x][y] = '.';
         }
     }
 
@@ -171,7 +171,7 @@ public class PrimaryController {
         Coordinate dest = new Coordinate(finish.row, finish.col);
 
 
-        return BFSShortestPath.findBFSPath(graph, source, dest);
+        return BFSShortestPath.findBFSPath(warehouseMatrix, source, dest);
     }
 
     /* Wrapper for findPathToItem
@@ -183,7 +183,7 @@ public class PrimaryController {
     String findItemAndCallPath(int id) {
         if (itemExist(id)) {
             Item neededItem = getItemByID(id);
-            currentShortestPath = findPathToItem(new Item(0,0,0), neededItem);
+            currentItem2ItemPath = findPathToItem(new Item(0,0,0), neededItem);
 
             return makeUserInstruction();
         }
@@ -199,13 +199,13 @@ public class PrimaryController {
         StringBuilder instructions = new StringBuilder();
 
         ArrayList<String> directionList = new ArrayList<>();
-        for (int i = 1; i < currentShortestPath.size()-1; i++) {
+        for (int i = 1; i < currentItem2ItemPath.size()-1; i++) {
             String xDirection = "East";
             String yDirection = "North";
-            int x0 = currentShortestPath.get(i - 1).coordinate.x;
-            int x1 = currentShortestPath.get(i).coordinate.x;
-            int y0 = currentShortestPath.get(i - 1).coordinate.y;
-            int y1 = currentShortestPath.get(i).coordinate.y;
+            int x0 = currentItem2ItemPath.get(i - 1).coordinate.x;
+            int x1 = currentItem2ItemPath.get(i).coordinate.x;
+            int y0 = currentItem2ItemPath.get(i - 1).coordinate.y;
+            int y1 = currentItem2ItemPath.get(i).coordinate.y;
             if ((x1 - x0) == 0) {
                 if ((y1 - y0) < 0)
                     yDirection = "South";
@@ -275,7 +275,7 @@ public class PrimaryController {
                 Coordinate source = new Coordinate(start.row, start.col);
                 Coordinate dest = new Coordinate(finish.row, finish.col);
 
-                ArrayList<Vertex> item2ItemPath = BFSShortestPath.findBFSPath(graph, source, dest);
+                ArrayList<Vertex> item2ItemPath = BFSShortestPath.findBFSPath(warehouseMatrix, source, dest);
 
                 int weight = item2ItemPath.size() - 1;
                 currentOrderGraph.addEdge(i, j, weight);
@@ -340,7 +340,7 @@ public class PrimaryController {
             Item finish = primaryController.currentOrderItems.get(path.shortestPathVertices[i+1]);
             Coordinate source = new Coordinate(start.row, start.col);
             Coordinate dest = new Coordinate(finish.row, finish.col);
-            primaryController.currentShortestPath = BFSShortestPath.findBFSPath(primaryController.graph, source, dest);
+            primaryController.currentItem2ItemPath = BFSShortestPath.findBFSPath(primaryController.warehouseMatrix, source, dest);
             primaryController.markPathOnGraph();
         }
         Item start = primaryController.currentOrderItems.get(path.shortestPathVertices[
@@ -348,7 +348,7 @@ public class PrimaryController {
         Item finish = primaryController.currentOrderItems.get(path.shortestPathVertices[0]);
         Coordinate source = new Coordinate(start.row, start.col);
         Coordinate dest = new Coordinate(finish.row, finish.col);
-        primaryController.currentShortestPath = BFSShortestPath.findBFSPath(primaryController.graph, source, dest);
+        primaryController.currentItem2ItemPath = BFSShortestPath.findBFSPath(primaryController.warehouseMatrix, source, dest);
         primaryController.markPathOnGraph();
 
 
