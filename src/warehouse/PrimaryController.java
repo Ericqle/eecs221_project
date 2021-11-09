@@ -298,10 +298,21 @@ public class PrimaryController {
         primaryController.setGraph();
 
         primaryController.currentOrderItems.add(new Item(0,0,0));
-        primaryController.currentOrderItems.add(primaryController.allItemsList.get(0));
-        primaryController.currentOrderItems.add(primaryController.allItemsList.get(1));
-        primaryController.currentOrderItems.add(primaryController.allItemsList.get(5));
-        primaryController.currentOrderItems.add(primaryController.allItemsList.get(36));
+        primaryController.currentOrderItems.add(primaryController.getItemByID(633));
+        primaryController.currentOrderItems.add(primaryController.getItemByID(1321));
+        primaryController.currentOrderItems.add(primaryController.getItemByID(3401));
+        primaryController.currentOrderItems.add(primaryController.getItemByID(5329));
+        primaryController.currentOrderItems.add(primaryController.getItemByID(10438));
+        primaryController.currentOrderItems.add(primaryController.getItemByID(372539));
+        primaryController.currentOrderItems.add(primaryController.getItemByID(396879));
+        primaryController.currentOrderItems.add(primaryController.getItemByID(16880));
+        primaryController.currentOrderItems.add(primaryController.getItemByID(208660));
+        primaryController.currentOrderItems.add(primaryController.getItemByID(105912));
+        primaryController.currentOrderItems.add(primaryController.getItemByID(332555));
+        primaryController.currentOrderItems.add(primaryController.getItemByID(227534));
+        primaryController.currentOrderItems.add(primaryController.getItemByID(68048));
+        primaryController.currentOrderItems.add(primaryController.getItemByID(188856));
+        primaryController.currentOrderItems.add(primaryController.getItemByID(736830));
 
         for (Item item:
                 primaryController.currentOrderItems) {
@@ -315,20 +326,26 @@ public class PrimaryController {
         primaryController.printCurrentOrderGraph();
 
         ShortestPath path = BruteForce.travllingSalesmanProblem(primaryController.currentOrderGraph.matrix, 0);
-        System.out.println(path.shortestPathVertices);
+
+        for (int i:
+             path.shortestPathVertices) {
+            System.out.print(i + " ");
+        }
+        System.out.println();
         System.out.println(path.shortestPathDistance);
 
-        for (int i = 0; i < path.shortestPathVertices.size() - 1; i++) {
-            Item start = primaryController.currentOrderItems.get(path.shortestPathVertices.get(i));
-            Item finish = primaryController.currentOrderItems.get(path.shortestPathVertices.get(i + 1));
+
+        for (int i = 0; i < path.shortestPathVertices.length - 1; i++) {
+            Item start = primaryController.currentOrderItems.get(path.shortestPathVertices[i]);
+            Item finish = primaryController.currentOrderItems.get(path.shortestPathVertices[i+1]);
             Coordinate source = new Coordinate(start.row, start.col);
             Coordinate dest = new Coordinate(finish.row, finish.col);
             primaryController.currentShortestPath = BFSShortestPath.findBFSPath(primaryController.graph, source, dest);
             primaryController.markPathOnGraph();
         }
-        Item start = primaryController.currentOrderItems.get(path.shortestPathVertices.get
-                (path.shortestPathVertices.get(path.shortestPathVertices.size()-1)));
-        Item finish = primaryController.currentOrderItems.get(path.shortestPathVertices.get(0));
+        Item start = primaryController.currentOrderItems.get(path.shortestPathVertices[
+                path.shortestPathVertices[path.shortestPathVertices.length-1]]);
+        Item finish = primaryController.currentOrderItems.get(path.shortestPathVertices[0]);
         Coordinate source = new Coordinate(start.row, start.col);
         Coordinate dest = new Coordinate(finish.row, finish.col);
         primaryController.currentShortestPath = BFSShortestPath.findBFSPath(primaryController.graph, source, dest);

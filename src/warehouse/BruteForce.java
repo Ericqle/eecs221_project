@@ -6,11 +6,11 @@ package warehouse;
 import java.util.*;
 class BruteForce{
 
-    static int V = 5;
+    static int V = 12;
 
     // implementation of traveling
 // Salesman Problem
-    static ShortestPath travllingSalesmanProblem(int graph[][], int s) {
+    static ShortestPath travllingSalesmanProblem(int[][] graph, int s) {
 // store all vertex apart
 // from source vertex
         ArrayList<Integer> vertex = new ArrayList<Integer>();
@@ -22,11 +22,10 @@ class BruteForce{
 // store minimum weight
 // Hamiltonian Cycle.
         int min_path = Integer.MAX_VALUE;
-        ArrayList<Integer> path = new ArrayList<Integer>();
+        int[] path = new int[V];
 
         do {
-            ArrayList<Integer> tempPath = new ArrayList<Integer>();
-            tempPath.add(s);
+            int[] tempPath = new int[V];
 
             // store current Path weight(cost)
             int current_pathweight = 0;
@@ -35,9 +34,9 @@ class BruteForce{
             int k = s;
 
             for (int i = 0; i < vertex.size(); i++) {
+                tempPath[i] = k;
                 current_pathweight += graph[k][vertex.get(i)];
                 k = vertex.get(i);
-                tempPath.add(k);
             }
             current_pathweight += graph[k][s];
 
