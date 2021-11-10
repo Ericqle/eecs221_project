@@ -254,31 +254,74 @@ public class PrimaryController {
         return "Path to Item: \n" + instructions.toString();
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //  New data structures     ////////////////////////////////////////////////////////
     Graph currentOrderGraph = null;
     ArrayList<Item> currentOrderItems = new ArrayList<>();
 
-    void setCurrentOrderGraph(){
+    //  Make look up table     ////////////////////////////////////////////////////////
+    ArrayList<ArrayList<Integer>> makeLookUpTable (int orderSize) {
+        ArrayList<ArrayList<Integer>> groupLookupTable = new ArrayList<ArrayList<Integer>>();;
+        int lookUpTableSize = 4*orderSize+1;
+
+        int powerOf4 = 0;
+        for (int i = 1; i < lookUpTableSize; i++) {
+            ArrayList<Integer> tempRow = new ArrayList<>();
+            for (int j = 0; j < 4 ; j++) {
+                if (i != j + powerOf4 + 1)
+                    tempRow.add(j + powerOf4 + 1);
+            }
+            if (i % 4 ==0 )
+                powerOf4 += 4;
+            groupLookupTable.add(tempRow);
+        }
+
+        return groupLookupTable;
+    }
+
+    //  Make Graph that includes 4 nodes   /////////////////////////////////////////////
+    void setCurrentOrderGraph4Nodes(){
         int orderSize = currentOrderItems.size();
-        currentOrderGraph = new Graph(orderSize);
+        int numNodes = 4 * orderSize + 1;
+        currentOrderGraph = new Graph(numNodes);
+
+        int[] rowNum = {-1, 0, 1, 0};
+        int[] colNum = {0, 1, 0, -1};
+        ArrayList<Coordinate> orderCoordinates4Nodes = new ArrayList<>();
+
+        ArrayList<ArrayList<Integer>> lookUpTable = makeLookUpTable(orderSize);
 
         for (Item item: currentOrderItems) {
             markItemInGraph(item.id);
         }
 
-        for (int i = 0; i < orderSize - 1; i++) {
+        orderCoordinates4Nodes.add(new Coordinate(0,0));
+        for (Item item: currentOrderItems) {
 
-            for (int j = i + 1; j < orderSize; j++) {
-                Item start = currentOrderItems.get(i);
-                Item finish = currentOrderItems.get(j);
-                Coordinate source = new Coordinate(start.row, start.col);
-                Coordinate dest = new Coordinate(finish.row, finish.col);
+            for (int i = 0; i < 4; i++) {
+                int row = item.row + rowNum[i];
+                int col = item.col + colNum[i];
+                Coordinate tempCoordinate = new Coordinate(row, col);
+                orderCoordinates4Nodes.add(tempCoordinate);
+            }
+        }
 
-                ArrayList<Vertex> item2ItemPath = BFSShortestPath.findBFSPath(warehouseMatrix, source, dest);
+        for (Coordinate c: orderCoordinates4Nodes) {
+            System.out.println(c.x + " " + c.y);
+        }
 
-                int weight = item2ItemPath.size() - 1;
-                currentOrderGraph.addEdge(i, j, weight);
+        for (int i = 0; i < numNodes - 1; i++) {
+            for (int j = i + 1; j < numNodes; j++) {
+                Coordinate start = orderCoordinates4Nodes.get(i);
+                Coordinate finish = orderCoordinates4Nodes.get(j);
+                if(((warehouseMatrix[start.x][start.y] == '.') || (warehouseMatrix[start.x][start.y] == 'U'))
+                        && (warehouseMatrix[finish.x][finish.y] == '.')) {
+                    ArrayList<Vertex> item2ItemPath = BFSShortestPath.findBFSPath(warehouseMatrix,
+                            start, finish);
+                    int weight = item2ItemPath.size() - 1;
+                    currentOrderGraph.addEdge(i, j, weight);
+                }
+                else
+                    currentOrderGraph.addEdge(i, j, -1);
             }
         }
     }
@@ -298,61 +341,47 @@ public class PrimaryController {
         }
         primaryController.setGraph();
 
-        primaryController.currentOrderItems.add(new Item(0,0,0));
         primaryController.currentOrderItems.add(primaryController.getItemByID(633));
         primaryController.currentOrderItems.add(primaryController.getItemByID(1321));
-        primaryController.currentOrderItems.add(primaryController.getItemByID(3401));
-        primaryController.currentOrderItems.add(primaryController.getItemByID(5329));
-        primaryController.currentOrderItems.add(primaryController.getItemByID(10438));
-        primaryController.currentOrderItems.add(primaryController.getItemByID(372539));
-        primaryController.currentOrderItems.add(primaryController.getItemByID(396879));
-        primaryController.currentOrderItems.add(primaryController.getItemByID(16880));
-        primaryController.currentOrderItems.add(primaryController.getItemByID(208660));
-//        primaryController.currentOrderItems.add(primaryController.getItemByID(105912));
-//        primaryController.currentOrderItems.add(primaryController.getItemByID(332555));
-//        primaryController.currentOrderItems.add(primaryController.getItemByID(227534));
-//        primaryController.currentOrderItems.add(primaryController.getItemByID(68048));
-//        primaryController.currentOrderItems.add(primaryController.getItemByID(188856));
-//        primaryController.currentOrderItems.add(primaryController.getItemByID(736830));
 
         for (Item item:
                 primaryController.currentOrderItems) {
             System.out.println(item.id + " " + item.row + " " + item.col);
         };
 
-        primaryController.setCurrentOrderGraph();
+        primaryController.setCurrentOrderGraph4Nodes();
         System.out.println();
         primaryController.printGraph();
         System.out.println();
         primaryController.printCurrentOrderGraph();
 
-        ShortestPath path = BruteForce.travllingSalesmanProblem(primaryController.currentOrderGraph.matrix, 0);
-
-        for (int i:
-             path.shortestPathVertices) {
-            System.out.print(i + " ");
-        }
-        System.out.println();
-        System.out.println(path.shortestPathDistance);
-
-        for (int i = 0; i < path.shortestPathVertices.length - 1; i++) {
-            Item start = primaryController.currentOrderItems.get(path.shortestPathVertices[i]);
-            Item finish = primaryController.currentOrderItems.get(path.shortestPathVertices[i+1]);
-            Coordinate source = new Coordinate(start.row, start.col);
-            Coordinate dest = new Coordinate(finish.row, finish.col);
-            primaryController.currentItem2ItemPath = BFSShortestPath.findBFSPath(primaryController.warehouseMatrix, source, dest);
-            primaryController.markPathOnGraph();
-        }
-        Item start = primaryController.currentOrderItems.get(path.shortestPathVertices[
-                path.shortestPathVertices[path.shortestPathVertices.length-1]]);
-        Item finish = primaryController.currentOrderItems.get(path.shortestPathVertices[0]);
-        Coordinate source = new Coordinate(start.row, start.col);
-        Coordinate dest = new Coordinate(finish.row, finish.col);
-        primaryController.currentItem2ItemPath = BFSShortestPath.findBFSPath(primaryController.warehouseMatrix, source, dest);
-        primaryController.markPathOnGraph();
-
-
-        System.out.println();
-        primaryController.printGraph();
+//        ShortestPath path = BruteForce.travllingSalesmanProblem(primaryController.currentOrderGraph.matrix, 0);
+//
+//        for (int i:
+//             path.shortestPathVertices) {
+//            System.out.print(i + " ");
+//        }
+//        System.out.println();
+//        System.out.println(path.shortestPathDistance);
+//
+//        for (int i = 0; i < path.shortestPathVertices.length - 1; i++) {
+//            Item start = primaryController.currentOrderItems.get(path.shortestPathVertices[i]);
+//            Item finish = primaryController.currentOrderItems.get(path.shortestPathVertices[i+1]);
+//            Coordinate source = new Coordinate(start.row, start.col);
+//            Coordinate dest = new Coordinate(finish.row, finish.col);
+//            primaryController.currentItem2ItemPath = BFSShortestPath.findBFSPath(primaryController.warehouseMatrix, source, dest);
+//            primaryController.markPathOnGraph();
+//        }
+//        Item start = primaryController.currentOrderItems.get(path.shortestPathVertices[
+//                path.shortestPathVertices[path.shortestPathVertices.length-1]]);
+//        Item finish = primaryController.currentOrderItems.get(path.shortestPathVertices[0]);
+//        Coordinate source = new Coordinate(start.row, start.col);
+//        Coordinate dest = new Coordinate(finish.row, finish.col);
+//        primaryController.currentItem2ItemPath = BFSShortestPath.findBFSPath(primaryController.warehouseMatrix, source, dest);
+//        primaryController.markPathOnGraph();
+//
+//
+//        System.out.println();
+//        primaryController.printGraph();
     }
 }
