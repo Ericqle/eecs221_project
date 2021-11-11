@@ -273,6 +273,8 @@ public class PrimaryController {
 
         ArrayList<Integer> firstRow = new ArrayList<>();
         firstRow.add(0);
+        firstRow.add(0);
+        firstRow.add(0);
         groupLookupTable.add(firstRow);
 
         int powerOf4 = 0;
@@ -369,18 +371,10 @@ public class PrimaryController {
         }
         primaryController.setWarehouseMatrix();
 
-        Integer[] items = {633, 1321, 3401, 5329, 10438, 372539, 396879, 16880, 208660, 105912, 332555, 227534, 68048, 188856, 736830, 736831, 479020, 103313, 1, 20373};
+        Integer[] items = {633, 1321, 45, 23592, 23858, 23873};
         for (Integer i : items) {
             primaryController.currentOrderItems.add(primaryController.getItemByID(i));
         }
-
-//        primaryController.currentOrderItems.add(primaryController.getItemByID(633));
-//        primaryController.currentOrderItems.add(primaryController.getItemByID(1321));
-//        primaryController.currentOrderItems.add(primaryController.getItemByID(45));
-//        primaryController.currentOrderItems.add(primaryController.getItemByID(23592));
-//        primaryController.currentOrderItems.add(primaryController.getItemByID(23858));
-//        primaryController.currentOrderItems.add(primaryController.getItemByID(23873));
-
 
         for (Item item:
                 primaryController.currentOrderItems) {
