@@ -10,7 +10,7 @@ import java.util.*;
     - It will be used to find the path between two Item vertices in warehouseGraph
         and for finding the weights of the warehouseGraph edges
  */
-class BFSShortestPath {
+class Item2ItemPath {
     static int ROW = 40;
     static int COL = 25;
 
@@ -141,7 +141,7 @@ class BFSShortestPath {
         Coordinate source = new Coordinate(0, 0);
         Coordinate dest = new Coordinate(2,2);
 
-        BFSShortestPath bfs = new BFSShortestPath();
+        Item2ItemPath bfs = new Item2ItemPath();
         ArrayList<Vertex> path = bfs.findBFSPath(testMatrix, source, dest);
 
         for (Vertex vertex : path) {

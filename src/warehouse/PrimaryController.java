@@ -69,7 +69,7 @@ public class PrimaryController {
         - marks items/shelves as 'X'
         - marks user as 'U'
      */
-    void setGraph (){
+    void setWarehouseMatrix(){
         for (int i = 0; i < warehouseMatrix.length; i++) {
             for (int j = 0; j < warehouseMatrix[0].length; j++) {
                 warehouseMatrix[i][j] = '.';
@@ -87,7 +87,7 @@ public class PrimaryController {
         - prints the transpose and horizontally flibbed grraph matrix
             to get the more familiar x-y coordinate orientation
      */
-    void printGraph(){
+    void printWarehouseMatrix(){
         for (int i = COL - 1; i >= 0 ; i--) {
             System.out.print( i < 10 ? i + "  " : i + " ");
             for (int j = 0; j < ROW; j++) {
@@ -104,7 +104,7 @@ public class PrimaryController {
     /* Set needed item to '$' on graph
         - return true if exist
      */
-    boolean markItemInGraph(int id) {
+    boolean markItemInWarehouseMatrix(int id) {
         if (itemExist(id)) {
             Item item = getItemByID(id);
             warehouseMatrix[item.row][item.col] = '$';
@@ -116,7 +116,7 @@ public class PrimaryController {
 
     /* Reset found item to a shelf 'X' on graph
      */
-    void unmarkItemInGraph(int id) {
+    void unmarkItemInWarehouseMatrix(int id) {
         Item item = getItemByID(id);
         warehouseMatrix[item.row][item.col] = 'X';
     }
@@ -144,19 +144,20 @@ public class PrimaryController {
     /* Mark the path using 'P' on graph
         - path coordinates from currentShortestPath
      */
-    void markPathOnGraph(){
-        for (int i = 1; i < currentItem2ItemPath.size() - 1; i++) {
+    void markI2IPathOnWarehouseMatrix(){
+        for (int i = 1; i < currentItem2ItemPath.size(); i++) {
             int x = currentItem2ItemPath.get(i).coordinate.x;
             int y = currentItem2ItemPath.get(i).coordinate.y;
-            warehouseMatrix[x][y] = 'P';
+            if (warehouseMatrix[x][y] != 'U')
+                warehouseMatrix[x][y] = 'P';
         }
     }
 
     /* Unmark the path on graph
         - path coordinates from currentShortestPath
      */
-    void unmarkPathOnGraph(){
-        for (int i = 1; i < currentItem2ItemPath.size() - 1; i++) {
+    void unmarkI2IPathOnWarehouseMatrix(){
+        for (int i = 1; i < currentItem2ItemPath.size(); i++) {
             int x = currentItem2ItemPath.get(i).coordinate.x;
             int y = currentItem2ItemPath.get(i).coordinate.y;
             warehouseMatrix[x][y] = '.';
@@ -171,7 +172,7 @@ public class PrimaryController {
         Coordinate dest = new Coordinate(finish.row, finish.col);
 
 
-        return BFSShortestPath.findBFSPath(warehouseMatrix, source, dest);
+        return Item2ItemPath.findBFSPath(warehouseMatrix, source, dest);
     }
 
     /* Wrapper for findPathToItem
@@ -254,14 +255,25 @@ public class PrimaryController {
         return "Path to Item: \n" + instructions.toString();
     }
 
-    //  New data structures     ////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //  Beta Release Brute Force     ///////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     Graph currentOrderGraph = null;
     ArrayList<Item> currentOrderItems = new ArrayList<>();
+    ArrayList<Coordinate> currentOrderCoordinates4N = null;
+    ArrayList<ArrayList<Integer>> currentLookupTable = null;
 
-    //  Make look up table     ////////////////////////////////////////////////////////
-    ArrayList<ArrayList<Integer>> makeLookUpTable (int orderSize) {
+    ArrayList<Integer> shortestPathCoordIndices = null;
+    int shortestPathCost = 0;
+
+    void setLookUpTable () {
+        int orderSize = currentOrderItems.size();
         ArrayList<ArrayList<Integer>> groupLookupTable = new ArrayList<ArrayList<Integer>>();;
         int lookUpTableSize = 4*orderSize+1;
+
+        ArrayList<Integer> firstRow = new ArrayList<>();
+        firstRow.add(0);
+        groupLookupTable.add(firstRow);
 
         int powerOf4 = 0;
         for (int i = 1; i < lookUpTableSize; i++) {
@@ -275,54 +287,68 @@ public class PrimaryController {
             groupLookupTable.add(tempRow);
         }
 
-        return groupLookupTable;
+        currentLookupTable = groupLookupTable;
     }
 
-    //  Make Graph that includes 4 nodes   /////////////////////////////////////////////
-    void setCurrentOrderGraph4Nodes(){
+    void setCurrentOrderGraph4N(){
         int orderSize = currentOrderItems.size();
         int numNodes = 4 * orderSize + 1;
         currentOrderGraph = new Graph(numNodes);
 
         int[] rowNum = {-1, 0, 1, 0};
         int[] colNum = {0, 1, 0, -1};
-        ArrayList<Coordinate> orderCoordinates4Nodes = new ArrayList<>();
-
-        ArrayList<ArrayList<Integer>> lookUpTable = makeLookUpTable(orderSize);
+        currentOrderCoordinates4N = new ArrayList<>();
 
         for (Item item: currentOrderItems) {
-            markItemInGraph(item.id);
+            markItemInWarehouseMatrix(item.id);
         }
 
-        orderCoordinates4Nodes.add(new Coordinate(0,0));
+        currentOrderCoordinates4N.add(new Coordinate(0,0));
         for (Item item: currentOrderItems) {
 
             for (int i = 0; i < 4; i++) {
                 int row = item.row + rowNum[i];
                 int col = item.col + colNum[i];
                 Coordinate tempCoordinate = new Coordinate(row, col);
-                orderCoordinates4Nodes.add(tempCoordinate);
+                currentOrderCoordinates4N.add(tempCoordinate);
             }
         }
 
-        for (Coordinate c: orderCoordinates4Nodes) {
+        for (Coordinate c: currentOrderCoordinates4N) {
             System.out.println(c.x + " " + c.y);
         }
 
         for (int i = 0; i < numNodes - 1; i++) {
             for (int j = i + 1; j < numNodes; j++) {
-                Coordinate start = orderCoordinates4Nodes.get(i);
-                Coordinate finish = orderCoordinates4Nodes.get(j);
+                Coordinate start = currentOrderCoordinates4N.get(i);
+                Coordinate finish = currentOrderCoordinates4N.get(j);
                 if(((warehouseMatrix[start.x][start.y] == '.') || (warehouseMatrix[start.x][start.y] == 'U'))
                         && (warehouseMatrix[finish.x][finish.y] == '.')) {
-                    ArrayList<Vertex> item2ItemPath = BFSShortestPath.findBFSPath(warehouseMatrix,
+                    ArrayList<Vertex> item2ItemPath = Item2ItemPath.findBFSPath(warehouseMatrix,
                             start, finish);
                     int weight = item2ItemPath.size() - 1;
                     currentOrderGraph.addEdge(i, j, weight);
                 }
                 else
-                    currentOrderGraph.addEdge(i, j, -1);
+                    currentOrderGraph.addEdge(i, j, 0);
             }
+        }
+    }
+
+    void findPathsBruteForce() {
+        setLookUpTable();
+        BruteForcePath bruteForcePath = new BruteForcePath(currentLookupTable);
+        bruteForcePath.findShortestPath(currentOrderGraph.matrix);
+        shortestPathCoordIndices = bruteForcePath.minPath;
+        shortestPathCost = bruteForcePath.minPathCost;
+    }
+
+    void markFullPath() {
+        for (int i = 0; i < shortestPathCoordIndices.size() - 1; i++) {
+            Coordinate source = currentOrderCoordinates4N.get(shortestPathCoordIndices.get(i));
+            Coordinate dest = currentOrderCoordinates4N.get(shortestPathCoordIndices.get(i + 1));
+            currentItem2ItemPath = Item2ItemPath.findBFSPath(warehouseMatrix, source, dest);
+            markI2IPathOnWarehouseMatrix();
         }
     }
 
@@ -339,49 +365,36 @@ public class PrimaryController {
         catch (Exception e) {
             System.out.println("file error");
         }
-        primaryController.setGraph();
+        primaryController.setWarehouseMatrix();
 
         primaryController.currentOrderItems.add(primaryController.getItemByID(633));
         primaryController.currentOrderItems.add(primaryController.getItemByID(1321));
+        primaryController.currentOrderItems.add(primaryController.getItemByID(45));
+        primaryController.currentOrderItems.add(primaryController.getItemByID(23592));
+        primaryController.currentOrderItems.add(primaryController.getItemByID(23858));
+        primaryController.currentOrderItems.add(primaryController.getItemByID(23873));
 
         for (Item item:
                 primaryController.currentOrderItems) {
             System.out.println(item.id + " " + item.row + " " + item.col);
         };
 
-        primaryController.setCurrentOrderGraph4Nodes();
+        primaryController.setCurrentOrderGraph4N();
         System.out.println();
-        primaryController.printGraph();
-        System.out.println();
-        primaryController.printCurrentOrderGraph();
 
-//        ShortestPath path = BruteForce.travllingSalesmanProblem(primaryController.currentOrderGraph.matrix, 0);
-//
-//        for (int i:
-//             path.shortestPathVertices) {
-//            System.out.print(i + " ");
-//        }
-//        System.out.println();
-//        System.out.println(path.shortestPathDistance);
-//
-//        for (int i = 0; i < path.shortestPathVertices.length - 1; i++) {
-//            Item start = primaryController.currentOrderItems.get(path.shortestPathVertices[i]);
-//            Item finish = primaryController.currentOrderItems.get(path.shortestPathVertices[i+1]);
-//            Coordinate source = new Coordinate(start.row, start.col);
-//            Coordinate dest = new Coordinate(finish.row, finish.col);
-//            primaryController.currentItem2ItemPath = BFSShortestPath.findBFSPath(primaryController.warehouseMatrix, source, dest);
-//            primaryController.markPathOnGraph();
-//        }
-//        Item start = primaryController.currentOrderItems.get(path.shortestPathVertices[
-//                path.shortestPathVertices[path.shortestPathVertices.length-1]]);
-//        Item finish = primaryController.currentOrderItems.get(path.shortestPathVertices[0]);
-//        Coordinate source = new Coordinate(start.row, start.col);
-//        Coordinate dest = new Coordinate(finish.row, finish.col);
-//        primaryController.currentItem2ItemPath = BFSShortestPath.findBFSPath(primaryController.warehouseMatrix, source, dest);
-//        primaryController.markPathOnGraph();
-//
-//
-//        System.out.println();
-//        primaryController.printGraph();
+        primaryController.printWarehouseMatrix();
+        System.out.println();
+
+        primaryController.printCurrentOrderGraph();
+        System.out.println();
+
+        primaryController.findPathsBruteForce();
+        primaryController.markFullPath();
+        primaryController.printWarehouseMatrix();
+        System.out.println();
+
+        System.out.println(primaryController.shortestPathCoordIndices);
+        System.out.println(primaryController.shortestPathCost);
+
     }
 }
