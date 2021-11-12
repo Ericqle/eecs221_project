@@ -10,25 +10,25 @@ import java.util.*;
     - It will be used to find the path between two Item vertices in warehouseGraph
         and for finding the weights of the warehouseGraph edges
  */
-class BFSShortestPath {
-    int ROW = 40;
-    int COL = 25;
+class Item2ItemPath {
+    static int ROW = 40;
+    static int COL = 25;
 
     /* Used to index the 4 neighbours of a given vertex
      */
-    int[] rowNum = {-1, 0, 0, 1};
-    int[] colNum = {0, -1, 1, 0};
+    static int[] rowNum = {-1, 0, 0, 1};
+    static int[] colNum = {0, -1, 1, 0};
 
     /* Check if vertex is within the bounds of the matrix
      */
-    boolean isValid(int row, int col) {
+    static boolean isValid(int row, int col) {
         return (row >= 0) && (row < ROW) &&
                 (col >= 0) && (col < COL);
     }
 
     /* Backtrack parent pointers to get path
      */
-    ArrayList<Vertex> backtrackPath(Vertex q) {
+    static ArrayList<Vertex> backtrackPath(Vertex q) {
         ArrayList<Vertex> vertexPath = new ArrayList<>();
         Vertex tempVertex = q;
 
@@ -97,7 +97,7 @@ class BFSShortestPath {
                 int row = pt.x + rowNum[i];
                 int col = pt.y + colNum[i];
 
-                if (isValid(row, col) && (graph[row][col] != 'X') &&
+                if (isValid(row, col) && (graph[row][col] != 'X') && (graph[row][col] != '$') &&
                         !visited[row][col])
                 {
                     /* Enqueue now visited vertices, save vertices parent for path backtracking
@@ -106,6 +106,15 @@ class BFSShortestPath {
                     Vertex adjacentVertex = new Vertex(new Coordinate(row, col), p);
                     q.add(adjacentVertex);
 
+                }
+
+                if(isValid(row, col) && (graph[row][col] != 'X') && (graph[row][col] == '$') &&
+                        !visited[row][col]) {
+                    if(row == dest.x && col == dest.y) {
+                        visited[row][col] = true;
+                        Vertex adjacentVertex = new Vertex(new Coordinate(row, col), p);
+                        q.add(adjacentVertex);
+                    }
                 }
             }
         }
@@ -132,7 +141,7 @@ class BFSShortestPath {
         Coordinate source = new Coordinate(0, 0);
         Coordinate dest = new Coordinate(2,2);
 
-        BFSShortestPath bfs = new BFSShortestPath();
+        Item2ItemPath bfs = new Item2ItemPath();
         ArrayList<Vertex> path = bfs.findBFSPath(testMatrix, source, dest);
 
         for (Vertex vertex : path) {

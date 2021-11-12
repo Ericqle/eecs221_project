@@ -1,8 +1,5 @@
 package warehouse;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -42,7 +39,7 @@ public class Main {
         }
 
 
-        primaryController.setGraph();
+        primaryController.setWarehouseMatrix();
         System.out.println("All items from data file have been stored and set in the warehouse map");
 
         /* Initiate user interaction
@@ -51,7 +48,7 @@ public class Main {
 //        Scanner scanner = new Scanner(System.in);
         System.out.println("Here is a layout of the warehouse with the loaded data");
         System.out.println("'U' = you | 'X' = shelves/items | '.' = open space");
-        primaryController.printGraph();
+        primaryController.printWarehouseMatrix();
         System.out.println();
 
         /* Primary program flow -loop-
@@ -81,7 +78,7 @@ public class Main {
                     if (scanner.hasNextInt()) {
                         int itemID = scanner.nextInt();
                         // primaryController.markItemInGraph(itemID);
-                        if (!primaryController.markItemInGraph(itemID)) {
+                        if (!primaryController.markItemInWarehouseMatrix(itemID)) {
                             System.out.println("The item you are looking for does NOT exist!");
                             continue;
                         }
@@ -91,10 +88,10 @@ public class Main {
                         System.out.println("The path from your location 'U' to the item '$' is marked with 'P' on the map.");
                         String shortestPathOutput = primaryController.findItemAndCallPath(itemID);
                         System.out.println(shortestPathOutput);
-                        primaryController.markPathOnGraph();
-                        primaryController.printGraph();
-                        primaryController.unmarkPathOnGraph();
-                        primaryController.unmarkItemInGraph(itemID);
+                        primaryController.markI2IPathOnWarehouseMatrix();
+                        primaryController.printWarehouseMatrix();
+                        primaryController.unmarkI2IPathOnWarehouseMatrix();
+                        primaryController.unmarkItemInWarehouseMatrix(itemID);
                         System.out.println();
                     } else {
                         String str = scanner.next();
