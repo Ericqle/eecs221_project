@@ -82,7 +82,6 @@ public class PrimaryController {
 
         warehouseMatrix[0][0] = 'U';
     }
-
     /* Print ascii representation of graph
         - prints the transpose and horizontally flibbed grraph matrix
             to get the more familiar x-y coordinate orientation
@@ -346,7 +345,12 @@ public class PrimaryController {
         shortestPathCoordIndices = bruteForcePath.minPath;
         shortestPathCost = bruteForcePath.minPathCost;
     }
-
+    void findPathDynamicProgramming() {
+        setLookUpTable();
+        DynamicProgrammingPath dynamicProgrammingPath = new DynamicProgrammingPath(currentOrderGraph.matrix, currentLookupTable);
+        shortestPathCost = dynamicProgrammingPath.getTourCost();
+        System.out.println(shortestPathCost);
+    }
     void markFullPath() {
         for (int i = 0; i < shortestPathCoordIndices.size() - 1; i++) {
             Coordinate source = currentOrderCoordinates4N.get(shortestPathCoordIndices.get(i));
@@ -361,7 +365,8 @@ public class PrimaryController {
     }
 
     public static void main(String[] args) {
-        String filePath = "/Users/eric/Desktop/eecs221_project/src/warehouse/qvBox-warehouse-data-f21-v01.txt";
+//        String filePath = "/Users/eric/Desktop/eecs221_project/src/warehouse/qvBox-warehouse-data-f21-v01.txt";
+        String filePath = "src/warehouse/qvBox-warehouse-data-f21-v01.txt";
         PrimaryController primaryController = new PrimaryController();
         try {
             primaryController.readAllItems(filePath);
@@ -371,7 +376,8 @@ public class PrimaryController {
         }
         primaryController.setWarehouseMatrix();
 
-        Integer[] items = {633, 1321, 45, 23592, 23858, 23873};
+//        Integer[] items = {633, 1321, 45, 23592, 23858, 23873};
+        Integer[] items = {45};
         for (Integer i : items) {
             primaryController.currentOrderItems.add(primaryController.getItemByID(i));
         }
@@ -380,7 +386,6 @@ public class PrimaryController {
                 primaryController.currentOrderItems) {
             System.out.println(item.id + " " + item.row + " " + item.col);
         };
-
         primaryController.setCurrentOrderGraph4N();
         System.out.println();
 
@@ -390,9 +395,10 @@ public class PrimaryController {
         primaryController.printCurrentOrderGraph();
         System.out.println();
 
-        primaryController.findPathsBruteForce();
-        primaryController.markFullPath();
-        primaryController.printWarehouseMatrix();
+//        primaryController.findPathsBruteForce();
+        primaryController.findPathDynamicProgramming();
+//        primaryController.markFullPath();
+//        primaryController.printWarehouseMatrix();
         System.out.println();
 
         System.out.println(primaryController.shortestPathCoordIndices);
