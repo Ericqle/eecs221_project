@@ -89,7 +89,6 @@ public class TSP_GA {
         * and store them in oldPopulation
         * */
         void initGroup() {
-            //oldpopulation的每一行全排列改成1234，而不是0123
             // oldPopulation start and end in neededitems, exclude the (0,0)
             // the whole route should be 0 - 1 - 2 - 0, here store 1-2
             int i, j, k, num;
@@ -109,11 +108,6 @@ public class TSP_GA {
                     }
                 }
             }
-
-            /*
-             * for(i=0;i<scale;i++) { for(j=0;j<cityNum;j++) {
-             * System.out.print(oldPopulation[i][j]+","); } System.out.println(); }
-             */
         }
 
     public List<Integer> solve(int timeOut) {
@@ -176,10 +170,46 @@ public class TSP_GA {
         }
         tour.add(0);
         System.out.println("distance:" + bestLength);
+        printRoute(tour);
         return tour;
     }
 
-        /*
+    private void printRoute(List<Integer> tour) {
+            ArrayList<Vertex> path;
+            int x1, y1;
+        Coordinate c1 =new Coordinate(0, 0);
+
+        int count = 1;
+            for(int i = 1; i< tour.size(); i++){
+                if(i != tour.size()-1) {
+                    Coordinate c2 = new Coordinate(
+                            PrimaryController.getItemByID(tour.get(i)).row,
+                            PrimaryController.getItemByID(tour.get(i)).col);
+                    path = setBFSPath(warehouseMatrix, c1, c2);
+                }else{
+                    path = setBFSPath(warehouseMatrix, c1, new Coordinate(0,0));
+                }
+                x1 = path.get(path.size() - 2).coordinate.x;
+                y1 = path.get(path.size() - 2).coordinate.y;
+                c1 = new Coordinate(x1, y1);
+
+                if(i != tour.size()-1) {
+                    for (int j = 1; j < path.size() - 1; j++) {
+                        System.out.println(count + ": " +String.valueOf(path.get(j).coordinate.x) + " " + path.get(j).coordinate.y);
+                        count++;
+                    }
+                    System.out.println("getItem: " + PrimaryController.getItemByID(tour.get(i)).id);
+                }else{
+                    for (int j = 1; j < path.size(); j++) {
+                        System.out.println(count + ": " + String.valueOf(path.get(j).coordinate.x) + " " + path.get(j).coordinate.y);
+                        count ++;
+                    }
+                    System.out.println("getItem: " + 0);
+                }
+            }
+    }
+
+    /*
         * check if the dest node is next to the source node
         * if true, the distance should be 0, no need BFS
         * if false, need BFS

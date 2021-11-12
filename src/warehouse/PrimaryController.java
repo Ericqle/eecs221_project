@@ -378,16 +378,16 @@ public class PrimaryController {
 //        Integer[] items = {
 //                108335
 //        };
-//        Integer[] items = {
-//                108335, 391825, 340367, 286457, 661741
-//        };
+        Integer[] items = {
+                108335, 391825, 340367, 286457, 661741
+        };
 //        Integer[] items = {
 //                281610, 342706, 111873, 198029, 366109, 287261, 76283, 254489, 258540, 286457
 //        };
 //
-        Integer[] items = {
-                427230, 372539, 396879, 391680, 208660, 105912, 332555, 227534, 68048, 188856, 736830, 736831, 479020, 103313, 1
-        };
+//        Integer[] items = {
+//                427230, 372539, 396879, 391680, 208660, 105912, 332555, 227534, 68048, 188856, 736830, 736831, 479020, 103313, 1
+//        };
 //
 //        Integer[] items = {
 //                633, 1321, 3401, 5329, 10438
@@ -407,7 +407,7 @@ public class PrimaryController {
 //        primaryController.currentOrderItems.add(primaryController.getItemByID(661741));
 
         System.out.println();
-        tsp_ga = new TSP_GA(30, primaryController.currentOrderItems.size(), 6000, 0.8f, 0.9f);
+        tsp_ga = new TSP_GA(30, primaryController.currentOrderItems.size(), 1000, 0.8f, 0.9f);
         tsp_ga.init(primaryController.currentOrderItems, primaryController.warehouseMatrix);
 
         int timeOut = 60000;
