@@ -1,0 +1,96 @@
+package warehouse;
+
+import java.util.ArrayList;
+class BruteForcePath {
+
+    int[][] currentLookupTable = null;
+    int minPathCost = Integer.MAX_VALUE;
+    ArrayList<Integer> minPath= null;
+
+    BruteForcePath(ArrayList<ArrayList<Integer>> currentLookupTable) {
+        this.currentLookupTable = new int[currentLookupTable.size()][3];
+        for (int i = 0; i < this.currentLookupTable.length; i++) {
+            for (int j = 0; j < 3; j++) {
+                this.currentLookupTable[i][j] = currentLookupTable.get(i).get(j);
+            }
+        }
+        this.minPath = new ArrayList<>();
+    }
+
+    boolean isSafe(int v, int graph[][], ArrayList<Integer> path, int pos) {
+        if (graph[path.get(pos - 1)][v] == 0)
+            return false;
+
+        for (int i = 0; i < pos; i++)
+            if (path.get(i) == v)
+                return false;
+
+        return true;
+    }
+
+    void findShortestPath(int graph[][]) {
+        ArrayList<Integer> path = new ArrayList<>();
+        path.add(0);
+
+        boolean[] visited = new boolean[graph.length];
+
+        for (int i = 0; i < visited.length; i++) {
+            for (int k = 0; k < 3; k++) {
+                visited[currentLookupTable[i][k]] = false;
+            }
+            visited[i] = false;
+        }
+
+        for (int k = 0; k < 1; k++) {
+            visited[currentLookupTable[0][k]] = true;
+        }
+        visited[0] = true;
+
+        findPaths(graph, 1, path, visited);
+    }
+
+    void findPaths(int graph[][], int pos, ArrayList<Integer> path, boolean[] visited) {
+        if (pos == graph.length - (3* (pos -1))) {
+
+            if (graph[path.get(path.size() - 1)][path.get(0)] != 0) {
+
+                path.add(0);
+                int pathSize = path.size();
+                int pathCost = 0;
+
+                for (int i = 0; i < pathSize; i++) {
+                    if (i < pathSize -1) {
+                        pathCost += graph[path.get(i)][path.get(i + 1)];
+                    }
+                }
+                if (pathCost < minPathCost) {
+                    minPathCost = pathCost;
+                    minPath = new ArrayList<>(path);
+                }
+
+                path.remove(path.size() - 1);
+            }
+            return;
+        }
+
+        for (int v = 0; v < graph.length; v++) {
+            if (isSafe(v, graph, path, pos) && !visited[v]) {
+
+                path.add(v);
+                for (int k = 0; k < 3; k++) {
+                    visited[currentLookupTable[v][k]] = true;
+                }
+                visited[v] = true;
+
+                findPaths(graph, pos + 1, path, visited);
+
+                for (int k = 0; k < 3; k++) {
+                    visited[currentLookupTable[v][k]] = false;
+                }
+                visited[v] = false;
+                path.remove(path.size() - 1);
+            }
+        }
+    }
+
+}
