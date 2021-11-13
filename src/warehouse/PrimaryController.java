@@ -1,6 +1,5 @@
 package warehouse;
 
-import java.awt.image.ImageProducer;
 import java.util.ArrayList;
 import java.io.*;
 import java.util.HashMap;
