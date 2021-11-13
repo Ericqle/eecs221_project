@@ -90,6 +90,7 @@ class DynamicProgrammingPath {
             if (i == start) continue;
             int tourCost = memo[i][END_STATE] + distance[i][start];
             if (tourCost < minTourCost) {
+                System.out.println(tourCost);
                 minTourCost = tourCost;
             }
         }

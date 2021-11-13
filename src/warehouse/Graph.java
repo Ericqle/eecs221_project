@@ -10,7 +10,7 @@ public class Graph {
 
         for (int i = 0; i < numVertices; i++) {
             for (int j = 0; j < numVertices; j++) {
-                matrix[i][j] = 0;
+                matrix[i][j] = -1;
             }
         }
     }

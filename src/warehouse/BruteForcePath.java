@@ -18,7 +18,7 @@ class BruteForcePath {
     }
 
     boolean isSafe(int v, int graph[][], ArrayList<Integer> path, int pos) {
-        if (graph[path.get(pos - 1)][v] == 0)
+        if (graph[path.get(pos - 1)][v] == -1)
             return false;
 
         for (int i = 0; i < pos; i++)

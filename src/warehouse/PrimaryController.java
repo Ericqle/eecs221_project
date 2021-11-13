@@ -1,7 +1,9 @@
 package warehouse;
 
+import java.awt.image.ImageProducer;
 import java.util.ArrayList;
 import java.io.*;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -262,11 +264,43 @@ public class PrimaryController {
     ArrayList<Coordinate> currentOrderCoordinates4N = null;
     ArrayList<ArrayList<Integer>> currentLookupTable = null;
 
+    HashMap<Integer, ArrayList<Integer>> itemsOnSameShelfMap = null;
+    ArrayList<Item> currentOrderItemsByShelf = null;
+
     ArrayList<Integer> shortestPathCoordIndices = null;
     int shortestPathCost = 0;
 
+    int isSharingShelf(Item item){
+        for (int i = 0; i < currentOrderItemsByShelf.size(); i++) {
+            if ((item.row == currentOrderItemsByShelf.get(i).row) && (item.col == currentOrderItemsByShelf.get(i).col)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    void setOrderItemsByShelves() {
+        itemsOnSameShelfMap = new HashMap<>();
+        currentOrderItemsByShelf = new ArrayList<>();
+
+        for (int i = 0; i < currentOrderItems.size(); i++) {
+            Item item = currentOrderItems.get(i);
+            int currentSharedShelfIndex = isSharingShelf(item);
+            if (currentSharedShelfIndex == -1) {
+                currentOrderItemsByShelf.add(item);
+            }
+            else{
+                if (itemsOnSameShelfMap.get(currentSharedShelfIndex) == null) {
+                    itemsOnSameShelfMap.put(currentSharedShelfIndex, new ArrayList<>());
+                }
+                itemsOnSameShelfMap.get(currentSharedShelfIndex).add(i);
+            }
+        }
+
+    }
+
     void setLookUpTable () {
-        int orderSize = currentOrderItems.size();
+        int orderSize = currentOrderItemsByShelf.size();
         ArrayList<ArrayList<Integer>> groupLookupTable = new ArrayList<ArrayList<Integer>>();;
         int lookUpTableSize = 4*orderSize+1;
 
@@ -292,7 +326,9 @@ public class PrimaryController {
     }
 
     void setCurrentOrderGraph4N(){
-        int orderSize = currentOrderItems.size();
+        setOrderItemsByShelves();
+
+        int orderSize = currentOrderItemsByShelf.size();
         int numNodes = 4 * orderSize + 1;
         currentOrderGraph = new Graph(numNodes);
 
@@ -300,12 +336,12 @@ public class PrimaryController {
         int[] colNum = {0, 1, 0, -1};
         currentOrderCoordinates4N = new ArrayList<>();
 
-        for (Item item: currentOrderItems) {
+        for (Item item: currentOrderItemsByShelf) {
             markItemInWarehouseMatrix(item.id);
         }
 
         currentOrderCoordinates4N.add(new Coordinate(0,0));
-        for (Item item: currentOrderItems) {
+        for (Item item: currentOrderItemsByShelf) {
 
             for (int i = 0; i < 4; i++) {
                 int row = item.row + rowNum[i];
@@ -317,9 +353,9 @@ public class PrimaryController {
             }
         }
 
-        for (Coordinate c: currentOrderCoordinates4N) {
-            System.out.println(c.x + " " + c.y);
-        }
+//        for (Coordinate c: currentOrderCoordinates4N) {
+//            System.out.println(c.x + " " + c.y);
+//        }
 
         for (int i = 0; i < numNodes - 1; i++) {
             for (int j = i + 1; j < numNodes; j++) {
@@ -333,24 +369,11 @@ public class PrimaryController {
                     currentOrderGraph.addEdge(i, j, weight);
                 }
                 else
-                    currentOrderGraph.addEdge(i, j, 0);
+                    currentOrderGraph.addEdge(i, j, -1);
             }
         }
     }
 
-    void findPathsBruteForce() {
-        setLookUpTable();
-        BruteForcePath bruteForcePath = new BruteForcePath(currentLookupTable);
-        bruteForcePath.findShortestPath(currentOrderGraph.matrix);
-        shortestPathCoordIndices = bruteForcePath.minPath;
-        shortestPathCost = bruteForcePath.minPathCost;
-    }
-    void findPathDynamicProgramming() {
-        setLookUpTable();
-        DynamicProgrammingPath dynamicProgrammingPath = new DynamicProgrammingPath(currentOrderGraph.matrix, currentLookupTable);
-        shortestPathCost = dynamicProgrammingPath.getTourCost();
-        System.out.println(shortestPathCost);
-    }
     void markFullPath() {
         for (int i = 0; i < shortestPathCoordIndices.size() - 1; i++) {
             Coordinate source = currentOrderCoordinates4N.get(shortestPathCoordIndices.get(i));
@@ -361,12 +384,32 @@ public class PrimaryController {
     }
 
     void printCurrentOrderGraph(){
+        System.out.println("Item graph -4 adjacent nodes per item; no duplicate shelves-");
         currentOrderGraph.printGraph();
+        System.out.println();
+    }
+
+    void findPathsBruteForce() {
+        setCurrentOrderGraph4N();
+        setLookUpTable();
+        printCurrentOrderGraph();
+        BruteForcePath bruteForcePath = new BruteForcePath(currentLookupTable);
+        bruteForcePath.findShortestPath(currentOrderGraph.matrix);
+        shortestPathCoordIndices = bruteForcePath.minPath;
+        shortestPathCost = bruteForcePath.minPathCost;
+    }
+    void findPathDynamicProgramming() {
+        setCurrentOrderGraph4N();
+        setLookUpTable();
+        printCurrentOrderGraph();
+        DynamicProgrammingPath dynamicProgrammingPath = new DynamicProgrammingPath(currentOrderGraph.matrix, currentLookupTable);
+        shortestPathCost = dynamicProgrammingPath.getTourCost();
+        System.out.println(shortestPathCost);
     }
 
     public static void main(String[] args) {
-//        String filePath = "/Users/eric/Desktop/eecs221_project/src/warehouse/qvBox-warehouse-data-f21-v01.txt";
-        String filePath = "src/warehouse/qvBox-warehouse-data-f21-v01.txt";
+        String filePath = "/Users/eric/Desktop/eecs221_project/src/warehouse/qvBox-warehouse-data-f21-v01.txt";
+//        String filePath = "src/warehouse/qvBox-warehouse-data-f21-v01.txt";
         PrimaryController primaryController = new PrimaryController();
         try {
             primaryController.readAllItems(filePath);
@@ -377,32 +420,54 @@ public class PrimaryController {
         primaryController.setWarehouseMatrix();
 
 //        Integer[] items = {633, 1321, 45, 23592, 23858, 23873};
-        Integer[] items = {45};
+        Integer[] items = {281610, 342706, 111873, 198029, 366109, 287261, 76283, 254489, 258540, 286457};
         for (Integer i : items) {
             primaryController.currentOrderItems.add(primaryController.getItemByID(i));
         }
 
+        System.out.println("Items in current order");
         for (Item item:
                 primaryController.currentOrderItems) {
             System.out.println(item.id + " " + item.row + " " + item.col);
         };
-        primaryController.setCurrentOrderGraph4N();
         System.out.println();
 
+        primaryController.findPathsBruteForce();
+//        primaryController.findPathDynamicProgramming();
+        primaryController.markFullPath();
         primaryController.printWarehouseMatrix();
-        System.out.println();
-
-        primaryController.printCurrentOrderGraph();
-        System.out.println();
-
-//        primaryController.findPathsBruteForce();
-        primaryController.findPathDynamicProgramming();
-//        primaryController.markFullPath();
-//        primaryController.printWarehouseMatrix();
         System.out.println();
 
         System.out.println(primaryController.shortestPathCoordIndices);
         System.out.println(primaryController.shortestPathCost);
+        System.out.println();
 
+        System.out.println("Item pickup path order");
+        for (int i: primaryController.shortestPathCoordIndices) {
+            int itemIndex = (int)( Math.ceil(i/4.0) - 1);
+            if(itemIndex >= 0) {
+                Item item = primaryController.currentOrderItemsByShelf.get(itemIndex);
+                System.out.print( "(" + item.id + " " + item.row + " " + item.col + ")");
+                if (primaryController.itemsOnSameShelfMap.get(itemIndex) != null) {
+                    for (int itemOnSameShelfIndex: primaryController.itemsOnSameShelfMap.get(itemIndex)) {
+                        Item itemOnSameShelf = primaryController.currentOrderItems.get(itemOnSameShelfIndex);
+                        System.out.print(" (" + itemOnSameShelf.id + " " + itemOnSameShelf.row + " " + itemOnSameShelf.col + ")");
+                    }
+                }
+                System.out.println();
+            }
+        }
+        System.out.println();
+
+        System.out.println("Items that share a shelf");
+        for (int i = 0 ; i < primaryController.currentOrderItemsByShelf.size(); i++) {
+            if (primaryController.itemsOnSameShelfMap.get(i) != null) {
+                System.out.print(primaryController.currentOrderItemsByShelf.get(i).id + " ");
+                for (int itemOnSameShelfIndex: primaryController.itemsOnSameShelfMap.get(i)) {
+                    System.out.print(primaryController.currentOrderItems.get(itemOnSameShelfIndex).id + " ");
+                }
+                System.out.println();
+            }
+        }
     }
 }
