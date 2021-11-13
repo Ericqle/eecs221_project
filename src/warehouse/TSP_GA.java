@@ -194,17 +194,29 @@ public class TSP_GA {
                 c1 = new Coordinate(x1, y1);
 
                 if(i != tour.size()-1) {
+                    int m = 0;
                     for (int j = 1; j < path.size() - 1; j++) {
-                        System.out.println(count + ": " +String.valueOf(path.get(j).coordinate.x) + " " + path.get(j).coordinate.y);
+                        System.out.print(count + ": " +String.valueOf(path.get(j).coordinate.x) + " " + path.get(j).coordinate.y +"\t");
+                        m++;
+                        if(m % 5 == 0)
+                            System.out.println();
                         count++;
                     }
-                    System.out.println("getItem: " + PrimaryController.getItemByID(tour.get(i)).id);
+                    System.out.println();
+                    System.out.print("getItem: " + PrimaryController.getItemByID(tour.get(i)).id );
+                    System.out.println();
                 }else{
+                    int n = 0;
                     for (int j = 1; j < path.size(); j++) {
-                        System.out.println(count + ": " + String.valueOf(path.get(j).coordinate.x) + " " + path.get(j).coordinate.y);
+                        n++;
+                        System.out.print(count + ": " + String.valueOf(path.get(j).coordinate.x) + " " + path.get(j).coordinate.y +"\t");
+                        if(n % 5 == 0)
+                            System.out.println();
                         count ++;
                     }
+                    System.out.println();
                     System.out.println("getItem: " + 0);
+                    System.out.println();
                 }
             }
     }

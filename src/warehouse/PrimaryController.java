@@ -378,6 +378,7 @@ public class PrimaryController {
 //        Integer[] items = {
 //                108335
 //        };
+
         Integer[] items = {
                 108335, 391825, 340367, 286457, 661741
         };
@@ -388,7 +389,7 @@ public class PrimaryController {
 //        Integer[] items = {
 //                427230, 372539, 396879, 391680, 208660, 105912, 332555, 227534, 68048, 188856, 736830, 736831, 479020, 103313, 1
 //        };
-//
+
 //        Integer[] items = {
 //                633, 1321, 3401, 5329, 10438
 //                , 372539, 396879, 16880, 208660, 105912,
@@ -414,27 +415,27 @@ public class PrimaryController {
         List<Integer> route = tsp_ga.solve(timeOut);
         System.out.println(route);
 
-//        for (Item item:
-//                primaryController.currentOrderItems) {
-//            System.out.println(item.id + " " + item.row + " " + item.col);
-//        };
-//
-//        primaryController.setCurrentOrderGraph4N();
-//        System.out.println();
-//
-//        primaryController.printWarehouseMatrix();
-//        System.out.println();
-//
-//        primaryController.printCurrentOrderGraph();
-//        System.out.println();
-//
-//        primaryController.findPathsBruteForce();
-//        primaryController.markFullPath();
-//        primaryController.printWarehouseMatrix();
-//        System.out.println();
-//
-//        System.out.println(primaryController.shortestPathCoordIndices);
-//        System.out.println(primaryController.shortestPathCost);
+        for (Item item:
+                primaryController.currentOrderItems) {
+            System.out.println(item.id + " " + item.row + " " + item.col);
+        };
+
+        primaryController.setCurrentOrderGraph4N();
+        System.out.println();
+
+        primaryController.printWarehouseMatrix();
+        System.out.println();
+
+        primaryController.printCurrentOrderGraph();
+        System.out.println();
+
+        primaryController.findPathsBruteForce();
+        primaryController.markFullPath();
+        primaryController.printWarehouseMatrix();
+        System.out.println();
+
+        System.out.println(primaryController.shortestPathCoordIndices);
+        System.out.println(primaryController.shortestPathCost);
 
     }
 }
