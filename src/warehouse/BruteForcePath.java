@@ -1,6 +1,12 @@
 package warehouse;
 
 import java.util.ArrayList;
+
+/* Brute Force Solution
+    - Recursively find all hamiltonian cycles
+        - calculated cost of each cycle
+        - track, compare and save the shortest cycle
+     */
 class BruteForcePath {
 
     int[][] currentLookupTable = null;
