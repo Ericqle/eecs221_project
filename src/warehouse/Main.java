@@ -109,9 +109,10 @@ public class Main {
                         int productid = scanner.nextInt();
                         primaryController.currentOrderItems.add(primaryController.getItemByID(productid));
                     }
-                    System.out.println("Please select the algorithm you want to use to get the route path-----> 1 for BF 2. for GA");
-                    int algorithm = scanner.nextInt();
-                    if(algorithm == 1){
+//                    System.out.println("Please select the algorithm you want to use to get the route path-----> 1 for BF 2. for GA");
+//                    int algorithm = scanner.nextInt();
+//                    if(algorithm == 1){
+                    if(size <= 8){
                         primaryController.findPathsBruteForce();
                         primaryController.markFullPath();
                         primaryController.printWarehouseMatrix();
@@ -125,7 +126,8 @@ public class Main {
                         System.out.println();
                         System.out.println(primaryController.shortestPathCoordIndices);
                     }
-                    else if(algorithm == 2){
+//                    else if(algorithm == 2){
+                    else if(size > 8){
                         primaryController.findPathGeneticAlgorithm();
                     }else {
                         System.out.println("Invalid input! Please input the correct number.");
