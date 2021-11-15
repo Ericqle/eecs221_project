@@ -553,92 +553,101 @@ public class PrimaryController {
         shortestPathCost = bruteForcePath.minPathCost;
     }
 
-    ArrayList<Vertex> setBFSPath(char[][] warehouseMatrix, Coordinate c1, Coordinate c2){
-        ArrayList<Vertex> path;
+    void findPathGeneticAlgorithm(){
+        TSP_GA tsp_ga = new TSP_GA();
+        tsp_ga = new TSP_GA(30, currentOrderItems.size(), 1000, 0.8f, 0.9f);
+        tsp_ga.init(currentOrderItems, warehouseMatrix);
 
-        char temp1 = warehouseMatrix[c1.x][c1.y];
-        char temp2 = warehouseMatrix[c2.x][c2.y];
-        warehouseMatrix[c1.x][c1.y] = '.';
-        warehouseMatrix[c2.x][c2.y] = '.';
-
-        path = Item2ItemPath.findBFSPath(warehouseMatrix, c1, c2);
-
-        warehouseMatrix[c1.x][c1.y] = temp1;
-        warehouseMatrix[c2.x][c2.y] = temp2;
-
-//            if(c1.x == 0 && c1.y == 0 )
-//                warehouseMatrix[c1.x][c1.y] = 'U';
-//            else if(c2.x == 0 && c2.y == 0)
-//                warehouseMatrix[c2.x][c2.y] = 'U';
-        return path;
+        int timeOut = 60000;
+        ArrayList<Integer> route = tsp_ga.solve(timeOut);
+        System.out.println(route);
     }
 
+//    ArrayList<Vertex> setBFSPath(char[][] warehouseMatrix, Coordinate c1, Coordinate c2){
+//        ArrayList<Vertex> path;
+//
+//        char temp1 = warehouseMatrix[c1.x][c1.y];
+//        char temp2 = warehouseMatrix[c2.x][c2.y];
+//        warehouseMatrix[c1.x][c1.y] = '.';
+//        warehouseMatrix[c2.x][c2.y] = '.';
+//
+//        path = Item2ItemPath.findBFSPath(warehouseMatrix, c1, c2);
+//
+//        warehouseMatrix[c1.x][c1.y] = temp1;
+//        warehouseMatrix[c2.x][c2.y] = temp2;
+//
+////            if(c1.x == 0 && c1.y == 0 )
+////                warehouseMatrix[c1.x][c1.y] = 'U';
+////            else if(c2.x == 0 && c2.y == 0)
+////                warehouseMatrix[c2.x][c2.y] = 'U';
+//        return path;
+//    }
 
-    void printRoute(ArrayList<Integer> tour) {
-        ArrayList<Vertex> path;
-        int x1, y1;
-        Coordinate c1 =new Coordinate(0, 0);
 
-        int count = 1;
-        String temp = "";
-        for(int i = 1; i< tour.size(); i++){
-            if(i != tour.size()-1) {
-                Coordinate c2 = new Coordinate(
-                        PrimaryController.getItemByID(tour.get(i)).row,
-                        PrimaryController.getItemByID(tour.get(i)).col);
-                path = setBFSPath(warehouseMatrix, c1, c2);
-//                currentItem2ItemPath = path;
-//                if(!Objects.equals(temp, makeUserInstruction1())) {
-//                    System.out.println(makeUserInstruction1());
+//    void printRoute(ArrayList<Integer> tour) {
+//        ArrayList<Vertex> path;
+//        int x1, y1;
+//        Coordinate c1 =new Coordinate(0, 0);
+//
+//        int count = 1;
+//        String temp = "";
+//        for(int i = 1; i< tour.size(); i++){
+//            if(i != tour.size()-1) {
+//                Coordinate c2 = new Coordinate(
+//                        PrimaryController.getItemByID(tour.get(i)).row,
+//                        PrimaryController.getItemByID(tour.get(i)).col);
+//                path = setBFSPath(warehouseMatrix, c1, c2);
+////                currentItem2ItemPath = path;
+////                if(!Objects.equals(temp, makeUserInstruction1())) {
+////                    System.out.println(makeUserInstruction1());
+////                }
+//            }else{
+//                path = setBFSPath(warehouseMatrix, c1, new Coordinate(0,0));
+////                currentItem2ItemPath = path;
+////                if(!Objects.equals(temp, makeUserInstruction())) {
+////                    System.out.println(makeUserInstruction());
+////                }
+//            }
+//            x1 = path.get(path.size() - 2).coordinate.x;
+//            y1 = path.get(path.size() - 2).coordinate.y;
+//            c1 = new Coordinate(x1, y1);
+//
+//            if(i != tour.size()-1) {
+//                int m = 0;
+//                for (int j = 1; j < path.size() - 1; j++) {
+//                    System.out.print(count + ": " +String.valueOf(path.get(j).coordinate.x) + " " + path.get(j).coordinate.y +"\t");
+//                    m++;
+//                    if(m % 5 == 0)
+//                        System.out.println();
+//                    count++;
 //                }
-            }else{
-                path = setBFSPath(warehouseMatrix, c1, new Coordinate(0,0));
-//                currentItem2ItemPath = path;
-//                if(!Objects.equals(temp, makeUserInstruction())) {
-//                    System.out.println(makeUserInstruction());
+//
+//                System.out.println();
+//                    System.out.println("getItem: " + PrimaryController.getItemByID(tour.get(i)).id );
+////                if(!Objects.equals(temp, makeUserInstruction1()))
+//                    System.out.println();
+//            }else{
+//                int n = 0;
+//                for (int j = 1; j < path.size(); j++) {
+//                    n++;
+//                    System.out.print(count + ": " + String.valueOf(path.get(j).coordinate.x) + " " + path.get(j).coordinate.y +"\t");
+//                    if(n % 5 == 0)
+//                        System.out.println();
+//                    count ++;
 //                }
-            }
-            x1 = path.get(path.size() - 2).coordinate.x;
-            y1 = path.get(path.size() - 2).coordinate.y;
-            c1 = new Coordinate(x1, y1);
-
-            if(i != tour.size()-1) {
-                int m = 0;
-                for (int j = 1; j < path.size() - 1; j++) {
-                    System.out.print(count + ": " +String.valueOf(path.get(j).coordinate.x) + " " + path.get(j).coordinate.y +"\t");
-                    m++;
-                    if(m % 5 == 0)
-                        System.out.println();
-                    count++;
-                }
-
-                System.out.println();
-                    System.out.println("getItem: " + PrimaryController.getItemByID(tour.get(i)).id );
-//                if(!Objects.equals(temp, makeUserInstruction1()))
-                    System.out.println();
-            }else{
-                int n = 0;
-                for (int j = 1; j < path.size(); j++) {
-                    n++;
-                    System.out.print(count + ": " + String.valueOf(path.get(j).coordinate.x) + " " + path.get(j).coordinate.y +"\t");
-                    if(n % 5 == 0)
-                        System.out.println();
-                    count ++;
-                }
-                System.out.println();
-                System.out.println("getItem: " + 0);
-//                if(!Objects.equals(temp, makeUserInstruction1()))
-                    System.out.println();
-            }
-//            temp = makeUserInstruction1();
-        }
-    }
+//                System.out.println();
+//                System.out.println("getItem: " + 0);
+////                if(!Objects.equals(temp, makeUserInstruction1()))
+//                    System.out.println();
+//            }
+////            temp = makeUserInstruction1();
+//        }
+//    }
 
     public static void main(String[] args) {
         String filePath = "C:\\Users\\10720\\Desktop\\v01.txt";
 //        String filePath = "src/warehouse/qvBox-warehouse-data-f21-v01.txt";
         PrimaryController primaryController = new PrimaryController();
-        TSP_GA tsp_ga = new TSP_GA();
         try {
             primaryController.readAllItems(filePath);
         }
@@ -647,10 +656,11 @@ public class PrimaryController {
         }
         primaryController.setWarehouseMatrix();
 
-//        Integer[] items = {633, 1321, 45, 23592, 23858, 23873};
+//        Integer[] items = {108335};
+//        Integer[] items = {108335, 391825, 340367, 286457, 661741};
 //        Integer[] items = {281610, 342706, 111873, 198029, 366109, 287261, 76283, 254489, 258540, 286457};
-        Integer[] items = {427230, 372539, 396879, 391680, 208660, 105912, 332555, 227534, 68048, 188856, 736830, 736831, 479020, 103313, 1};
-//        Integer[] items = {633, 1321, 3401, 5329, 10438, 372539, 396879, 16880, 208660, 105912, 332555, 227534, 68048, 188856, 736830, 736831, 479020, 103313, 1, 20373};
+//        Integer[] items = {427230, 372539, 396879, 391680, 208660, 105912, 332555, 227534, 68048, 188856, 736830, 736831, 479020, 103313, 1};
+        Integer[] items = {633, 1321, 3401, 5329, 10438, 372539, 396879, 16880, 208660, 105912, 332555, 227534, 68048, 188856, 736830, 736831, 479020, 103313, 1, 20373};
 
 
         for (Integer i : items) {
@@ -664,27 +674,29 @@ public class PrimaryController {
         };
         System.out.println();
 
-        primaryController.findPathsBruteForce();
-        primaryController.markFullPath();
-        primaryController.printWarehouseMatrix();
+//        primaryController.findPathsBruteForce();
+//        primaryController.markFullPath();
+//        primaryController.printWarehouseMatrix();
         System.out.println();
 
-        System.out.println("Path Cost");
-        System.out.println(primaryController.shortestPathCost);
-        System.out.println();
+//        System.out.println("---------Brute Force--------");
+//        System.out.println("Path Cost ");
+//        System.out.println(primaryController.shortestPathCost);
+//        System.out.println();
 
-        primaryController.printFullPathInstructions();
-        System.out.println();
-        System.out.println(primaryController.shortestPathCoordIndices);
+//        primaryController.printFullPathInstructions();
+//        System.out.println();
+//        System.out.println(primaryController.shortestPathCoordIndices);
 
-        System.out.println();
-        tsp_ga = new TSP_GA(30, primaryController.currentOrderItems.size(), 1000, 0.8f, 0.9f);
-        tsp_ga.init(primaryController.currentOrderItems, primaryController.warehouseMatrix);
-
-        int timeOut = 60000;
-        ArrayList<Integer> route = tsp_ga.solve(timeOut);
-        System.out.println(route);
-        primaryController.printRoute(route);
+        System.out.println("---------Genetic Algorithm--------");
+        primaryController.findPathGeneticAlgorithm();
+//        tsp_ga = new TSP_GA(30, primaryController.currentOrderItems.size(), 1000, 0.8f, 0.9f);
+//        tsp_ga.init(primaryController.currentOrderItems, primaryController.warehouseMatrix);
+//
+//        int timeOut = 60000;
+//        ArrayList<Integer> route = tsp_ga.solve(timeOut);
+//        System.out.println(route);
+//        primaryController.printRoute(route);
 
 
 //        System.out.println("Item pickup path order");

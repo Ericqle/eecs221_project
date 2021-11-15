@@ -126,13 +126,7 @@ public class Main {
                         System.out.println(primaryController.shortestPathCoordIndices);
                     }
                     else if(algorithm == 2){
-                        tsp_ga = new TSP_GA(30, primaryController.currentOrderItems.size(), 1000, 0.8f, 0.9f);
-                        tsp_ga.init(primaryController.currentOrderItems, primaryController.warehouseMatrix);
-
-                        int timeOut = 60000;
-                        ArrayList<Integer> route = tsp_ga.solve(timeOut);
-                        System.out.println(route);
-//                        primaryController.printRoute(route);
+                        primaryController.findPathGeneticAlgorithm();
                     }else {
                         System.out.println("Invalid input! Please input the correct number.");
                     }
