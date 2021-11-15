@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.io.*;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -201,7 +202,7 @@ public class PrimaryController {
         StringBuilder instructions = new StringBuilder();
 
         ArrayList<String> directionList = new ArrayList<>();
-        for (int i = 1; i < currentItem2ItemPath.size(); i++) {
+        for (int i = 1; i < currentItem2ItemPath.size() ; i++) {
             String xDirection = "East";
             String yDirection = "North";
             int x0 = currentItem2ItemPath.get(i - 1).coordinate.x;
@@ -219,8 +220,11 @@ public class PrimaryController {
                 directionList.add(xDirection);
             }
         }
+        String currDirection;
+        currDirection = directionList.get(0);
+//        else
+//            currDirection = " ";
 
-        String currDirection = directionList.get(0);
         int currentDirCount = 1;
 
         if (directionList.size() == 1) {
@@ -254,6 +258,64 @@ public class PrimaryController {
 
         return instructions.toString().trim();
     }
+
+//    String makeUserInstruction1() {
+//        StringBuilder instructions = new StringBuilder();
+//
+//        ArrayList<String> directionList = new ArrayList<>();
+//        for (int i = 1; i < currentItem2ItemPath.size()-1; i++) {
+//            String xDirection = "East";
+//            String yDirection = "North";
+//            int x0 = currentItem2ItemPath.get(i - 1).coordinate.x;
+//            int x1 = currentItem2ItemPath.get(i).coordinate.x;
+//            int y0 = currentItem2ItemPath.get(i - 1).coordinate.y;
+//            int y1 = currentItem2ItemPath.get(i).coordinate.y;
+//            if ((x1 - x0) == 0) {
+//                if ((y1 - y0) < 0)
+//                    yDirection = "South";
+//                directionList.add(yDirection);
+//            }
+//            else if ((y1 - y0) == 0){
+//                if ((x1 - x0) < 0)
+//                    xDirection = "West";
+//                directionList.add(xDirection);
+//            }
+//        }
+//
+//        String currDirection = directionList.get(0);
+//        int currentDirCount = 1;
+//
+//        for (int i = 1; i < directionList.size(); i++) {
+//            if (directionList.get(i).equals(currDirection)) {
+//                currentDirCount = currentDirCount + 1;
+//                if (i == directionList.size() - 1 && currentDirCount > 1) {
+//                    instructions.append("Move " + currDirection + " " + currentDirCount + " units  ");
+//                }
+//                else if(i == directionList.size() - 1 && currentDirCount == 1) {
+//                    instructions.append("Move " + currDirection + " " + currentDirCount + " units  ");
+//                }
+//            }
+//            else {
+//                if(currentDirCount > 1) {
+//                    instructions.append("Move " + currDirection + " " + currentDirCount + " units  ");
+//                }
+//                else if(currentDirCount == 1){
+//                    instructions.append("Move " + currDirection + " " + currentDirCount + " unit  ");
+//                }
+//                currDirection = directionList.get(i);
+//                currentDirCount = 1;
+//                if (i == directionList.size() - 1 && currentDirCount > 1) {
+//                    instructions.append("Move " + currDirection + " " + currentDirCount + " units  ");
+//                }
+//                else if(i == directionList.size() - 1 && currentDirCount == 1){
+//                    instructions.append("Move " + currDirection + " " + currentDirCount + " unit ");
+//                }
+//            }
+//
+//        }
+//        return instructions.toString();
+//    }
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //  Brute Force Beta Release Implementation     ////////////////////////////////////////////////////////////////
@@ -493,14 +555,13 @@ public class PrimaryController {
 
     ArrayList<Vertex> setBFSPath(char[][] warehouseMatrix, Coordinate c1, Coordinate c2){
         ArrayList<Vertex> path;
-        Item2ItemPath itemPath = new Item2ItemPath();
 
         char temp1 = warehouseMatrix[c1.x][c1.y];
         char temp2 = warehouseMatrix[c2.x][c2.y];
         warehouseMatrix[c1.x][c1.y] = '.';
         warehouseMatrix[c2.x][c2.y] = '.';
 
-        path = itemPath.findBFSPath(warehouseMatrix, c1, c2);
+        path = Item2ItemPath.findBFSPath(warehouseMatrix, c1, c2);
 
         warehouseMatrix[c1.x][c1.y] = temp1;
         warehouseMatrix[c2.x][c2.y] = temp2;
@@ -512,20 +573,30 @@ public class PrimaryController {
         return path;
     }
 
-    void printRoute(List<Integer> tour) {
+
+    void printRoute(ArrayList<Integer> tour) {
         ArrayList<Vertex> path;
         int x1, y1;
         Coordinate c1 =new Coordinate(0, 0);
 
         int count = 1;
+        String temp = "";
         for(int i = 1; i< tour.size(); i++){
             if(i != tour.size()-1) {
                 Coordinate c2 = new Coordinate(
                         PrimaryController.getItemByID(tour.get(i)).row,
                         PrimaryController.getItemByID(tour.get(i)).col);
                 path = setBFSPath(warehouseMatrix, c1, c2);
+//                currentItem2ItemPath = path;
+//                if(!Objects.equals(temp, makeUserInstruction1())) {
+//                    System.out.println(makeUserInstruction1());
+//                }
             }else{
                 path = setBFSPath(warehouseMatrix, c1, new Coordinate(0,0));
+//                currentItem2ItemPath = path;
+//                if(!Objects.equals(temp, makeUserInstruction())) {
+//                    System.out.println(makeUserInstruction());
+//                }
             }
             x1 = path.get(path.size() - 2).coordinate.x;
             y1 = path.get(path.size() - 2).coordinate.y;
@@ -540,9 +611,11 @@ public class PrimaryController {
                         System.out.println();
                     count++;
                 }
+
                 System.out.println();
-                System.out.print("getItem: " + PrimaryController.getItemByID(tour.get(i)).id );
-                System.out.println();
+                    System.out.println("getItem: " + PrimaryController.getItemByID(tour.get(i)).id );
+//                if(!Objects.equals(temp, makeUserInstruction1()))
+                    System.out.println();
             }else{
                 int n = 0;
                 for (int j = 1; j < path.size(); j++) {
@@ -554,8 +627,10 @@ public class PrimaryController {
                 }
                 System.out.println();
                 System.out.println("getItem: " + 0);
-                System.out.println();
+//                if(!Objects.equals(temp, makeUserInstruction1()))
+                    System.out.println();
             }
+//            temp = makeUserInstruction1();
         }
     }
 
@@ -581,34 +656,35 @@ public class PrimaryController {
         for (Integer i : items) {
             primaryController.currentOrderItems.add(primaryController.getItemByID(i));
         }
+//
+        System.out.println("Items in current order");
+        for (Item item:
+                primaryController.currentOrderItems) {
+            System.out.println(item.id + " " + item.row + " " + item.col);
+        };
+        System.out.println();
 
-//        System.out.println("Items in current order");
-//        for (Item item:
-//                primaryController.currentOrderItems) {
-//            System.out.println(item.id + " " + item.row + " " + item.col);
-//        };
-//        System.out.println();
-//
-//        primaryController.findPathsBruteForce();
-//        primaryController.markFullPath();
-//        primaryController.printWarehouseMatrix();
-//        System.out.println();
-//
-//        System.out.println("Path Cost");
-//        System.out.println(primaryController.shortestPathCost);
-//        System.out.println();
-//
-//        primaryController.printFullPathInstructions();
-//        System.out.println();
+        primaryController.findPathsBruteForce();
+        primaryController.markFullPath();
+        primaryController.printWarehouseMatrix();
+        System.out.println();
+
+        System.out.println("Path Cost");
+        System.out.println(primaryController.shortestPathCost);
+        System.out.println();
+
+        primaryController.printFullPathInstructions();
+        System.out.println();
+        System.out.println(primaryController.shortestPathCoordIndices);
 
         System.out.println();
         tsp_ga = new TSP_GA(30, primaryController.currentOrderItems.size(), 1000, 0.8f, 0.9f);
         tsp_ga.init(primaryController.currentOrderItems, primaryController.warehouseMatrix);
 
-        int timeOut = 600000;
-        List<Integer> route = tsp_ga.solve(timeOut);
+        int timeOut = 60000;
+        ArrayList<Integer> route = tsp_ga.solve(timeOut);
         System.out.println(route);
-//        primaryController.printRoute(route);
+        primaryController.printRoute(route);
 
 
 //        System.out.println("Item pickup path order");

@@ -110,7 +110,7 @@ public class TSP_GA {
         }
     }
 
-    public List<Integer> solve(int timeOut) {
+    public ArrayList<Integer> solve(int timeOut) {
         if (itemNum == 1) {
             int x = currentOrderItems.get(0).row;
             int y = currentOrderItems.get(0).col;
@@ -163,7 +163,7 @@ public class TSP_GA {
         System.out.println(bestT);
 
 
-        List<Integer> tour = new ArrayList<>();;
+        ArrayList<Integer> tour = new ArrayList<>();;
         tour.add(0);
         for (i = 0; i < itemNum; i++) {
             tour.add(bestTour[i]);
@@ -174,6 +174,12 @@ public class TSP_GA {
         return tour;
     }
 
+    /*
+    * return the bestLength
+    * */
+    int getBestLength(){
+        return bestLength;
+    }
     /*
      * check if the dest node is next to the source node
      * if true, the distance should be 0, no need BFS
