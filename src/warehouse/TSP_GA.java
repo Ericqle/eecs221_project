@@ -110,6 +110,66 @@ public class TSP_GA {
         }
     }
 
+    void printRoute(ArrayList<Integer> tour) {
+        ArrayList<Vertex> path;
+        int x1, y1;
+        Coordinate c1 =new Coordinate(0, 0);
+
+        int count = 1;
+        String temp = "";
+        for(int i = 1; i< tour.size(); i++){
+            if(i != tour.size()-1) {
+                Coordinate c2 = new Coordinate(
+                        PrimaryController.getItemByID(tour.get(i)).row,
+                        PrimaryController.getItemByID(tour.get(i)).col);
+                path = setBFSPath(warehouseMatrix, c1, c2);
+//                currentItem2ItemPath = path;
+//                if(!Objects.equals(temp, makeUserInstruction1())) {
+//                    System.out.println(makeUserInstruction1());
+//                }
+            }else{
+                path = setBFSPath(warehouseMatrix, c1, new Coordinate(0,0));
+//                currentItem2ItemPath = path;
+//                if(!Objects.equals(temp, makeUserInstruction())) {
+//                    System.out.println(makeUserInstruction());
+//                }
+            }
+            x1 = path.get(path.size() - 2).coordinate.x;
+            y1 = path.get(path.size() - 2).coordinate.y;
+            c1 = new Coordinate(x1, y1);
+
+            if(i != tour.size()-1) {
+                int m = 0;
+                for (int j = 1; j < path.size() - 1; j++) {
+                    System.out.print(count + ": " +String.valueOf(path.get(j).coordinate.x) + " " + path.get(j).coordinate.y +"\t");
+                    m++;
+                    if(m % 5 == 0)
+                        System.out.println();
+                    count++;
+                }
+
+                System.out.println();
+                System.out.println("getItem: " + PrimaryController.getItemByID(tour.get(i)).id );
+//                if(!Objects.equals(temp, makeUserInstruction1()))
+                System.out.println();
+            }else{
+                int n = 0;
+                for (int j = 1; j < path.size(); j++) {
+                    n++;
+                    System.out.print(count + ": " + String.valueOf(path.get(j).coordinate.x) + " " + path.get(j).coordinate.y +"\t");
+                    if(n % 5 == 0)
+                        System.out.println();
+                    count ++;
+                }
+                System.out.println();
+                System.out.println("getItem: " + 0);
+//                if(!Objects.equals(temp, makeUserInstruction1()))
+                System.out.println();
+            }
+//            temp = makeUserInstruction1();
+        }
+    }
+
     public ArrayList<Integer> solve(int timeOut) {
         if (itemNum == 1) {
             int x = currentOrderItems.get(0).row;
@@ -170,7 +230,7 @@ public class TSP_GA {
         }
         tour.add(0);
         System.out.println("distance:" + bestLength);
-//        printRoute(tour);
+        printRoute(tour);
         return tour;
     }
 

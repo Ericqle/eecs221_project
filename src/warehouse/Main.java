@@ -1,6 +1,7 @@
 package warehouse;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /* Driver class of application
@@ -13,6 +14,7 @@ public class Main {
         /* Member to make backed function calls
          */
         PrimaryController primaryController = new PrimaryController();
+        TSP_GA tsp_ga = new TSP_GA();
         Scanner scanner = new Scanner(System.in);
 
         /* Reading data from data file and setting graph
@@ -63,8 +65,9 @@ public class Main {
         boolean loopFlag = true;
         while (loopFlag) {
             System.out.println("What would you like to do?");
-            System.out.println("1: find object");
-            System.out.println("2: exit");
+            System.out.println("1: find a specific product");
+            System.out.println("2: find an order of products");
+            System.out.println("3: exit");
             if (scanner.hasNextInt()) {
                 choice = scanner.nextInt();
             } else {
@@ -99,6 +102,42 @@ public class Main {
                     }
                     break;
                 case 2:
+                    System.out.println("Type the size of the order: ");
+                    int size = scanner.nextInt();
+                    System.out.println("please type id of products separated by blanks: ");
+                    for(int i = 0; i< size; i++){
+                        int productid = scanner.nextInt();
+                        primaryController.currentOrderItems.add(primaryController.getItemByID(productid));
+                    }
+                    System.out.println("Please select the algorithm you want to use to get the route path-----> 1 for BF 2. for GA");
+                    int algorithm = scanner.nextInt();
+                    if(algorithm == 1){
+                        primaryController.findPathsBruteForce();
+                        primaryController.markFullPath();
+                        primaryController.printWarehouseMatrix();
+                        System.out.println();
+
+                        System.out.println("Path Cost");
+                        System.out.println(primaryController.shortestPathCost);
+                        System.out.println();
+
+                        primaryController.printFullPathInstructions();
+                        System.out.println();
+                        System.out.println(primaryController.shortestPathCoordIndices);
+                    }
+                    else if(algorithm == 2){
+                        tsp_ga = new TSP_GA(30, primaryController.currentOrderItems.size(), 1000, 0.8f, 0.9f);
+                        tsp_ga.init(primaryController.currentOrderItems, primaryController.warehouseMatrix);
+
+                        int timeOut = 60000;
+                        ArrayList<Integer> route = tsp_ga.solve(timeOut);
+                        System.out.println(route);
+//                        primaryController.printRoute(route);
+                    }else {
+                        System.out.println("Invalid input! Please input the correct number.");
+                    }
+                    break;
+                case 3:
                     loopFlag = false;
                     System.out.println("Good Bye.");
                     break;
