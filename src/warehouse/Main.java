@@ -124,7 +124,6 @@ public class Main {
 
                         primaryController.printFullPathInstructions();
                         System.out.println();
-                        System.out.println(primaryController.shortestPathCoordIndices);
                     }
 //                    else if(algorithm == 2){
                     else if(size > 8){
@@ -138,7 +137,7 @@ public class Main {
                     System.out.println("Good Bye.");
                     break;
                 default:
-                    System.out.println("Invalid input! Please input '1' or '2'.");
+                    System.out.println("Invalid input! Please input '1' or '2' or '3'.");
             }
         }
 
