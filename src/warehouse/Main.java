@@ -72,7 +72,7 @@ public class Main {
                 choice = scanner.nextInt();
             } else {
                 String str = scanner.next();
-                System.out.println("Invalid input! Please input '1' or '2'.");
+                System.out.println("Invalid input! Please input '1' or '2' or '3'")   ;
                 continue;
             }
             switch (choice) {

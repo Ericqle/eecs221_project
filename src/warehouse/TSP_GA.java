@@ -1,6 +1,5 @@
 package warehouse;
 
-import java.io.IOException;
 import java.util.*;
 
 public class TSP_GA {
@@ -36,6 +35,7 @@ public class TSP_GA {
     PrimaryController primaryController;
     ArrayList<Item> currentOrderItems = new ArrayList<>();
     char[][] warehouseMatrix = new char[ROW][COL];
+    StringBuilder instructions = new StringBuilder();
 
     public TSP_GA() {
 
@@ -114,60 +114,184 @@ public class TSP_GA {
         ArrayList<Vertex> path;
         int x1, y1;
         Coordinate c1 =new Coordinate(0, 0);
-
         int count = 1;
-        String temp = "";
+        instructions.append("Path Instructions: \n");
         for(int i = 1; i< tour.size(); i++){
             if(i != tour.size()-1) {
                 Coordinate c2 = new Coordinate(
                         PrimaryController.getItemByID(tour.get(i)).row,
                         PrimaryController.getItemByID(tour.get(i)).col);
+                if(checkNeighbors(c1, c2)) {
+//Pickup item(s) (391825) from the shelf directly north to you
+                    String dir = pickupDirection(c1,c2);
+                    instructions.append("Pickup item(s) ("+
+                            PrimaryController.getItemByID(tour.get(i)).id +
+                            ") from the shelf directly " + dir + " to you \n");
+
+//                    System.out.println("Pickup item(s) ("+
+//                            PrimaryController.getItemByID(tour.get(i)).id +
+//                            ") from the shelf directly " + dir + " to you");
+//                    int x2 = PrimaryController.getItemByID(tour.get(i)).row;
+//                    int y2 = PrimaryController.getItemByID(tour.get(i)).col;
+//                    System.out.println("(" + x2 + "," +y2 +")");
+                    continue;
+                }
                 path = setBFSPath(warehouseMatrix, c1, c2);
-//                currentItem2ItemPath = path;
-//                if(!Objects.equals(temp, makeUserInstruction1())) {
-//                    System.out.println(makeUserInstruction1());
+                warehouseMatrix[c2.x][c2.y]='$';
+                setMatrix(warehouseMatrix,path);
+                setInstructions(path);
+
+
+//                int m = 0;
+//                for (int j = 1; j < path.size() - 1; j++) {
+//                    System.out.print(count + ": " +String.valueOf(path.get(j).coordinate.x) + " " + path.get(j).coordinate.y +"\t");
+//                    m++;
+//                    if(m % 5 == 0)
+//                        System.out.println();
+//                    count++;
 //                }
+
+//                System.out.println();
+                String dir = getDirection(path.get(path.size() - 2).coordinate.x,path.get(path.size() - 2).coordinate.y,
+                        c2.x, c2.y);
+                instructions.append("Pickup item(s) ("+
+                        PrimaryController.getItemByID(tour.get(i)).id +
+                        ") from the shelf directly " + dir + " to you \n");
+
+//                System.out.println("getItem: " + PrimaryController.getItemByID(tour.get(i)).id );
+//                int x2 = PrimaryController.getItemByID(tour.get(i)).row;
+//                int y2 = PrimaryController.getItemByID(tour.get(i)).col;
+//                System.out.println("(" + x2 + "," +y2 +")");
+//                System.out.println();
             }else{
                 path = setBFSPath(warehouseMatrix, c1, new Coordinate(0,0));
-//                currentItem2ItemPath = path;
-//                if(!Objects.equals(temp, makeUserInstruction())) {
-//                    System.out.println(makeUserInstruction());
+                setMatrix(warehouseMatrix,path);
+                warehouseMatrix[0][0]='U';
+                setInstructions(path);
+//                int n = 0;
+//                for (int j = 1; j < path.size(); j++) {
+//                    n++;
+//                    System.out.print(count + ": " + String.valueOf(path.get(j).coordinate.x) + " " + path.get(j).coordinate.y +"\t");
+//                    if(n % 5 == 0)
+//                        System.out.println();
+//                    count ++;
 //                }
+//                System.out.println();
+                instructions.append("return to the start point \n");
+                instructions.append("Path Complete \n");
+                //System.out.println("getItem: " + 0);
+//                System.out.println();
             }
+
             x1 = path.get(path.size() - 2).coordinate.x;
             y1 = path.get(path.size() - 2).coordinate.y;
             c1 = new Coordinate(x1, y1);
 
-            if(i != tour.size()-1) {
-                int m = 0;
-                for (int j = 1; j < path.size() - 1; j++) {
-                    System.out.print(count + ": " +String.valueOf(path.get(j).coordinate.x) + " " + path.get(j).coordinate.y +"\t");
-                    m++;
-                    if(m % 5 == 0)
-                        System.out.println();
+        }
+    }
+
+    void setMatrix(char[][] warehouseMatrix, ArrayList<Vertex> path) {
+        int size = path.size();
+        int x,y;
+        for(int i = 1; i<size-1; i++){
+            x = path.get(i).coordinate.x;
+            y = path.get(i).coordinate.y;
+            warehouseMatrix[x][y] = 'P';
+        }
+    }
+
+    void setInstructions(ArrayList<Vertex> path) {
+        int size = path.size();
+        int x1,y1,x2,y2;
+        String dir = "";
+        int count = 0;
+        for(int i = 1; i<size; i++){
+            x1 = path.get(i-1).coordinate.x;
+            y1 = path.get(i-1).coordinate.y;
+            x2 = path.get(i).coordinate.x;
+            y2 = path.get(i).coordinate.y;
+            if(i == 1){
+                dir = getDirection(x1,y1,x2,y2);
+                count++;
+            }else if(i < (size -1)){
+                if(!Objects.equals(dir, getDirection(x1, y1, x2, y2))){
+                    if(count > 1)
+                    instructions.append("Move "+ dir + " "+ count + " "+ "units \n");
+                    else{
+                        instructions.append("Move "+ dir + " "+ count + " "+ "unit \n");
+                    }
+                    dir = getDirection(x1,y1,x2,y2);
+                    count = 1;
+                }else{
                     count++;
                 }
-
-                System.out.println();
-                System.out.println("getItem: " + PrimaryController.getItemByID(tour.get(i)).id );
-//                if(!Objects.equals(temp, makeUserInstruction1()))
-                System.out.println();
             }else{
-                int n = 0;
-                for (int j = 1; j < path.size(); j++) {
-                    n++;
-                    System.out.print(count + ": " + String.valueOf(path.get(j).coordinate.x) + " " + path.get(j).coordinate.y +"\t");
-                    if(n % 5 == 0)
-                        System.out.println();
-                    count ++;
+                if(x2 == 0 && y2 == 0)
+                    count++;
+                if(count > 1)
+                instructions.append("Move "+ dir + " "+ count + " "+ "units \n");
+                else{
+                    instructions.append("Move "+ dir + " "+ count + " "+ "unit \n");
                 }
-                System.out.println();
-                System.out.println("getItem: " + 0);
-//                if(!Objects.equals(temp, makeUserInstruction1()))
-                System.out.println();
             }
-//            temp = makeUserInstruction1();
         }
+    }
+
+    String getDirection(int x1, int y1, int x2, int y2) {
+        int[] rowNum = {-1, 0, 1, 0};
+        int[] colNum = {0, 1, 0, -1};
+        int temp = 4;
+        int tx, ty;
+        String dir = "";
+        for(int i=0; i<4; i++){
+            tx = x1 + rowNum[i];
+            ty = y1 + colNum[i];
+            if(tx == x2 && ty == y2)
+                temp = i;
+        }
+        if(temp == 0)
+            dir = "west";
+        else if(temp == 1)
+            dir = "north";
+        else if(temp == 2)
+            dir = "east";
+        else if(temp == 3)
+            dir = "south";
+        else
+            dir = "error";
+
+        return dir;
+    }
+
+    /**
+     * c1: standing point
+     * c2: dest item
+     */
+    String pickupDirection(Coordinate c1, Coordinate c2) {
+        int[] rowNum = {-1, 0, 1, 0};
+        int[] colNum = {0, 1, 0, -1};
+        int x1, y1;
+        int temp = 4;
+        String dir = "";
+        for(int i=0; i<4; i++){
+            x1 = c2.x + rowNum[i];
+            y1 = c2.y + colNum[i];
+            if(c1.x == x1 && c1.y == y1)
+                   temp = i;
+        }
+        if(temp == 0)
+            dir = "east";
+        else if(temp == 1)
+            dir = "south";
+        else if(temp == 2)
+            dir = "west";
+        else if(temp == 3)
+            dir = "north";
+        else
+            dir = "error";
+
+        return dir;
+
     }
 
     public ArrayList<Integer> solve(int timeOut) {
@@ -231,7 +355,21 @@ public class TSP_GA {
         tour.add(0);
         System.out.println("distance:" + bestLength);
         printRoute(tour);
+//        System.out.println(instructions.toString().trim());
         return tour;
+    }
+
+    /*
+    return instructions
+    * */
+    String getInstructions(){
+        return instructions.toString().trim();
+    }
+    /*
+    return warehouseMatrix
+    * */
+    char[][] getMatrix(){
+        return warehouseMatrix;
     }
 
     /*
