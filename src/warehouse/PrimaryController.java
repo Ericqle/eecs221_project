@@ -271,6 +271,7 @@ public class PrimaryController {
      */
     int[] start = {0,0};
     int[] end = {0,0};
+    static boolean append;
 
     /* Graph that holds the 4 nodes per item for all items in an order
      */
@@ -504,7 +505,7 @@ public class PrimaryController {
         shortestPathCost = bruteForcePath.minPathCost;
     }
 
-    void findPathGeneticAlgorithm(){
+    void findPathGeneticAlgorithm(String file){
         TSP_GA tsp_ga = new TSP_GA();
         tsp_ga = new TSP_GA(30, currentOrderItems.size(), 1000, 0.8f, 0.9f);
         tsp_ga.init(start, end, currentOrderItems, warehouseMatrix);
@@ -516,8 +517,46 @@ public class PrimaryController {
         warehouseMatrix = tsp_ga.getMatrix();
         printWarehouseMatrix();
         String inst = tsp_ga.getInstructions();
+        exportTxt(file, "" + inst);
         System.out.println(inst);
     }
+
+    /**
+     * export a txt with direction
+     * @param direction: string of route instruction
+     */
+    static void exportTxt(String filename, String direction) {
+
+        try {
+            creatfile(filename);
+            FileWriter myWriter = new FileWriter(filename, append);
+
+            myWriter.write(direction);
+            myWriter.close();
+            System.out.printf("Successfully wrote to %s.\n", filename);
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+
+    static void creatfile(String pathname) {
+        try {
+            File file = new File(pathname);
+
+            if (file.createNewFile()) {
+                System.out.println("File created: " + file.getName());
+                append=false;
+            } else {
+                System.out.println("File already exists. Content will be appended.");
+                append=true;
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+
 
 
     public static void main(String[] args) {
@@ -566,7 +605,7 @@ public class PrimaryController {
 //        System.out.println(primaryController.shortestPathCoordIndices);
 
         System.out.println("---------Genetic Algorithm--------");
-        primaryController.findPathGeneticAlgorithm();
+//        primaryController.findPathGeneticAlgorithm();
 
 
 //        System.out.println("Item pickup path order");

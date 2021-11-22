@@ -18,6 +18,7 @@ public class Main {
         PrimaryController primaryController = new PrimaryController();
         TSP_GA tsp_ga = new TSP_GA();
         Scanner scanner = new Scanner(System.in);
+        String filename;
 
         /* Reading data from data file and setting graph
          */
@@ -41,6 +42,13 @@ public class Main {
                 System.out.println("Invalid file path!");
             }
         }
+        /**
+         * store the path of exported txt file
+         */
+        Scanner console = new Scanner(System.in);
+        System.out.println("Please enter the filename to export.");
+        filename = console.nextLine();
+        filename += ".txt";
 
         boolean startflag = true;
         while(startflag) {
@@ -158,7 +166,7 @@ public class Main {
                     }
 //                    else if(algorithm == 2){
                     else if(size > 1){
-                        primaryController.findPathGeneticAlgorithm();
+                        primaryController.findPathGeneticAlgorithm(filename);
                     }else {
                         System.out.println("Invalid input! Please input the correct number.");
                     }
