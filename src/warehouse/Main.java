@@ -13,6 +13,8 @@ public class Main {
     public static void main(String[] args) {
         /* Member to make backed function calls
          */
+        int[] start ={0,0};
+        int[] end = {0,0};
         PrimaryController primaryController = new PrimaryController();
         TSP_GA tsp_ga = new TSP_GA();
         Scanner scanner = new Scanner(System.in);
@@ -40,16 +42,43 @@ public class Main {
             }
         }
 
+        boolean startflag = true;
+        while(startflag) {
+            System.out.println("Please enter the START point location seperated by a blank.");
+            for (int i = 0; i < 2; i++) {
+                start[i] = scanner.nextInt();
+            }
+            if(primaryController.warehouseMatrix[start[0]][start[1]] != 'X') {
+                startflag = false;
+            }
+            else
+                System.out.println("You can't start in one of item shelves");
+        }
 
-        primaryController.setWarehouseMatrix();
+        boolean endflag = true;
+        while(endflag) {
+            System.out.println("Please enter the END point location seperated by a blank.");
+            for (int i = 0; i < 2; i++) {
+                end[i] = scanner.nextInt();
+            }
+            if(primaryController.warehouseMatrix[end[0]][end[1]] != 'X') {
+                endflag = false;
+            }
+            else
+                System.out.println("You can't end in one of item shelves");
+        }
+        System.out.println("Your start and end points are (" + start[0] + "," + start[1] + ") and (" + end[0] + "," + end[1] + ")\n");
+
         System.out.println("All items from data file have been stored and set in the warehouse map");
 
         /* Initiate user interaction
             - also show all warehouse data is reflected on map
          */
 //        Scanner scanner = new Scanner(System.in);
+        primaryController.setStartAndEndPoint(start, end);
+        primaryController.setWarehouseMatrix();
         System.out.println("Here is a layout of the warehouse with the loaded data");
-        System.out.println("'U' = you | 'X' = shelves/items | '.' = open space");
+        System.out.println("'S' = start point | 'E' = end point | 'X' = shelves/items | '.' = open space");
         primaryController.printWarehouseMatrix();
         System.out.println();
 
@@ -63,6 +92,7 @@ public class Main {
          */
         int choice;
         boolean loopFlag = true;
+
         while (loopFlag) {
             System.out.println("What would you like to do?");
             System.out.println("1: find a specific product");
@@ -89,7 +119,7 @@ public class Main {
 
                         System.out.println("The item for id: " + itemID + " is marked as '$' on the map.");
                         System.out.println("The path from your location 'U' to the item '$' is marked with 'P' on the map.");
-                        String shortestPathOutput = primaryController.findItemAndCallPath(itemID);
+                        String shortestPathOutput = primaryController.findItemAndCallPath(start,itemID);
                         System.out.println(shortestPathOutput);
                         primaryController.markI2IPathOnWarehouseMatrix();
                         primaryController.printWarehouseMatrix();
@@ -112,7 +142,8 @@ public class Main {
 //                    System.out.println("Please select the algorithm you want to use to get the route path-----> 1 for BF 2. for GA");
 //                    int algorithm = scanner.nextInt();
 //                    if(algorithm == 1){
-                    if(size <= 8){
+                    primaryController.setStartAndEndPoint(start, end);
+                    if(size <= 1){
                         primaryController.findPathsBruteForce();
                         primaryController.markFullPath();
                         primaryController.printWarehouseMatrix();
@@ -126,7 +157,7 @@ public class Main {
                         System.out.println();
                     }
 //                    else if(algorithm == 2){
-                    else if(size > 8){
+                    else if(size > 1){
                         primaryController.findPathGeneticAlgorithm();
                     }else {
                         System.out.println("Invalid input! Please input the correct number.");

@@ -83,7 +83,8 @@ public class PrimaryController {
             warehouseMatrix[item.row][item.col] = 'X';
         }
 
-        warehouseMatrix[0][0] = 'U';
+        warehouseMatrix[start[0]][start[1]] = 'S';
+        warehouseMatrix[end[0]][end[1]] = 'E';
     }
     /* Print ascii representation of graph
         - prints the transpose and horizontally flibbed grraph matrix
@@ -183,10 +184,10 @@ public class PrimaryController {
         - saves path into currentShortestPath
         - calls makeUserInstructions
      */
-    String findItemAndCallPath(int id) {
+    String findItemAndCallPath(int[] start, int id) {
         if (itemExist(id)) {
             Item neededItem = getItemByID(id);
-            currentItem2ItemPath = findPathToItem(new Item(0,0,0), neededItem);
+            currentItem2ItemPath = findPathToItem(new Item(0,start[0],start[1]), neededItem);
 
             return makeUserInstruction();
         }
@@ -264,6 +265,12 @@ public class PrimaryController {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //  Brute Force Beta Release Implementation     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     *  store start and end location
+     */
+    int[] start = {0,0};
+    int[] end = {0,0};
 
     /* Graph that holds the 4 nodes per item for all items in an order
      */
@@ -500,7 +507,7 @@ public class PrimaryController {
     void findPathGeneticAlgorithm(){
         TSP_GA tsp_ga = new TSP_GA();
         tsp_ga = new TSP_GA(30, currentOrderItems.size(), 1000, 0.8f, 0.9f);
-        tsp_ga.init(currentOrderItems, warehouseMatrix);
+        tsp_ga.init(start, end, currentOrderItems, warehouseMatrix);
 
         int timeOut = 60000;
         setWarehouseMatrix();
@@ -577,5 +584,10 @@ public class PrimaryController {
 //                System.out.println();
 //            }
 //        }
+    }
+
+    public void setStartAndEndPoint(int[] s, int[] e) {
+        start = s;
+        end = e;
     }
 }

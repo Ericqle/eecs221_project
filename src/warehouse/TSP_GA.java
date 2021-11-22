@@ -13,6 +13,7 @@ public class TSP_GA {
     int bestT; // the generation of the best result
     int bestLength = Integer.MAX_VALUE; // the best length
     int[] bestTour; // the best order of items
+    int[] start, end;
 
     /*
     population: each row is an orderlist of items (chromosome).
@@ -62,15 +63,19 @@ public class TSP_GA {
         MAX_GEN = g;
         Pc = c;
         Pm = m;
+        start = new int[]{0, 0};
+        end = new int[]{0,0};
     }
 
     @SuppressWarnings("resource")
-    public void init(ArrayList<Item> OrderItems, char[][] Matrix) {
+    public void init(int[] s, int[] e, ArrayList<Item> OrderItems, char[][] Matrix) {
 
         bestLength = Integer.MAX_VALUE;
         bestTour = new int[itemNum + 1];
         bestT = 0;
         t = 0;
+        start = s;
+        end = e;
 
         newPopulation = new int[scale][itemNum];
         oldPopulation = new int[scale][itemNum];
@@ -113,7 +118,7 @@ public class TSP_GA {
     void printRoute(ArrayList<Integer> tour) {
         ArrayList<Vertex> path;
         int x1, y1;
-        Coordinate c1 =new Coordinate(0, 0);
+        Coordinate c1 =new Coordinate(start[0], start[1]);
         int count = 1;
         instructions.append("Path Instructions: \n");
         for(int i = 1; i< tour.size(); i++){
@@ -164,9 +169,10 @@ public class TSP_GA {
 //                System.out.println("(" + x2 + "," +y2 +")");
 //                System.out.println();
             }else{
-                path = setBFSPath(warehouseMatrix, c1, new Coordinate(0,0));
+                path = setBFSPath(warehouseMatrix, c1, new Coordinate(end[0],end[1]));
                 setMatrix(warehouseMatrix,path,i);
-                warehouseMatrix[0][0]='U';
+                warehouseMatrix[start[0]][start[1]]='S';
+                warehouseMatrix[end[0]][end[1]]='E';
                 setInstructions(path);
 //                int n = 0;
 //                for (int j = 1; j < path.size(); j++) {
@@ -300,7 +306,7 @@ public class TSP_GA {
         if (itemNum == 1) {
             int x = currentOrderItems.get(0).row;
             int y = currentOrderItems.get(0).col;
-            int length = setBFSPath(warehouseMatrix, new Coordinate(0,0),new Coordinate(x , y)).size() * 2 - 3;
+            int length = setBFSPath(warehouseMatrix, new Coordinate(start[0],start[1]),new Coordinate(x , y)).size() * 2 - 3;
             System.out.println("distance: " + length);
             return new ArrayList<Integer>() {{
                 add(0);
@@ -421,12 +427,12 @@ public class TSP_GA {
     }
 
     /*
-        chromosome[] is a list of all items,exclude the start/end (0,0)
-    *   len = the whole distance of (0,0) to items to (0,0)
+        chromosome[] is a list of all items,exclude the start/end
+    *   len = the whole distance of start point to items to end point
     * */
     public int evaluate(int[] chromosome) {
         Vector<Coordinate> c = new Vector<>();
-        c.add(new Coordinate(0, 0));
+        c.add(new Coordinate(start[0], start[1]));
         int x = 0, y = 0, x1, y1;
         int len = 0;
         int i;
@@ -444,14 +450,14 @@ public class TSP_GA {
          * end point should be the dest node itself
          * if start is the neighbor of end, then len should be 0
          * */
-        Coordinate start = c.get(0), end;
+        Coordinate st = c.get(0), ed;
         for (i = 0; i < itemNum; i++) {
-            end = c.get(i + 1);
-            if (!checkNeighbors(start, end)) {
-                path = setBFSPath(warehouseMatrix, start, end);
+            ed = c.get(i + 1);
+            if (!checkNeighbors(st, ed)) {
+                path = setBFSPath(warehouseMatrix, st, ed);
                 x1 = path.get(path.size() - 2).coordinate.x;
                 y1 = path.get(path.size() - 2).coordinate.y;
-                start = new Coordinate(x1, y1);
+                st = new Coordinate(x1, y1);
                 len += path.size() - 2;
             } else {
                 len += 0;
@@ -459,7 +465,7 @@ public class TSP_GA {
         }
 
         //end point
-        path = setBFSPath(warehouseMatrix, start, c.get(0));
+        path = setBFSPath(warehouseMatrix, st, new Coordinate(end[0], end[1]));
         len += path.size() - 1;
         return len;
     }
