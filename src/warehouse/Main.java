@@ -151,7 +151,7 @@ public class Main {
 //                    int algorithm = scanner.nextInt();
 //                    if(algorithm == 1){
                     primaryController.setStartAndEndPoint(start, end);
-                    if(size <= 1){
+                    if(size <= 8){
                         primaryController.findPathsBruteForce();
                         primaryController.markFullPath();
                         primaryController.printWarehouseMatrix();
@@ -161,11 +161,11 @@ public class Main {
                         System.out.println(primaryController.shortestPathCost);
                         System.out.println();
 
-                        primaryController.printFullPathInstructions();
+                        primaryController.printFullPathInstructions(filename);
                         System.out.println();
                     }
 //                    else if(algorithm == 2){
-                    else if(size > 1){
+                    else if(size > 8){
                         primaryController.findPathGeneticAlgorithm(filename);
                     }else {
                         System.out.println("Invalid input! Please input the correct number.");

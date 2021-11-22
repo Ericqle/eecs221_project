@@ -1,0 +1,13 @@
+Path InstructionsMove North 2 units 
+Move East 2 units 
+Move North 10 units 
+Move East 7 units from the shelf directly north to youMove East 1 unit 
+Move South 2 units 
+Move East 9 units from the shelf directly south to youMove West 7 units 
+Move South 4 units 
+Move West 1 unit from the shelf directly south to youMove West 3 units 
+Move South 1 unit (661741) from the shelf directly east to youMove South 1 unit 
+Move West 6 units 
+Move South 2 units 
+Move West 2 units 
+Move South 2 unitsPath complete

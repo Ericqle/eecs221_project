@@ -151,7 +151,7 @@ public class PrimaryController {
         for (int i = 1; i < currentItem2ItemPath.size(); i++) {
             int x = currentItem2ItemPath.get(i).coordinate.x;
             int y = currentItem2ItemPath.get(i).coordinate.y;
-            if (warehouseMatrix[x][y] != 'U')
+            if (warehouseMatrix[x][y] != 'S' && warehouseMatrix[x][y] != 'E')
                 warehouseMatrix[x][y] = 'P';
         }
     }
@@ -392,7 +392,7 @@ public class PrimaryController {
             markItemInWarehouseMatrix(item.id);
         }
 
-        currentOrderCoordinates4N.add(new Coordinate(0,0));
+        currentOrderCoordinates4N.add(new Coordinate(start[0],start[1]));
         for (Item item: currentOrderItemsByShelf) {
 
             for (int i = 0; i < 4; i++) {
@@ -409,7 +409,7 @@ public class PrimaryController {
             for (int j = i + 1; j < numNodes; j++) {
                 Coordinate start = currentOrderCoordinates4N.get(i);
                 Coordinate finish = currentOrderCoordinates4N.get(j);
-                if(((warehouseMatrix[start.x][start.y] == '.') || (warehouseMatrix[start.x][start.y] == 'U'))
+                if(((warehouseMatrix[start.x][start.y] == '.') || (warehouseMatrix[start.x][start.y] == 'S'))
                         && (warehouseMatrix[finish.x][finish.y] == '.')) {
                     ArrayList<Vertex> item2ItemPath = Item2ItemPath.findBFSPath(warehouseMatrix,
                             start, finish);
@@ -450,7 +450,9 @@ public class PrimaryController {
 
     /* Print the full path user instructions to console
      */
-    void printFullPathInstructions () {
+    void printFullPathInstructions (String file) {
+        StringBuilder inst = new StringBuilder();
+        inst.append("\n Path Instructions");
         System.out.println("Path Instructions");
         for (int i = 0; i < shortestPathCoordIndices.size() -1; i++) {
             int itemIndex = (int) (Math.ceil(shortestPathCoordIndices.get(i + 1) / 4.0) - 1);
@@ -462,23 +464,30 @@ public class PrimaryController {
             if (currentItem2ItemPath.size() - 1 != 0) {
                 String item2itemPathInstructions = makeUserInstruction();
                 System.out.println(item2itemPathInstructions);
+                inst.append("\n" + item2itemPathInstructions);
             }
 
             if (itemIndex >= 0) {
                 Item item = currentOrderItemsByShelf.get(itemIndex);
                 System.out.print("Pickup item(s) (" + item.id + ")");
+                inst.append("\nPickup item(s) (" + item.id + ") ");
                 if (itemsOnSameShelfMap.get(itemIndex) != null) {
                     for (int itemOnSameShelfIndex : itemsOnSameShelfMap.get(itemIndex)) {
                         Item itemOnSameShelf = currentOrderItems.get(itemOnSameShelfIndex);
                         System.out.print(" (" + itemOnSameShelf.id + ")");
+                        inst.append(" (" + itemOnSameShelf.id + ") ");
                     }
                 }
                 System.out.print(" from the shelf directly " + getShelfDirection(dest.x, dest.y, item.row, item.col)
                         + " to you" );
+                inst.append(" from the shelf directly " + getShelfDirection(dest.x, dest.y, item.row, item.col)
+                        + " to you \n" );
                 System.out.println();
             }
         }
         System.out.println("Path complete");
+        inst.append("\nPath complete");
+        exportTxt(file, inst.toString().trim());
     }
 
     /* Print the adjacency matrix for the order graph
