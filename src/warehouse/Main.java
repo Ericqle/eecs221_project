@@ -18,7 +18,7 @@ public class Main {
         PrimaryController primaryController = new PrimaryController();
         TSP_GA tsp_ga = new TSP_GA();
         Scanner scanner = new Scanner(System.in);
-        String filename;
+        String filename = null;
 
         /* Reading data from data file and setting graph
          */
@@ -45,11 +45,15 @@ public class Main {
         /**
          * store the path of exported txt file
          */
-        Scanner console = new Scanner(System.in);
-        System.out.println("Please enter the filename to export.");
-        filename = console.nextLine();
-        filename += ".txt";
-
+        boolean exportFlag = false;
+        while(!exportFlag) {
+            System.out.println("Please enter the filename to export.");
+            filename = scanner.nextLine();
+            if(filename.endsWith(".txt"))
+                exportFlag = true;
+            else
+                System.out.println("Invalid file path!");
+        }
         boolean startflag = true;
         while(startflag) {
             System.out.println("Please enter the START point location seperated by a blank.");

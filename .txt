@@ -10,4 +10,30 @@ Move South 1 unit (661741) from the shelf directly east to youMove South 1 unit
 Move West 6 units 
 Move South 2 units 
 Move West 2 units 
-Move South 2 unitsPath complete
+Move South 2 unitsPath completePath Instructions
+Move North 2 units 
+Move East 2 units 
+Move North 10 units 
+Move East 7 units
+Pickup item(s) (391825)  from the shelf directly north to you 
+
+Move East 1 unit 
+Move South 2 units 
+Move East 9 units
+Pickup item(s) (108335)  from the shelf directly south to you 
+
+Move West 7 units 
+Move South 4 units 
+Move West 1 unit
+Pickup item(s) (286457)  from the shelf directly south to you 
+
+Move West 3 units 
+Move South 1 unit
+Pickup item(s) (340367)  (661741)  from the shelf directly east to you 
+
+Move South 1 unit 
+Move West 6 units 
+Move South 2 units 
+Move West 2 units 
+Move South 2 units
+Path complete

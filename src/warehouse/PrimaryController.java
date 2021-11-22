@@ -557,8 +557,12 @@ public class PrimaryController {
                 System.out.println("File created: " + file.getName());
                 append=false;
             } else {
-                System.out.println("File already exists. Content will be appended.");
-                append=true;
+                System.out.println("File already exists. Content will be covered.");
+                FileWriter fileWriter =new FileWriter(file);
+                fileWriter.write("");
+                fileWriter.flush();
+                fileWriter.close();
+                append=false;
             }
         } catch (IOException e) {
             System.out.println("An error occurred.");

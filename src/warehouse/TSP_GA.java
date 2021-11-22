@@ -143,7 +143,7 @@ public class TSP_GA {
                 }
                 path = setBFSPath(warehouseMatrix, c1, c2);
                 warehouseMatrix[c2.x][c2.y]='$';
-                setMatrix(warehouseMatrix,path,i);
+                setMatrix(warehouseMatrix,path);
                 setInstructions(path);
 
 
@@ -170,7 +170,7 @@ public class TSP_GA {
 //                System.out.println();
             }else{
                 path = setBFSPath(warehouseMatrix, c1, new Coordinate(end[0],end[1]));
-                setMatrix(warehouseMatrix,path,i);
+                setMatrix(warehouseMatrix,path);
                 warehouseMatrix[start[0]][start[1]]='S';
                 warehouseMatrix[end[0]][end[1]]='E';
                 setInstructions(path);
@@ -196,14 +196,14 @@ public class TSP_GA {
         }
     }
 
-    void setMatrix(char[][] warehouseMatrix, ArrayList<Vertex> path,int ct) {
+    void setMatrix(char[][] warehouseMatrix, ArrayList<Vertex> path) {
         int size = path.size();
         int x,y;
         for(int i = 1; i<size-1; i++){
             x = path.get(i).coordinate.x;
             y = path.get(i).coordinate.y;
 //            if(warehouseMatrix[x][y] =='.')
-            warehouseMatrix[x][y] = (char)(ct + '0');
+            warehouseMatrix[x][y] = 'P';
         }
 
     }
