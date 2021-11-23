@@ -151,28 +151,13 @@ public class Main {
                         int productid = scanner.nextInt();
                         primaryController.currentOrderItems.add(primaryController.getItemByID(productid));
                     }
-//                    System.out.println("Please select the algorithm you want to use to get the route path-----> 1 for BF 2. for GA");
-//                    int algorithm = scanner.nextInt();
-//                    if(algorithm == 1){
                     primaryController.setStartAndEndPoint(start, end);
                     if(size <= 8){
-                        primaryController.findPathsBruteForce();
-                        primaryController.markFullPath();
-                        primaryController.printWarehouseMatrix();
-                        System.out.println();
-
-                        System.out.println("Path Cost");
-                        System.out.println(primaryController.shortestPathCost);
-                        System.out.println();
-
-                        primaryController.printFullPathInstructions(filename);
-                        System.out.println();
+                        primaryController.findPathsBruteForce(filename);
                     }
 //                    else if(algorithm == 2){
-                    else if(size > 8){
+                    else {
                         primaryController.findPathGeneticAlgorithm(filename);
-                    }else {
-                        System.out.println("Invalid input! Please input the correct number.");
                     }
                     break;
                 case 3:
@@ -183,38 +168,6 @@ public class Main {
                     System.out.println("Invalid input! Please input '1' or '2' or '3'.");
             }
         }
-
-//        System.out.println("What would you like to do?");
-//        System.out.println("1: find object");
-//        System.out.println("2: exit");
-//
-//        int choice = scanner.nextInt();
-//
-//        while (choice != 2) {
-//            System.out.println("Enter item id: ");
-//            int itemID = scanner.nextInt();
-//            // primaryController.markItemInGraph(itemID);
-//            if (!primaryController.markItemInGraph(itemID)) {
-//                System.out.println("The item you are looking for does NOT exist!");
-//                continue;
-//            }
-//            System.out.println();
-//
-//            System.out.println("The item for id: " + itemID + " is marked as '$' on the map.");
-//            System.out.println("The path from your location 'U' to the item '$' is marked with 'P' on the map.");
-//            String shortestPathOutput = primaryController.findItemAndCallPath(itemID);
-//            System.out.println(shortestPathOutput);
-//            primaryController.markPathOnGraph();
-//            primaryController.printGraph();
-//            primaryController.unmarkPathOnGraph();
-//            primaryController.unmarkItemInGraph(itemID);
-//            System.out.println();
-//
-//            System.out.println("What would you like to do?");
-//            System.out.println("1: find object");
-//            System.out.println("2: exit");
-//            choice = scanner.nextInt();
-//        }
 
     }
 

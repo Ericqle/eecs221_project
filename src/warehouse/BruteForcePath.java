@@ -51,16 +51,17 @@ class BruteForcePath {
             visited[currentLookupTable[0][k]] = true;
         }
         visited[0] = true;
+        visited[graph.length - 1] = true;
 
         findPaths(graph, 1, path, visited);
     }
 
     void findPaths(int graph[][], int pos, ArrayList<Integer> path, boolean[] visited) {
-        if (pos == graph.length - (3* (pos -1))) {
+        if (pos == (graph.length - 1) - (3* (pos -1))) {
 
             if (graph[path.get(path.size() - 1)][path.get(0)] != 0) {
 
-                path.add(0);
+                path.add(graph.length - 1);
                 int pathSize = path.size();
                 int pathCost = 0;
 

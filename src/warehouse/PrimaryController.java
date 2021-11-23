@@ -263,7 +263,7 @@ public class PrimaryController {
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //  Brute Force Beta Release Implementation     ////////////////////////////////////////////////////////////////
+    //  Beta Release Implementation     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
@@ -350,7 +350,7 @@ public class PrimaryController {
     void setLookUpTable () {
         int orderSize = currentOrderItemsByShelf.size();
         ArrayList<ArrayList<Integer>> groupLookupTable = new ArrayList<ArrayList<Integer>>();;
-        int lookUpTableSize = 4*orderSize+1;
+        int lookUpTableSize = (4 * orderSize) + 1;
 
         ArrayList<Integer> firstRow = new ArrayList<>();
         firstRow.add(0);
@@ -370,6 +370,12 @@ public class PrimaryController {
             groupLookupTable.add(tempRow);
         }
 
+        ArrayList<Integer> lastRow = new ArrayList<>();
+        lastRow.add(0);
+        lastRow.add(0);
+        lastRow.add(0);
+        groupLookupTable.add(lastRow);
+
         currentLookupTable = groupLookupTable;
     }
 
@@ -381,7 +387,7 @@ public class PrimaryController {
         setOrderItemsByShelves();
 
         int orderSize = currentOrderItemsByShelf.size();
-        int numNodes = 4 * orderSize + 1;
+        int numNodes = (4 * orderSize) + 2;
         currentOrderGraph = new Graph(numNodes);
 
         int[] rowNum = {-1, 0, 1, 0};
@@ -404,13 +410,16 @@ public class PrimaryController {
                 currentOrderCoordinates4N.add(tempCoordinate);
             }
         }
+        currentOrderCoordinates4N.add(new Coordinate(end[0],end[1]));
 
         for (int i = 0; i < numNodes - 1; i++) {
             for (int j = i + 1; j < numNodes; j++) {
                 Coordinate start = currentOrderCoordinates4N.get(i);
                 Coordinate finish = currentOrderCoordinates4N.get(j);
-                if(((warehouseMatrix[start.x][start.y] == '.') || (warehouseMatrix[start.x][start.y] == 'S'))
-                        && (warehouseMatrix[finish.x][finish.y] == '.')) {
+                if(((warehouseMatrix[start.x][start.y] == '.') || (warehouseMatrix[start.x][start.y] == 'S')
+                        || (warehouseMatrix[start.x][start.y] == 'E'))
+                        && ((warehouseMatrix[finish.x][finish.y] == '.')
+                        || (warehouseMatrix[finish.x][finish.y] == 'E'))) {
                     ArrayList<Vertex> item2ItemPath = Item2ItemPath.findBFSPath(warehouseMatrix,
                             start, finish);
                     int weight = item2ItemPath.size() - 1;
@@ -421,6 +430,7 @@ public class PrimaryController {
             }
         }
     }
+
 
     /* Mark the full shortest path on the warehouse matrix
      */
@@ -467,7 +477,7 @@ public class PrimaryController {
                 inst.append("\n" + item2itemPathInstructions);
             }
 
-            if (itemIndex >= 0) {
+            if ((itemIndex >= 0) && (itemIndex < currentOrderItemsByShelf.size())) {
                 Item item = currentOrderItemsByShelf.get(itemIndex);
                 System.out.print("Pickup item(s) (" + item.id + ")");
                 inst.append("\nPickup item(s) (" + item.id + ") ");
@@ -505,13 +515,24 @@ public class PrimaryController {
         - calls brute force algorithm
         - saves path indices and cost
      */
-    void findPathsBruteForce() {
+    void findPathsBruteForce(String filename) {
         setCurrentOrderGraph4N();
         setLookUpTable();
         BruteForcePath bruteForcePath = new BruteForcePath(currentLookupTable);
         bruteForcePath.findShortestPath(currentOrderGraph.matrix);
         shortestPathCoordIndices = bruteForcePath.minPath;
         shortestPathCost = bruteForcePath.minPathCost;
+
+        markFullPath();
+        printWarehouseMatrix();
+        System.out.println();
+
+        System.out.println("Path Cost ");
+        System.out.println(shortestPathCost);
+        System.out.println();
+
+        printFullPathInstructions(filename);
+        System.out.println();
     }
 
     void findPathGeneticAlgorithm(String file){
@@ -570,19 +591,24 @@ public class PrimaryController {
         }
     }
 
-
+    public void setStartAndEndPoint(int[] s, int[] e) {
+        start = s;
+        end = e;
+    }
 
     public static void main(String[] args) {
-        String filePath = "C:\\Users\\10720\\Desktop\\v01.txt";
-//        String filePath = "src/warehouse/qvBox-warehouse-data-f21-v01.txt";
+//        String filePath = "C:\\Users\\10720\\Desktop\\v01.txt";
+        String filePath = "src/warehouse/qvBox-warehouse-data-f21-v01.txt";
         PrimaryController primaryController = new PrimaryController();
-        TSP_GA tsp_ga = new TSP_GA();
+
         try {
             primaryController.readAllItems(filePath);
         }
         catch (Exception e) {
             System.out.println("file error");
         }
+
+        primaryController.setStartAndEndPoint(new int[]{7, 20}, new int[]{32, 10});
         primaryController.setWarehouseMatrix();
 
 //        Integer[] items = {108335};
@@ -595,51 +621,12 @@ public class PrimaryController {
         for (Integer i : items) {
             primaryController.currentOrderItems.add(primaryController.getItemByID(i));
         }
-//
+
         System.out.println("Items in current order");
         for (Item item:
                 primaryController.currentOrderItems) {
             System.out.println(item.id + " " + item.row + " " + item.col);
         };
         System.out.println();
-
-//        System.out.println("---------Brute Force--------");
-//        primaryController.findPathsBruteForce();
-//        primaryController.markFullPath();
-//        primaryController.printWarehouseMatrix();
-//        System.out.println();
-//
-//        System.out.println("Path Cost ");
-//        System.out.println(primaryController.shortestPathCost);
-//        System.out.println();
-//
-//        primaryController.printFullPathInstructions();
-//        System.out.println();
-//        System.out.println(primaryController.shortestPathCoordIndices);
-
-        System.out.println("---------Genetic Algorithm--------");
-//        primaryController.findPathGeneticAlgorithm();
-
-
-//        System.out.println("Item pickup path order");
-//        for (int i: primaryController.shortestPathCoordIndices) {
-//            int itemIndex = (int)( Math.ceil(i/4.0) - 1);
-//            if(itemIndex >= 0) {
-//                Item item = primaryController.currentOrderItemsByShelf.get(itemIndex);
-//                System.out.print( "(" + item.id + " " + item.row + " " + item.col + ")");
-//                if (primaryController.itemsOnSameShelfMap.get(itemIndex) != null) {
-//                    for (int itemOnSameShelfIndex: primaryController.itemsOnSameShelfMap.get(itemIndex)) {
-//                        Item itemOnSameShelf = primaryController.currentOrderItems.get(itemOnSameShelfIndex);
-//                        System.out.print(" (" + itemOnSameShelf.id + " " + itemOnSameShelf.row + " " + itemOnSameShelf.col + ")");
-//                    }
-//                }
-//                System.out.println();
-//            }
-//        }
-    }
-
-    public void setStartAndEndPoint(int[] s, int[] e) {
-        start = s;
-        end = e;
     }
 }
