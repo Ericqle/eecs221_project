@@ -57,7 +57,7 @@ public class TSP_GA {
      *            mutation rate
      *
      **/
-    public TSP_GA(int s, int n, int g, float c, float m) {
+    TSP_GA(int s, int n, int g, float c, float m) {
         scale = s;
         itemNum = n;
         MAX_GEN = g;
@@ -68,7 +68,7 @@ public class TSP_GA {
     }
 
     @SuppressWarnings("resource")
-    public void init(int[] s, int[] e, ArrayList<Item> OrderItems, char[][] Matrix) {
+    void init(int[] s, int[] e, ArrayList<Item> OrderItems, char[][] Matrix) {
 
         bestLength = Integer.MAX_VALUE;
         bestTour = new int[itemNum + 1];
@@ -87,6 +87,69 @@ public class TSP_GA {
         warehouseMatrix = Matrix;
         random = new Random(System.currentTimeMillis());
 
+    }
+
+    /**
+     * Limit the running time within 60s,
+     * output the best order of items and its distance
+     * @param timeOut
+     * @return
+     */
+    ArrayList<Integer> solve(int timeOut) {
+        long startTime = System.currentTimeMillis();
+        long endTime;
+        int i;
+        int k;
+
+        /* ramdomly init the order of items
+         * and store them in oldPopulation
+         * */
+        initGroup();
+        // calculate init group's fitness，Fitness[max]
+        for (k = 0; k < scale; k++) {
+            // fitness <-> the whole length of items
+            fitness[k] = evaluate(oldPopulation[k]);
+        }
+        // Calculate the cumulative probability
+        // of each individual in the init group，Pi[max]
+        countRate();
+
+        for (t = 0; t < MAX_GEN; t++) {
+            endTime = System.currentTimeMillis();
+            if ((endTime-startTime)>timeOut){
+                System.out.println("Time out!");
+                break;
+            }
+            evolution();
+
+            // set oldGroup from newGroup, ready to loop
+            for (k = 0; k < scale; k++) {
+                for (i = 0; i < itemNum; i++) {
+                    oldPopulation[k][i] = newPopulation[k][i];
+                }
+            }
+
+            for (k = 0; k < scale; k++) {
+                fitness[k] = evaluate(oldPopulation[k]);
+            }
+
+            countRate();
+        }
+
+        System.out.println("the generation of the best length：");
+        System.out.println(bestT);
+
+
+        ArrayList<Integer> tour = new ArrayList<>();;
+        tour.add(0);
+        for (i = 0; i < itemNum; i++) {
+            tour.add(bestTour[i]);
+        }
+        tour.add(0);
+        System.out.println("distance:" + bestLength);
+        tourToInstructions(tour);
+//        System.out.println(instructions.toString().trim());
+        return tour;
     }
 
     /*
@@ -115,322 +178,11 @@ public class TSP_GA {
         }
     }
 
-    void printRoute(ArrayList<Integer> tour) {
-        ArrayList<Vertex> path;
-        int x1, y1;
-        Coordinate c1 =new Coordinate(start[0], start[1]);
-        int count = 1;
-        instructions.append("Path Instructions: \n");
-        for(int i = 1; i< tour.size(); i++){
-            if(i != tour.size()-1) {
-                Coordinate c2 = new Coordinate(
-                        PrimaryController.getItemByID(tour.get(i)).row,
-                        PrimaryController.getItemByID(tour.get(i)).col);
-                if(checkNeighbors(c1, c2)) {
-//Pickup item(s) (391825) from the shelf directly north to you
-                    String dir = pickupDirection(c1,c2);
-                    instructions.append("Pickup item(s) ("+
-                            PrimaryController.getItemByID(tour.get(i)).id +
-                            ") from the shelf directly " + dir + " to you \n");
-
-//                    System.out.println("Pickup item(s) ("+
-//                            PrimaryController.getItemByID(tour.get(i)).id +
-//                            ") from the shelf directly " + dir + " to you");
-//                    int x2 = PrimaryController.getItemByID(tour.get(i)).row;
-//                    int y2 = PrimaryController.getItemByID(tour.get(i)).col;
-//                    System.out.println("(" + x2 + "," +y2 +")");
-                    continue;
-                }
-                path = setBFSPath(warehouseMatrix, c1, c2);
-                warehouseMatrix[c2.x][c2.y]='$';
-                setMatrix(warehouseMatrix,path);
-                setInstructions(path);
-
-
-//                int m = 0;
-//                for (int j = 1; j < path.size() - 1; j++) {
-//                    System.out.print(count + ": " +String.valueOf(path.get(j).coordinate.x) + " " + path.get(j).coordinate.y +"\t");
-//                    m++;
-//                    if(m % 5 == 0)
-//                        System.out.println();
-//                    count++;
-//                }
-
-//                System.out.println();
-                String dir = getDirection(path.get(path.size() - 2).coordinate.x,path.get(path.size() - 2).coordinate.y,
-                        c2.x, c2.y);
-                instructions.append("Pickup item(s) ("+
-                        PrimaryController.getItemByID(tour.get(i)).id +
-                        ") from the shelf directly " + dir + " to you \n");
-
-//                System.out.println("getItem: " + PrimaryController.getItemByID(tour.get(i)).id );
-//                int x2 = PrimaryController.getItemByID(tour.get(i)).row;
-//                int y2 = PrimaryController.getItemByID(tour.get(i)).col;
-//                System.out.println("(" + x2 + "," +y2 +")");
-//                System.out.println();
-            }else{
-                path = setBFSPath(warehouseMatrix, c1, new Coordinate(end[0],end[1]));
-                setMatrix(warehouseMatrix,path);
-                warehouseMatrix[start[0]][start[1]]='S';
-                warehouseMatrix[end[0]][end[1]]='E';
-                setInstructions(path);
-//                int n = 0;
-//                for (int j = 1; j < path.size(); j++) {
-//                    n++;
-//                    System.out.print(count + ": " + String.valueOf(path.get(j).coordinate.x) + " " + path.get(j).coordinate.y +"\t");
-//                    if(n % 5 == 0)
-//                        System.out.println();
-//                    count ++;
-//                }
-//                System.out.println();
-                instructions.append("return to the start point \n");
-                instructions.append("Path Complete \n");
-                //System.out.println("getItem: " + 0);
-//                System.out.println();
-            }
-
-            x1 = path.get(path.size() - 2).coordinate.x;
-            y1 = path.get(path.size() - 2).coordinate.y;
-            c1 = new Coordinate(x1, y1);
-
-        }
-    }
-
-    void setMatrix(char[][] warehouseMatrix, ArrayList<Vertex> path) {
-        int size = path.size();
-        int x,y;
-        for(int i = 1; i<size-1; i++){
-            x = path.get(i).coordinate.x;
-            y = path.get(i).coordinate.y;
-//            if(warehouseMatrix[x][y] =='.')
-            warehouseMatrix[x][y] = 'P';
-        }
-
-    }
-
-    void setInstructions(ArrayList<Vertex> path) {
-        int size = path.size();
-        int x1,y1,x2,y2;
-        String dir = "";
-        int count = 0;
-        for(int i = 1; i<size; i++){
-            x1 = path.get(i-1).coordinate.x;
-            y1 = path.get(i-1).coordinate.y;
-            x2 = path.get(i).coordinate.x;
-            y2 = path.get(i).coordinate.y;
-            if(i == 1){
-                dir = getDirection(x1,y1,x2,y2);
-                count++;
-            }else if(i < (size -1)){
-                if(!Objects.equals(dir, getDirection(x1, y1, x2, y2))){
-                    if(count > 1)
-                    instructions.append("Move "+ dir + " "+ count + " "+ "units \n");
-                    else{
-                        instructions.append("Move "+ dir + " "+ count + " "+ "unit \n");
-                    }
-                    dir = getDirection(x1,y1,x2,y2);
-                    count = 1;
-                }else{
-                    count++;
-                }
-            }else{
-                if(x2 == 0 && y2 == 0)
-                    count++;
-                if(count > 1)
-                instructions.append("Move "+ dir + " "+ count + " "+ "units \n");
-                else{
-                    instructions.append("Move "+ dir + " "+ count + " "+ "unit \n");
-                }
-            }
-        }
-    }
-
-    String getDirection(int x1, int y1, int x2, int y2) {
-        int[] rowNum = {-1, 0, 1, 0};
-        int[] colNum = {0, 1, 0, -1};
-        int temp = 4;
-        int tx, ty;
-        String dir = "";
-        for(int i=0; i<4; i++){
-            tx = x1 + rowNum[i];
-            ty = y1 + colNum[i];
-            if(tx == x2 && ty == y2)
-                temp = i;
-        }
-        if(temp == 0)
-            dir = "west";
-        else if(temp == 1)
-            dir = "north";
-        else if(temp == 2)
-            dir = "east";
-        else if(temp == 3)
-            dir = "south";
-        else
-            dir = "error";
-
-        return dir;
-    }
-
-    /**
-     * c1: standing point
-     * c2: dest item
-     */
-    String pickupDirection(Coordinate c1, Coordinate c2) {
-        int[] rowNum = {-1, 0, 1, 0};
-        int[] colNum = {0, 1, 0, -1};
-        int x1, y1;
-        int temp = 4;
-        String dir = "";
-        for(int i=0; i<4; i++){
-            x1 = c2.x + rowNum[i];
-            y1 = c2.y + colNum[i];
-            if(c1.x == x1 && c1.y == y1)
-                   temp = i;
-        }
-        if(temp == 0)
-            dir = "east";
-        else if(temp == 1)
-            dir = "south";
-        else if(temp == 2)
-            dir = "west";
-        else if(temp == 3)
-            dir = "north";
-        else
-            dir = "error";
-
-        return dir;
-
-    }
-
-    public ArrayList<Integer> solve(int timeOut) {
-        if (itemNum == 1) {
-            int x = currentOrderItems.get(0).row;
-            int y = currentOrderItems.get(0).col;
-            int length = setBFSPath(warehouseMatrix, new Coordinate(start[0],start[1]),new Coordinate(x , y)).size() * 2 - 3;
-            System.out.println("distance: " + length);
-            return new ArrayList<Integer>() {{
-                add(0);
-                add(currentOrderItems.get(0).id);
-                add(0);
-            }};
-        }
-        long startTime = System.currentTimeMillis();
-        long endTime;
-        int i;
-        int k;
-
-        initGroup();
-        // calculate init group's fitness，Fitness[max]
-        for (k = 0; k < scale; k++) {
-            fitness[k] = evaluate(oldPopulation[k]);
-        }
-        // Calculate the cumulative probability
-        // of each individual in the init group，Pi[max]
-        countRate();
-
-        for (t = 0; t < MAX_GEN; t++) {
-            ////////////////////////////////////
-            endTime = System.currentTimeMillis();
-            if ((endTime-startTime)>timeOut){
-                System.out.println("Time out!");
-                break;
-            }
-            evolution();
-
-            // set newGroup from oldGroup, ready to loop
-            for (k = 0; k < scale; k++) {
-                for (i = 0; i < itemNum; i++) {
-                    oldPopulation[k][i] = newPopulation[k][i];
-                }
-            }
-
-            for (k = 0; k < scale; k++) {
-                fitness[k] = evaluate(oldPopulation[k]);
-            }
-
-            countRate();
-        }
-
-        System.out.println("the generation of the best length：");
-        System.out.println(bestT);
-
-
-        ArrayList<Integer> tour = new ArrayList<>();;
-        tour.add(0);
-        for (i = 0; i < itemNum; i++) {
-            tour.add(bestTour[i]);
-        }
-        tour.add(0);
-        System.out.println("distance:" + bestLength);
-        printRoute(tour);
-//        System.out.println(instructions.toString().trim());
-        return tour;
-    }
-
-    /*
-    return instructions
-    * */
-    String getInstructions(){
-        return instructions.toString().trim();
-    }
-    /*
-    return warehouseMatrix
-    * */
-    char[][] getMatrix(){
-        return warehouseMatrix;
-    }
-
-    /*
-    * return the bestLength
-    * */
-    int getBestLength(){
-        return bestLength;
-    }
-    /*
-     * check if the dest node is next to the source node
-     * if true, the distance should be 0, no need BFS
-     * if false, need BFS
-     * */
-    public boolean checkNeighbors(Coordinate c1, Coordinate c2){
-        int[] rowNum = {-1, 0, 1, 0};
-        int[] colNum = {0, 1, 0, -1};
-        int x1, y1;
-        for(int i=0; i<4; i++){
-            x1 = c2.x + rowNum[i];
-            y1 = c2.y + colNum[i];
-            if(c1.x == x1 && c1.y == y1)
-                return true;
-        }
-        return false;
-    }
-
-
-    public  ArrayList<Vertex> setBFSPath(char[][] warehouseMatrix, Coordinate c1, Coordinate c2){
-        ArrayList<Vertex> path;
-        Item2ItemPath itemPath = new Item2ItemPath();
-
-        char temp1 = warehouseMatrix[c1.x][c1.y];
-        char temp2 = warehouseMatrix[c2.x][c2.y];
-        warehouseMatrix[c1.x][c1.y] = '.';
-        warehouseMatrix[c2.x][c2.y] = '.';
-
-        path = itemPath.findBFSPath(warehouseMatrix, c1, c2);
-
-        warehouseMatrix[c1.x][c1.y] = temp1;
-        warehouseMatrix[c2.x][c2.y] = temp2;
-
-//            if(c1.x == 0 && c1.y == 0 )
-//                warehouseMatrix[c1.x][c1.y] = 'U';
-//            else if(c2.x == 0 && c2.y == 0)
-//                warehouseMatrix[c2.x][c2.y] = 'U';
-        return path;
-    }
-
     /*
         chromosome[] is a list of all items,exclude the start/end
     *   len = the whole distance of start point to items to end point
     * */
-    public int evaluate(int[] chromosome) {
+    int evaluate(int[] chromosome) {
         Vector<Coordinate> c = new Vector<>();
         c.add(new Coordinate(start[0], start[1]));
         int x = 0, y = 0, x1, y1;
@@ -494,27 +246,27 @@ public class TSP_GA {
     }
 
     /*
-     * The individuals with the highest fitness in a generation population were selected
+     * The individuals with the shortest fitness in a generation population were selected
      *  and copied directly into the offspring
      * */
-    public void selectBestGh() {
+    void selectBest() {
         int k, i, maxid;
-        int maxevaluation;
+        int minLength;
 
         maxid = 0;
-        maxevaluation = fitness[0];
+        minLength = fitness[0];
 
         // select the shortest fitness
         for (k = 1; k < scale; k++) {
-            if (maxevaluation > fitness[k]) {
-                maxevaluation = fitness[k];
+            if (minLength > fitness[k]) {
+                minLength = fitness[k];
                 maxid = k;
             }
         }
 
-        if (bestLength > (maxevaluation)) {
-            bestLength = maxevaluation;
-            bestT = t;// 最好的染色体出现的代数;
+        if (bestLength > (minLength)) {
+            bestLength = minLength;
+            bestT = t;// best generation;
 
             for (i = 0; i < itemNum; i++) {
                 bestTour[i] = oldPopulation[maxid][i];
@@ -522,14 +274,14 @@ public class TSP_GA {
         }
 
         // copy the best individual into the first place of newPopulation
-        copyGh(0, maxid);
+        copy(0, maxid);
     }
 
     /*
      * Copy chromosome, K represents the position of the new chromosome in the population,
      * and KK represents the position of the old chromosome in the population
      * */
-    public void copyGh(int k, int kk) {
+    void copy(int k, int kk) {
         int i;
         for (i = 0; i < itemNum; i++) {
             newPopulation[k][i] = oldPopulation[kk][i];
@@ -537,31 +289,32 @@ public class TSP_GA {
     }
 
     /* Wheel selection strategy
-     * save the best chromosomes from crossover
+     * save the better chromosomes from crossover
      * (it's in the first place)
      * */
-    public void select() {
+    void select() {
         int k, i, selectId;
         float ran1;
 
         // start from 1, loop (scale - 1) times
         for (k = 1; k < scale; k++) {
             ran1 = (float) (random.nextInt(65535) % 1000 / 1000.0);
+            // better fitness , has more posibility to be selected and survive
             for (i = 0; i < scale; i++) {
                 if (ran1 <= Pi[i]) {
                     break;
                 }
             }
             selectId = i;
-            copyGh(k, selectId);
+            copy(k, selectId);
         }
     }
 
     // save the best chromosomes from crossover
-    public void evolution() {
+    void evolution() {
         int k;
 
-        selectBestGh();
+        selectBest();
         select();
 
         // Random random = new Random(System.currentTimeMillis());
@@ -571,17 +324,17 @@ public class TSP_GA {
             r = random.nextFloat();
             //crossover
             if (r < Pc) {
-                OXCross1(k, k + 1);
+                CrossOver(k, k + 1);
             }
             // mutation
             else {
                 r = random.nextFloat();
                 if (r < Pm) {
-                    OnCVariation(k);
+                    Mutation(k);
                 }
                 r = random.nextFloat();
                 if (r < Pm) {
-                    OnCVariation(k + 1);
+                    Mutation(k + 1);
                 }
             }
         }
@@ -589,7 +342,7 @@ public class TSP_GA {
         {
             r = random.nextFloat();
             if (r < Pm) {
-                OnCVariation(k);
+                Mutation(k);
             }
         }
 
@@ -597,13 +350,14 @@ public class TSP_GA {
 
     // cross over
     /* switch like below:
-     *   c1 a b c                       nc1 n m d
+     * len: ran1 x ran2
+     *      c1 a b c                       new_c1 n m d
      *                   ---->
-     *   c2 d e f                       nc2 i j f
+     *      c2 d e f                       new_c2 c i j
      *   change c and d
      *   n m are the elements that are not overlap with d, so do i j
      * */
-    public void OXCross1(int k1, int k2) {
+    void CrossOver(int k1, int k2) {
         int i, j, k, flag;
         int ran1, ran2, temp;
         int[] Gh1 = new int[itemNum];
@@ -642,6 +396,7 @@ public class TSP_GA {
             }
         }
 
+        // Gh1: [0 ~ ran1] store items that are not same with newPopulation[k2][0 ~ ran1]
         flag = ran1;
         for (k = 0, j = 0; k < itemNum;)
         {
@@ -656,6 +411,7 @@ public class TSP_GA {
             }
         }
 
+        //Gh1: [flag ~ end] store items that are same with newPopulation[k2][0 ~ ran1]
         flag = itemNum - ran1;
 
         for (i = 0, j = flag; j < itemNum; j++, i++) {
@@ -673,9 +429,9 @@ public class TSP_GA {
     /* mutation
         change order of items in multiply times
     */
-    public void OnCVariation(int k) {
+    void Mutation(int k) {
         int ran1, ran2, temp;
-        int count;// 对换次数
+        int count;// times of exchange
 
         // Random random = new Random(System.currentTimeMillis());
         count = random.nextInt(65535) % itemNum;
@@ -693,5 +449,247 @@ public class TSP_GA {
         }
     }
 
+    /*
+   return instructions
+   * */
+    String getInstructions(){
+        return instructions.toString().trim();
+    }
+
+    /*
+    return warehouseMatrix
+    * */
+    char[][] getMatrix(){
+        return warehouseMatrix;
+    }
+
+    /*
+     * return the bestLength
+     * */
+    int getBestLength(){
+        return bestLength;
+    }
+
+    /*
+     * check if the dest node is next to the source node
+     * if true, the distance should be 0, no need BFS
+     * if false, need BFS
+     * */
+    boolean checkNeighbors(Coordinate c1, Coordinate c2){
+        int[] rowNum = {-1, 0, 1, 0};
+        int[] colNum = {0, 1, 0, -1};
+        int x1, y1;
+        for(int i=0; i<4; i++){
+            x1 = c2.x + rowNum[i];
+            y1 = c2.y + colNum[i];
+            if(c1.x == x1 && c1.y == y1)
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * Find the path from c1 to c2 in warehouseMatrix
+     * @param warehouseMatrix
+     * @param c1
+     * @param c2
+     * @return
+     */
+    ArrayList<Vertex> setBFSPath(char[][] warehouseMatrix, Coordinate c1, Coordinate c2){
+        ArrayList<Vertex> path;
+        Item2ItemPath itemPath = new Item2ItemPath();
+
+        char temp1 = warehouseMatrix[c1.x][c1.y];
+        char temp2 = warehouseMatrix[c2.x][c2.y];
+        warehouseMatrix[c1.x][c1.y] = '.';
+        warehouseMatrix[c2.x][c2.y] = '.';
+
+        path = itemPath.findBFSPath(warehouseMatrix, c1, c2);
+
+        warehouseMatrix[c1.x][c1.y] = temp1;
+        warehouseMatrix[c2.x][c2.y] = temp2;
+        return path;
+    }
+
+    /**
+     * Call setInstructions() for each items to convert the pickup order
+     * into a list of instructions
+     * Mark the pickup items as ‘$’
+     * Call setMatrix() to mark the path as ‘P’
+     * @param tour order of pickup items
+     */
+    void tourToInstructions(ArrayList<Integer> tour) {
+        ArrayList<Vertex> path;
+        int x1, y1;
+        Coordinate c1 =new Coordinate(start[0], start[1]);
+        int count = 1;
+        instructions.append("Path Instructions: \n");
+        for(int i = 1; i< tour.size(); i++){
+            if(i != tour.size()-1) {
+                Coordinate c2 = new Coordinate(
+                        PrimaryController.getItemByID(tour.get(i)).row,
+                        PrimaryController.getItemByID(tour.get(i)).col);
+                if(checkNeighbors(c1, c2)) {
+                    String dir = pickupDirection(c1,c2);
+                    instructions.append("Pickup item(s) ("+
+                            PrimaryController.getItemByID(tour.get(i)).id +
+                            ") from the shelf directly " + dir + " to you \n");
+
+                    continue;
+                }
+                path = setBFSPath(warehouseMatrix, c1, c2);
+                warehouseMatrix[c2.x][c2.y]='$';
+                setMatrix(warehouseMatrix,path);
+                setInstructions(path);
+
+                String dir = getDirection(path.get(path.size() - 2).coordinate.x,path.get(path.size() - 2).coordinate.y,
+                        c2.x, c2.y);
+                instructions.append("Pickup item(s) ("+
+                        PrimaryController.getItemByID(tour.get(i)).id +
+                        ") from the shelf directly " + dir + " to you \n");
+
+            }else{
+                path = setBFSPath(warehouseMatrix, c1, new Coordinate(end[0],end[1]));
+                setMatrix(warehouseMatrix,path);
+                warehouseMatrix[start[0]][start[1]]='S';
+                warehouseMatrix[end[0]][end[1]]='E';
+                setInstructions(path);
+
+                instructions.append("return to the start point \n");
+                instructions.append("Path Complete \n");
+            }
+
+            x1 = path.get(path.size() - 2).coordinate.x;
+            y1 = path.get(path.size() - 2).coordinate.y;
+            c1 = new Coordinate(x1, y1);
+
+        }
+    }
+
+    /**
+     * Make corresponding path as ‘P’ in warehouseMatrix
+     * @param warehouseMatrix
+     * @param path
+     */
+    void setMatrix(char[][] warehouseMatrix, ArrayList<Vertex> path) {
+        int size = path.size();
+        int x,y;
+        for(int i = 1; i<size-1; i++){
+            x = path.get(i).coordinate.x;
+            y = path.get(i).coordinate.y;
+//            if(warehouseMatrix[x][y] =='.')
+            warehouseMatrix[x][y] = 'P';
+        }
+
+    }
+
+    /**
+     * Calculate and store the distance and directions
+     * in instructions according to the path
+     * @param path
+     */
+    void setInstructions(ArrayList<Vertex> path) {
+        int size = path.size();
+        int x1,y1,x2,y2;
+        String dir = "";
+        int count = 0;
+        for(int i = 1; i<size; i++){
+            x1 = path.get(i-1).coordinate.x;
+            y1 = path.get(i-1).coordinate.y;
+            x2 = path.get(i).coordinate.x;
+            y2 = path.get(i).coordinate.y;
+            if(i == 1){
+                dir = getDirection(x1,y1,x2,y2);
+                count++;
+            }else if(i < (size -1)){
+                if(!Objects.equals(dir, getDirection(x1, y1, x2, y2))){
+                    if(count > 1)
+                        instructions.append("Move "+ dir + " "+ count + " "+ "units \n");
+                    else{
+                        instructions.append("Move "+ dir + " "+ count + " "+ "unit \n");
+                    }
+                    dir = getDirection(x1,y1,x2,y2);
+                    count = 1;
+                }else{
+                    count++;
+                }
+            }else{
+                if(x2 == 0 && y2 == 0)
+                    count++;
+                if(count > 1)
+                    instructions.append("Move "+ dir + " "+ count + " "+ "units \n");
+                else{
+                    instructions.append("Move "+ dir + " "+ count + " "+ "unit \n");
+                }
+            }
+        }
+    }
+
+    /**
+     * Get the direction of adjacent node (x1,y1) and node(x2,y2)
+     * @param x1
+     * @param y1
+     * @param x2
+     * @param y2
+     * @return
+     */
+    String getDirection(int x1, int y1, int x2, int y2) {
+        int[] rowNum = {-1, 0, 1, 0};
+        int[] colNum = {0, 1, 0, -1};
+        int temp = 4;
+        int tx, ty;
+        String dir = "";
+        for(int i=0; i<4; i++){
+            tx = x1 + rowNum[i];
+            ty = y1 + colNum[i];
+            if(tx == x2 && ty == y2)
+                temp = i;
+        }
+        if(temp == 0)
+            dir = "west";
+        else if(temp == 1)
+            dir = "north";
+        else if(temp == 2)
+            dir = "east";
+        else if(temp == 3)
+            dir = "south";
+        else
+            dir = "error";
+
+        return dir;
+    }
+
+    /**
+     * Get and return the pickup direction
+     * between worker’s location and needed item
+     * @param c1 worker's location
+     * @param c2 needed item
+     */
+    String pickupDirection(Coordinate c1, Coordinate c2) {
+        int[] rowNum = {-1, 0, 1, 0};
+        int[] colNum = {0, 1, 0, -1};
+        int x1, y1;
+        int temp = 4;
+        String dir = "";
+        for(int i=0; i<4; i++){
+            x1 = c2.x + rowNum[i];
+            y1 = c2.y + colNum[i];
+            if(c1.x == x1 && c1.y == y1)
+                temp = i;
+        }
+        if(temp == 0)
+            dir = "east";
+        else if(temp == 1)
+            dir = "south";
+        else if(temp == 2)
+            dir = "west";
+        else if(temp == 3)
+            dir = "north";
+        else
+            dir = "error";
+
+        return dir;
+
+    }
 }
 
