@@ -12,6 +12,10 @@ class BruteForcePath {
     int[][] currentLookupTable = null;
     int minPathCost = Integer.MAX_VALUE;
     ArrayList<Integer> minPath= null;
+    long startTime;
+    long endTime;
+    int TIMEOUTFLAG = 0;
+    int TIMEOUT = 60000;
 
     BruteForcePath(ArrayList<ArrayList<Integer>> currentLookupTable) {
         this.currentLookupTable = new int[currentLookupTable.size()][3];
@@ -35,6 +39,7 @@ class BruteForcePath {
     }
 
     void findShortestPath(int graph[][]) {
+        startTime = System.currentTimeMillis();
         ArrayList<Integer> path = new ArrayList<>();
         path.add(0);
 
@@ -54,9 +59,19 @@ class BruteForcePath {
         visited[graph.length - 1] = true;
 
         findPaths(graph, 1, path, visited);
+
+        if(TIMEOUTFLAG == 1)
+            System.out.println("Time Out! Current vest past will be used!");
+        TIMEOUTFLAG = 0;
     }
 
     void findPaths(int graph[][], int pos, ArrayList<Integer> path, boolean[] visited) {
+        endTime = System.currentTimeMillis();
+        if ((endTime-startTime)>TIMEOUT){
+            TIMEOUTFLAG = 1;
+            return;
+        }
+
         if (pos == (graph.length - 1) - (3* (pos -1))) {
 
             if (graph[path.get(path.size() - 1)][path.get(0)] != 0) {

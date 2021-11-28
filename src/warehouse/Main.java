@@ -149,6 +149,10 @@ public class Main {
                     }
                     System.out.println("Your start and end points are (" + start[0] + "," + start[1] + ") and (" + end[0] + "," + end[1] + ")\n");
 
+                    System.out.println("Please enter the time limit to find the path in milliseconds");
+                    primaryController.timeOutMax = scanner.nextInt();
+                    System.out.println();
+
                     System.out.println("Type the size of the order: ");
                     int size = scanner.nextInt();
                     System.out.println("please type id of products separated by blanks: ");

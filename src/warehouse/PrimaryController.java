@@ -309,6 +309,10 @@ public class PrimaryController {
      */
     int shortestPathCost = 0;
 
+    /* Max algorithm timout time
+     */
+    int timeOutMax = 60000;
+
     /* Helper to check if an item is sharing a shelf with other items in an order
      */
     int isSharingShelf(Item item){
@@ -519,6 +523,7 @@ public class PrimaryController {
         setCurrentOrderGraph4N();
         setLookUpTable();
         BruteForcePath bruteForcePath = new BruteForcePath(currentLookupTable);
+        bruteForcePath.TIMEOUT = timeOutMax;
         bruteForcePath.findShortestPath(currentOrderGraph.matrix);
         shortestPathCoordIndices = bruteForcePath.minPath;
         shortestPathCost = bruteForcePath.minPathCost;
@@ -540,7 +545,7 @@ public class PrimaryController {
         tsp_ga = new TSP_GA(30, currentOrderItems.size(), 1000, 0.8f, 0.9f);
         tsp_ga.init(start, end, currentOrderItems, warehouseMatrix);
 
-        int timeOut = 60000;
+        int timeOut = timeOutMax;
         ArrayList<Integer> route = tsp_ga.solve(timeOut);
         System.out.println("pickup order: "+route +"\n");
         warehouseMatrix = tsp_ga.getMatrix();
@@ -559,6 +564,7 @@ public class PrimaryController {
         currentLookupTable = null;
         shortestPathCoordIndices = null;
         shortestPathCost = 0;
+        timeOutMax = 60000;
     }
 
     /**
