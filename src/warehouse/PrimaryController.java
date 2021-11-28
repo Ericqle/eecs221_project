@@ -541,7 +541,6 @@ public class PrimaryController {
         tsp_ga.init(start, end, currentOrderItems, warehouseMatrix);
 
         int timeOut = 60000;
-        setWarehouseMatrix();
         ArrayList<Integer> route = tsp_ga.solve(timeOut);
         System.out.println("pickup order: "+route +"\n");
         warehouseMatrix = tsp_ga.getMatrix();
@@ -549,6 +548,17 @@ public class PrimaryController {
         String inst = tsp_ga.getInstructions();
         exportTxt(file, "" + inst);
         System.out.println(inst);
+    }
+
+    void resetWareHouse() {
+        setWarehouseMatrix();
+        currentOrderItems.clear();
+        currentOrderItemsByShelf = null;
+        currentOrderGraph = null;
+        currentOrderCoordinates4N = null;
+        currentLookupTable = null;
+        shortestPathCoordIndices = null;
+        shortestPathCost = 0;
     }
 
     /**

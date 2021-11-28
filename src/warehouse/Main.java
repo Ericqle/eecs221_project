@@ -54,32 +54,6 @@ public class Main {
             else
                 System.out.println("Invalid file path!");
         }
-        boolean startflag = true;
-        while(startflag) {
-            System.out.println("Please enter the START point location seperated by a blank.");
-            for (int i = 0; i < 2; i++) {
-                start[i] = scanner.nextInt();
-            }
-            if(primaryController.warehouseMatrix[start[0]][start[1]] != 'X') {
-                startflag = false;
-            }
-            else
-                System.out.println("You can't start in one of item shelves");
-        }
-
-        boolean endflag = true;
-        while(endflag) {
-            System.out.println("Please enter the END point location seperated by a blank.");
-            for (int i = 0; i < 2; i++) {
-                end[i] = scanner.nextInt();
-            }
-            if(primaryController.warehouseMatrix[end[0]][end[1]] != 'X') {
-                endflag = false;
-            }
-            else
-                System.out.println("You can't end in one of item shelves");
-        }
-        System.out.println("Your start and end points are (" + start[0] + "," + start[1] + ") and (" + end[0] + "," + end[1] + ")\n");
 
         System.out.println("All items from data file have been stored and set in the warehouse map");
 
@@ -117,6 +91,8 @@ public class Main {
                 System.out.println("Invalid input! Please input '1' or '2' or '3'")   ;
                 continue;
             }
+            System.out.println();
+
             switch (choice) {
                 case 1:
                     System.out.println("Enter item id: ");
@@ -142,8 +118,37 @@ public class Main {
                         String str = scanner.next();
                         System.out.println("Invalid input! Please input a number.");
                     }
+                    primaryController.resetWareHouse();
                     break;
+
                 case 2:
+                    boolean startflag = true;
+                    while(startflag) {
+                        System.out.println("Please enter the START point location seperated by a blank.");
+                        for (int i = 0; i < 2; i++) {
+                            start[i] = scanner.nextInt();
+                        }
+                        if(primaryController.warehouseMatrix[start[0]][start[1]] != 'X') {
+                            startflag = false;
+                        }
+                        else
+                            System.out.println("You can't start in one of item shelves");
+                    }
+
+                    boolean endflag = true;
+                    while(endflag) {
+                        System.out.println("Please enter the END point location seperated by a blank.");
+                        for (int i = 0; i < 2; i++) {
+                            end[i] = scanner.nextInt();
+                        }
+                        if(primaryController.warehouseMatrix[end[0]][end[1]] != 'X') {
+                            endflag = false;
+                        }
+                        else
+                            System.out.println("You can't end in one of item shelves");
+                    }
+                    System.out.println("Your start and end points are (" + start[0] + "," + start[1] + ") and (" + end[0] + "," + end[1] + ")\n");
+
                     System.out.println("Type the size of the order: ");
                     int size = scanner.nextInt();
                     System.out.println("please type id of products separated by blanks: ");
@@ -159,16 +164,18 @@ public class Main {
                     else {
                         primaryController.findPathGeneticAlgorithm(filename);
                     }
+                    primaryController.resetWareHouse();
                     break;
+
                 case 3:
                     loopFlag = false;
                     System.out.println("Good Bye.");
                     break;
+
                 default:
                     System.out.println("Invalid input! Please input '1' or '2' or '3'.");
             }
         }
-
     }
 
 }
