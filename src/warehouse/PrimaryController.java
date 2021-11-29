@@ -571,7 +571,7 @@ public class PrimaryController {
         timeOutMax = 60000;
     }
 
-    /* Read file of orders
+    /* Read file of orders and store in filrOrders
      */
     void readOrderFile(String filePath) throws IOException {
 
@@ -613,6 +613,9 @@ public class PrimaryController {
         }
     }
 
+    /**
+     * Create file
+     */
     static void creatfile(String pathname) {
         try {
             File file = new File(pathname);

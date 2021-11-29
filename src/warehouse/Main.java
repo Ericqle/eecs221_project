@@ -165,7 +165,6 @@ public class Main {
                     if(size <= 8){
                         primaryController.findPathsBruteForce(filename);
                     }
-//                    else if(algorithm == 2){
                     else {
                         primaryController.findPathGeneticAlgorithm(filename);
                     }
