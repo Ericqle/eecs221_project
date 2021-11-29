@@ -29,7 +29,7 @@ public class Main {
         boolean readSuccessful = false;
         while (!readSuccessful){
             try {
-                System.out.println("Please input the path of the txt file:");
+                System.out.println("Please input the path of the warehouse stock txt file:");
                 String filePath = scanner.nextLine();
 
                 primaryController.readAllItems(filePath);
@@ -47,7 +47,7 @@ public class Main {
          */
         boolean exportFlag = false;
         while(!exportFlag) {
-            System.out.println("Please enter the filename to export.");
+            System.out.println("Please enter the filename to export the instructions to:");
             filename = scanner.nextLine();
             if(filename.endsWith(".txt"))
                 exportFlag = true;
