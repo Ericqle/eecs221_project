@@ -168,7 +168,7 @@ public class Main {
                         primaryController.findPathsBruteForce(filename);
                     }
                     else {
-                        primaryController.findPathGeneticAlgorithm(filename,primaryController.currentOrderItems);
+                        primaryController.findPathGeneticAlgorithm(filename);
                     }
                     primaryController.resetWareHouse();
                     break;
@@ -268,7 +268,7 @@ public class Main {
                                 primaryController.findPathsBruteForce(filename);
                             }
                             else {
-                                primaryController.findPathGeneticAlgorithm(filename, primaryController.currentOrderItems);
+                                primaryController.findPathGeneticAlgorithm(filename);
                             }
                             primaryController.resetWareHouse();
                         }

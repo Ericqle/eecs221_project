@@ -543,9 +543,9 @@ public class PrimaryController {
         System.out.println();
     }
 
-    void findPathGeneticAlgorithm(String file ,ArrayList<Item> OrderItems){
-        tsp_ga = new TSP_GA(30, OrderItems.size(), 1000, 0.8f, 0.9f);
-        tsp_ga.init(start, end, OrderItems, warehouseMatrix);
+    void findPathGeneticAlgorithm(String file){
+        tsp_ga = new TSP_GA(30, currentOrderItems.size(), 1000, 0.8f, 0.9f);
+        tsp_ga.init(start, end, currentOrderItems, warehouseMatrix);
 
         double timeOut = timeOutMax;
         ArrayList<Integer> route = tsp_ga.solve(timeOut);
