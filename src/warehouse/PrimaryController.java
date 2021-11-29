@@ -82,9 +82,6 @@ public class PrimaryController {
         for (Item item: allItemsList) {
             warehouseMatrix[item.row][item.col] = 'X';
         }
-
-        warehouseMatrix[start[0]][start[1]] = 'S';
-        warehouseMatrix[end[0]][end[1]] = 'E';
     }
     /* Print ascii representation of graph
         - prints the transpose and horizontally flibbed grraph matrix
@@ -449,6 +446,8 @@ public class PrimaryController {
             currentItem2ItemPath = Item2ItemPath.findBFSPath(warehouseMatrix, source, dest);
             markI2IPathOnWarehouseMatrix();
         }
+        warehouseMatrix[start[0]][start[1]] = 'S';
+        warehouseMatrix[end[0]][end[1]] = 'E';
     }
 
     /* Helper to get relative direction of a shelf to the users location
