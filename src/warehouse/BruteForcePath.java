@@ -15,7 +15,7 @@ class BruteForcePath {
     long startTime;
     long endTime;
     int TIMEOUTFLAG = 0;
-    int TIMEOUT = 60000;
+    double TIMEOUT = 60000;
 
     BruteForcePath(ArrayList<ArrayList<Integer>> currentLookupTable) {
         this.currentLookupTable = new int[currentLookupTable.size()][3];

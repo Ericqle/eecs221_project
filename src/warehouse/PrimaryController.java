@@ -272,7 +272,7 @@ public class PrimaryController {
     int[] start = {0,0};
     int[] end = {0,0};
     static boolean append;
-
+    TSP_GA tsp_ga = new TSP_GA();
     /* Graph that holds the 4 nodes per item for all items in an order
      */
     Graph currentOrderGraph = null;
@@ -315,7 +315,7 @@ public class PrimaryController {
 
     /* Max algorithm timout time
      */
-    int timeOutMax = 60000;
+    double timeOutMax = 60000;
 
     /* Helper to check if an item is sharing a shelf with other items in an order
      */
@@ -544,12 +544,11 @@ public class PrimaryController {
         System.out.println();
     }
 
-    void findPathGeneticAlgorithm(String file){
-        TSP_GA tsp_ga = new TSP_GA();
-        tsp_ga = new TSP_GA(30, currentOrderItems.size(), 1000, 0.8f, 0.9f);
-        tsp_ga.init(start, end, currentOrderItems, warehouseMatrix);
+    void findPathGeneticAlgorithm(String file ,ArrayList<Item> OrderItems){
+        tsp_ga = new TSP_GA(30, OrderItems.size(), 1000, 0.8f, 0.9f);
+        tsp_ga.init(start, end, OrderItems, warehouseMatrix);
 
-        int timeOut = timeOutMax;
+        double timeOut = timeOutMax;
         ArrayList<Integer> route = tsp_ga.solve(timeOut);
         System.out.println("pickup order: "+route +"\n");
         warehouseMatrix = tsp_ga.getMatrix();

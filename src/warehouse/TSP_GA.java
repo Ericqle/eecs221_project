@@ -95,7 +95,7 @@ public class TSP_GA {
      * @param timeOut
      * @return
      */
-    ArrayList<Integer> solve(int timeOut) {
+    ArrayList<Integer> solve(double timeOut) {
         long startTime = System.currentTimeMillis();
         long endTime;
         int i;

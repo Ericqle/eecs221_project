@@ -51,8 +51,10 @@ public class Main {
             filename = scanner.nextLine();
             if(filename.endsWith(".txt"))
                 exportFlag = true;
-            else
+            else {
+                filename = null;
                 System.out.println("Invalid file path!");
+            }
         }
 
         System.out.println("All items from data file have been stored and set in the warehouse map");
@@ -89,7 +91,7 @@ public class Main {
                 choice = scanner.nextInt();
             } else {
                 String str = scanner.next();
-                System.out.println("Invalid input! Please input '1' or '2' or '3' or '4'")   ;
+                System.out.println("Invalid input! Please input '1' or '2' or '3' or '4'")  ;
                 continue;
             }
             System.out.println();
@@ -150,8 +152,8 @@ public class Main {
                     }
                     System.out.println("Your start and end points are (" + start[0] + "," + start[1] + ") and (" + end[0] + "," + end[1] + ")\n");
 
-                    System.out.println("Please enter the time limit to find the path in milliseconds");
-                    primaryController.timeOutMax = scanner.nextInt();
+                    System.out.println("Please enter the time limit to find the path in seconds");
+                    primaryController.timeOutMax = scanner.nextDouble()*1000;
                     System.out.println();
 
                     System.out.println("Type the size of the order: ");
@@ -166,7 +168,7 @@ public class Main {
                         primaryController.findPathsBruteForce(filename);
                     }
                     else {
-                        primaryController.findPathGeneticAlgorithm(filename);
+                        primaryController.findPathGeneticAlgorithm(filename,primaryController.currentOrderItems);
                     }
                     primaryController.resetWareHouse();
                     break;
@@ -174,12 +176,23 @@ public class Main {
                 case 3:
                     String absordScannerNewline = scanner.nextLine();
 
+                    boolean orderFileFlag = false;
                     String orderListFilePath = null;
-                    System.out.println("Please input the path of the order file:");
-                    orderListFilePath = scanner.nextLine();
+                    while(!orderFileFlag) {
+                        System.out.println("Please input the path of the order file:");
+                        orderListFilePath = scanner.next();
+                        if(orderListFilePath.endsWith(".txt"))
+                            orderFileFlag = true;
+                        else {
+                            orderListFilePath = null;
+                            System.out.println("Invalid file path!");
+                        }
+                    }
+
 
                     try {
                         primaryController.readOrderFile(orderListFilePath);
+                        System.out.println("Orders Have been successfully loaded! \n");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -189,10 +202,23 @@ public class Main {
                     int unfullfilledOrderIndex = 0;
 
                     while (fileOrdeLoop) {
-                        System.out.println("Orders Have been successfully loaded!");
-                        System.out.println("Would you like to: (1) find next unfulfilled order " +
-                                "or (2) choose order number or (3) exit file orders");
-                        int fileOrderActionChoice = scanner.nextInt();
+                        boolean fileOrderActionFlag = false;
+                        int fileOrderActionChoice = 0;
+                        while(!fileOrderActionFlag) {
+                            System.out.println("Would you like to: \n(1) find next unfulfilled order \n" +
+                                    "(2) choose order number \n(3) exit file orders");
+
+                            if (scanner.hasNextInt()) {
+                                fileOrderActionChoice = scanner.nextInt();
+                                if(fileOrderActionChoice == 1 ||fileOrderActionChoice == 2 || fileOrderActionChoice == 3)
+                                fileOrderActionFlag = true;
+                                else
+                                    System.out.println("Invalid input! please input '1' or '2' or '3' ");
+                            } else {
+                                String str = scanner.next();
+                                System.out.println("Invalid input! please input '1' or '2' or '3' ");
+                            }
+                        }
 
                         if ((fileOrderActionChoice == 1) || (fileOrderActionChoice == 2)) {
                             if (fileOrderActionChoice == 1) {
@@ -200,8 +226,8 @@ public class Main {
                                 unfullfilledOrderIndex++;
                             } else {
                                 System.out.println("Please input the order number from the file");
-                                int orderNumber = scanner.nextInt();
-                                primaryController.currentOrderItems = primaryController.fileOrders.get(orderNumber - 1);
+                                unfullfilledOrderIndex = scanner.nextInt();
+                                primaryController.currentOrderItems = primaryController.fileOrders.get(unfullfilledOrderIndex - 1);
                             }
 
                             boolean startflag2 = true;
@@ -232,15 +258,15 @@ public class Main {
                             primaryController.setStartAndEndPoint(start, end);
                             System.out.println("Your start and end points are (" + start[0] + "," + start[1] + ") and (" + end[0] + "," + end[1] + ")\n");
 
-                            System.out.println("Please enter the time limit to find the path in milliseconds");
-                            primaryController.timeOutMax = scanner.nextInt();
+                            System.out.println("Please enter the time limit to find the path in seconds");
+                            primaryController.timeOutMax = scanner.nextDouble()*1000;
                             System.out.println();
 
                             if(primaryController.currentOrderItems.size() <= 8){
                                 primaryController.findPathsBruteForce(filename);
                             }
                             else {
-                                primaryController.findPathGeneticAlgorithm(filename);
+                                primaryController.findPathGeneticAlgorithm(filename, primaryController.currentOrderItems);
                             }
                             primaryController.resetWareHouse();
                         }
