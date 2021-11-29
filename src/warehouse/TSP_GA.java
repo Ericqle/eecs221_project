@@ -117,7 +117,7 @@ public class TSP_GA {
         for (t = 0; t < MAX_GEN; t++) {
             endTime = System.currentTimeMillis();
             if ((endTime-startTime)>timeOut){
-                System.out.println("Time Out! Current vest past will be used!");
+                System.out.println("Time Out! Current best past will be used!");
                 break;
             }
             evolution();
