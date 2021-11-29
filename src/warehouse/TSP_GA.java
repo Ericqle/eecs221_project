@@ -117,12 +117,12 @@ public class TSP_GA {
         for (t = 0; t < MAX_GEN; t++) {
             endTime = System.currentTimeMillis();
             if ((endTime-startTime)>timeOut){
-                System.out.println("Time Out! Current vest past will be used!");
+                System.out.println("Time Out! Current best past will be used!");
                 break;
             }
             evolution();
 
-            // set oldGroup from newGroup, ready to loop
+            // set oldGroup from newGroup, ready to loops
             for (k = 0; k < scale; k++) {
                 for (i = 0; i < itemNum; i++) {
                     oldPopulation[k][i] = newPopulation[k][i];

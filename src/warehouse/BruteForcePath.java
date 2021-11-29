@@ -61,7 +61,7 @@ class BruteForcePath {
         findPaths(graph, 1, path, visited);
 
         if(TIMEOUTFLAG == 1)
-            System.out.println("Time Out! Current vest past will be used!");
+            System.out.println("Time Out! Current best past will be used!");
         TIMEOUTFLAG = 0;
     }
 
