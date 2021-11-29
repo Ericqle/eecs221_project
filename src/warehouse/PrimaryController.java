@@ -281,6 +281,10 @@ public class PrimaryController {
      */
     ArrayList<Item> currentOrderItems = new ArrayList<>();
 
+    /* list of item orders
+     */
+    ArrayList<ArrayList<Item>> fileOrders = new ArrayList<>();
+
     /* list of all coordinates for the 4 nodes of each item
      */
     ArrayList<Coordinate> currentOrderCoordinates4N = null;
@@ -567,6 +571,29 @@ public class PrimaryController {
         timeOutMax = 60000;
     }
 
+    /* Read file of orders
+     */
+    void readOrderFile(String filePath) throws IOException {
+
+        File file = new File(filePath);
+        BufferedReader br = new BufferedReader(new FileReader(file));
+
+        String itemData = null;
+
+        while ((itemData = br.readLine()) != null){
+            ArrayList<Item> tempOrder = new ArrayList<>();
+
+            ArrayList<String> orderIDs;
+            orderIDs = getFloatsFromString(itemData);
+
+            for(String id: orderIDs) {
+                tempOrder.add(getItemByID((int) Float.parseFloat(id)));
+            }
+
+            fileOrders.add(tempOrder);
+        }
+    }
+
     /**
      * export a txt with direction
      * @param direction: string of route instruction
@@ -613,36 +640,44 @@ public class PrimaryController {
     }
 
     public static void main(String[] args) {
-//        String filePath = "C:\\Users\\10720\\Desktop\\v01.txt";
         String filePath = "src/warehouse/qvBox-warehouse-data-f21-v01.txt";
         PrimaryController primaryController = new PrimaryController();
 
         try {
             primaryController.readAllItems(filePath);
-        }
-        catch (Exception e) {
-            System.out.println("file error");
+            primaryController.readOrderFile("/Users/eric/Downloads/qvBox-warehouse-orders-list-part01.txt");
+            for (ArrayList<Item> order: primaryController.fileOrders) {
+                for (Item i : order) {
+                    System.out.print(i.id + " ");
+                }
+                System.out.println();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        primaryController.setStartAndEndPoint(new int[]{7, 20}, new int[]{32, 10});
-        primaryController.setWarehouseMatrix();
-
-//        Integer[] items = {108335};
-        Integer[] items = {108335, 391825, 340367, 286457, 661741};
-//        Integer[] items = {281610, 342706, 111873, 198029, 366109, 287261, 76283, 254489, 258540, 286457};
-//        Integer[] items = {427230, 372539, 396879, 391680, 208660, 105912, 332555, 227534, 68048, 188856, 736830, 736831, 479020, 103313, 1};
+//        try {
+//            primaryController.readAllItems(filePath);
+//        }
+//        catch (Exception e) {
+//            System.out.println("file error");
+//        }
+//
+//        primaryController.setStartAndEndPoint(new int[]{7, 20}, new int[]{32, 10});
+//        primaryController.setWarehouseMatrix();
+//
 //        Integer[] items = {633, 1321, 3401, 5329, 10438, 372539, 396879, 16880, 208660, 105912, 332555, 227534, 68048, 188856, 736830, 736831, 479020, 103313, 1, 20373};
-
-
-        for (Integer i : items) {
-            primaryController.currentOrderItems.add(primaryController.getItemByID(i));
-        }
-
-        System.out.println("Items in current order");
-        for (Item item:
-                primaryController.currentOrderItems) {
-            System.out.println(item.id + " " + item.row + " " + item.col);
-        };
-        System.out.println();
+//
+//
+//        for (Integer i : items) {
+//            primaryController.currentOrderItems.add(primaryController.getItemByID(i));
+//        }
+//
+//        System.out.println("Items in current order");
+//        for (Item item:
+//                primaryController.currentOrderItems) {
+//            System.out.println(item.id + " " + item.row + " " + item.col);
+//        };
+//        System.out.println();
     }
 }

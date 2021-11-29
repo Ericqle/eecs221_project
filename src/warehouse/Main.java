@@ -83,12 +83,13 @@ public class Main {
             System.out.println("What would you like to do?");
             System.out.println("1: find a specific product");
             System.out.println("2: find an order of products");
-            System.out.println("3: exit");
+            System.out.println("3: load and find orders from file");
+            System.out.println("4: exit");
             if (scanner.hasNextInt()) {
                 choice = scanner.nextInt();
             } else {
                 String str = scanner.next();
-                System.out.println("Invalid input! Please input '1' or '2' or '3'")   ;
+                System.out.println("Invalid input! Please input '1' or '2' or '3' or '4'")   ;
                 continue;
             }
             System.out.println();
@@ -172,12 +173,94 @@ public class Main {
                     break;
 
                 case 3:
+                    String absordScannerNewline = scanner.nextLine();
+
+                    String orderListFilePath = null;
+                    System.out.println("Please input the path of the order file:");
+                    orderListFilePath = scanner.nextLine();
+
+                    try {
+                        primaryController.readOrderFile(orderListFilePath);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println();
+
+                    boolean fileOrdeLoop = true;
+                    int unfullfilledOrderIndex = 0;
+
+                    while (fileOrdeLoop) {
+                        System.out.println("Orders Have been successfully loaded!");
+                        System.out.println("Would you like to: (1) find next unfulfilled order " +
+                                "or (2) choose order number or (3) exit file orders");
+                        int fileOrderActionChoice = scanner.nextInt();
+
+                        if ((fileOrderActionChoice == 1) || (fileOrderActionChoice == 2)) {
+                            if (fileOrderActionChoice == 1) {
+                                primaryController.currentOrderItems = primaryController.fileOrders.get(unfullfilledOrderIndex);
+                                unfullfilledOrderIndex++;
+                            } else {
+                                System.out.println("Please input the order number from the file");
+                                int orderNumber = scanner.nextInt();
+                                primaryController.currentOrderItems = primaryController.fileOrders.get(orderNumber - 1);
+                            }
+
+                            boolean startflag2 = true;
+                            while(startflag2) {
+                                System.out.println("Please enter the START point location seperated by a blank.");
+                                for (int i = 0; i < 2; i++) {
+                                    start[i] = scanner.nextInt();
+                                }
+                                if(primaryController.warehouseMatrix[start[0]][start[1]] != 'X') {
+                                    startflag2 = false;
+                                }
+                                else
+                                    System.out.println("You can't start in one of item shelves");
+                            }
+
+                            boolean endflag2 = true;
+                            while(endflag2) {
+                                System.out.println("Please enter the END point location seperated by a blank.");
+                                for (int i = 0; i < 2; i++) {
+                                    end[i] = scanner.nextInt();
+                                }
+                                if(primaryController.warehouseMatrix[end[0]][end[1]] != 'X') {
+                                    endflag2 = false;
+                                }
+                                else
+                                    System.out.println("You can't end in one of item shelves");
+                            }
+                            primaryController.setStartAndEndPoint(start, end);
+                            System.out.println("Your start and end points are (" + start[0] + "," + start[1] + ") and (" + end[0] + "," + end[1] + ")\n");
+
+                            System.out.println("Please enter the time limit to find the path in milliseconds");
+                            primaryController.timeOutMax = scanner.nextInt();
+                            System.out.println();
+
+                            if(primaryController.currentOrderItems.size() <= 8){
+                                primaryController.findPathsBruteForce(filename);
+                            }
+                            else {
+                                primaryController.findPathGeneticAlgorithm(filename);
+                            }
+                            primaryController.resetWareHouse();
+                        }
+
+                        else {
+                            fileOrdeLoop = false;
+                            System.out.println();
+                        }
+
+                    }
+                    break;
+
+                case 4:
                     loopFlag = false;
                     System.out.println("Good Bye.");
                     break;
 
                 default:
-                    System.out.println("Invalid input! Please input '1' or '2' or '3'.");
+                    System.out.println("Invalid input! Please input '1' or '2' or '3' or '4'.");
             }
         }
     }
