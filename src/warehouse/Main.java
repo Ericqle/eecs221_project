@@ -222,12 +222,14 @@ public class Main {
 
                         if ((fileOrderActionChoice == 1) || (fileOrderActionChoice == 2)) {
                             if (fileOrderActionChoice == 1) {
-                                primaryController.currentOrderItems = primaryController.fileOrders.get(unfullfilledOrderIndex);
+//                                primaryController.currentOrderItems = primaryController.fileOrders.get(unfullfilledOrderIndex);
+                                primaryController.currentOrderItems = new ArrayList<>(primaryController.fileOrders.get(unfullfilledOrderIndex));
                                 unfullfilledOrderIndex++;
                             } else {
                                 System.out.println("Please input the order number from the file");
                                 unfullfilledOrderIndex = scanner.nextInt();
-                                primaryController.currentOrderItems = primaryController.fileOrders.get(unfullfilledOrderIndex - 1);
+//                                primaryController.currentOrderItems = primaryController.fileOrders.get(unfullfilledOrderIndex - 1);
+                                primaryController.currentOrderItems = new ArrayList<>(primaryController.fileOrders.get(unfullfilledOrderIndex - 1));
                             }
 
                             boolean startflag2 = true;
