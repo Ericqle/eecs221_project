@@ -205,26 +205,40 @@ public class Main {
                     }
 
                     boolean productFlag = true;
+                    System.out.println("please type id of products separated by blanks: \n" +
+                            "(we will only accept the first "+size+" products)");
                     while(productFlag) {
-                        System.out.println("please type id of products separated by blanks: \n" +
-                                "(we will only accept the first "+size+" products)");
-                        for (int i = 0; i < size; i++) {
+                        int i = 0;
+                        int a = 0, b = 0;
+                        primaryController.currentOrderItems.clear();
+                        for (i = 0; i < size; i++) {
                             String j = scanner.next();
                             if (checkNumber(j)) {
                                 int productid = Integer.parseInt(j);
                                 if(primaryController.getItemByID(productid) == null)
                                 {
-                                    System.out.println("please input the items that are placed in the warehouse");
-                                    break;
+                                    a = 1;
                                 }
+                                else
                                 primaryController.currentOrderItems.add(primaryController.getItemByID(productid));
+
                             } else {
-                                System.out.println("please input " +size + " corresponding products");
-                                break;
+                                    b = 1;
                             }
                         }
-                        if(primaryController.currentOrderItems.size() == size)
-                        productFlag = false;
+                        if(a==1 ){
+                            System.out.println("please input the items that are placed in the warehouse");
+                            System.out.println("please type id of products separated by blanks: \n" +
+                                    "(we will only accept the first "+size+" products)");
+                        }
+                        else if(b == 1){
+                            System.out.println("please input " +size + " corresponding products");
+                            System.out.println("please type id of products separated by blanks: \n" +
+                                    "(we will only accept the first "+size+" products)");
+                        }
+                        else{
+                            productFlag = false;
+                        }
                     }
 
                     primaryController.setStartAndEndPoint(start, end);
