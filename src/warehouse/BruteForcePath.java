@@ -3,9 +3,11 @@ package warehouse;
 import java.util.ArrayList;
 
 /* Brute Force Solution
-    - Recursively find all hamiltonian cycles
-        - calculated cost of each cycle
-        - track, compare and save the shortest cycle
+    - Recursively begin to find all paths depth first with backtracking
+        - prunes dfs tree and stops calculating subtrees (paths) if the distance
+            exceeds the current shortest complete path which prevents us from
+            having to go through every possible path when we already know it wont
+            be optimal
      */
 class BruteForcePath {
 
@@ -58,17 +60,22 @@ class BruteForcePath {
         visited[0] = true;
         visited[graph.length - 1] = true;
 
-        findPaths(graph, 1, path, visited);
+        findPaths(graph, 1, path, visited, 0);
 
         if(TIMEOUTFLAG == 1)
             System.out.println("Time Out! Current best past will be used!");
         TIMEOUTFLAG = 0;
     }
 
-    void findPaths(int graph[][], int pos, ArrayList<Integer> path, boolean[] visited) {
+    void findPaths(int graph[][], int pos, ArrayList<Integer> path, boolean[] visited, int runningDist) {
         endTime = System.currentTimeMillis();
         if ((endTime-startTime)>TIMEOUT){
             TIMEOUTFLAG = 1;
+            return;
+        }
+
+        // Prune distance and stop considering paths starting from this subpath
+        if (runningDist + graph[path.get(path.size()-1)][graph.length-1] > minPathCost) {
             return;
         }
 
@@ -77,14 +84,9 @@ class BruteForcePath {
             if (graph[path.get(path.size() - 1)][path.get(0)] != 0) {
 
                 path.add(graph.length - 1);
-                int pathSize = path.size();
-                int pathCost = 0;
 
-                for (int i = 0; i < pathSize; i++) {
-                    if (i < pathSize -1) {
-                        pathCost += graph[path.get(i)][path.get(i + 1)];
-                    }
-                }
+                int pathCost = runningDist + graph[path.get(path.size()-1)][path.get(path.size()-2)];
+
                 if (pathCost < minPathCost) {
                     minPathCost = pathCost;
                     minPath = new ArrayList<>(path);
@@ -103,13 +105,16 @@ class BruteForcePath {
                     visited[currentLookupTable[v][k]] = true;
                 }
                 visited[v] = true;
+                runningDist += graph[path.get(path.size()-1)][path.get(path.size()-2)];
 
-                findPaths(graph, pos + 1, path, visited);
+                findPaths(graph, pos + 1, path, visited, runningDist);
 
                 for (int k = 0; k < 3; k++) {
                     visited[currentLookupTable[v][k]] = false;
                 }
                 visited[v] = false;
+
+                runningDist -= graph[path.get(path.size()-1)][path.get(path.size()-2)];
                 path.remove(path.size() - 1);
             }
         }
