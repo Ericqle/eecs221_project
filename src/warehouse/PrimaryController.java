@@ -1,10 +1,7 @@
 package warehouse;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.io.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -220,8 +217,6 @@ public class PrimaryController {
         }
         String currDirection;
         currDirection = directionList.get(0);
-//        else
-//            currDirection = " ";
 
         int currentDirCount = 1;
 
@@ -256,12 +251,6 @@ public class PrimaryController {
 
         return instructions.toString().trim();
     }
-
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //  Beta Release Implementation     ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      *  store start and end location
@@ -305,6 +294,10 @@ public class PrimaryController {
     /* The indices of a shortest path that correspond to coordinates in currentOrderCoordinates4N
      */
     ArrayList<Integer> shortestPathCoordIndices = null;
+
+    /* The ids of the items in the shortest path in order
+     */
+    ArrayList<Integer> shortestPathByID = new ArrayList<>();
 
     /* Shortest path cost
      */
@@ -469,8 +462,8 @@ public class PrimaryController {
      */
     void printFullPathInstructions (String file) {
         StringBuilder inst = new StringBuilder();
-        inst.append("\n Path Instructions");
-        System.out.println("Path Instructions");
+        inst.append("\n Path Instructions:");
+        System.out.println("Path Instructions:");
         for (int i = 0; i < shortestPathCoordIndices.size() -1; i++) {
             int itemIndex = (int) (Math.ceil(shortestPathCoordIndices.get(i + 1) / 4.0) - 1);
 
@@ -507,6 +500,25 @@ public class PrimaryController {
         exportTxt(file, inst.toString().trim());
     }
 
+    void setShortestPathByID() {
+        for (int i = 0; i < shortestPathCoordIndices.size() -1; i++) {
+            int itemIndex = (int) (Math.ceil(shortestPathCoordIndices.get(i + 1) / 4.0) - 1);
+            if ((itemIndex >= 0) && (itemIndex < currentOrderItemsByShelf.size())) {
+                Item item = currentOrderItemsByShelf.get(itemIndex);
+                int id = item.id;
+                shortestPathByID.add(id);
+
+                if (itemsOnSameShelfMap.get(itemIndex) != null) {
+                    for (int itemOnSameShelfIndex : itemsOnSameShelfMap.get(itemIndex)) {
+                        Item itemOnSameShelf = currentOrderItems.get(itemOnSameShelfIndex);
+                        int idSameShelf = itemOnSameShelf.id;
+                        shortestPathByID.add(idSameShelf);
+                    }
+                }
+            }
+        }
+    }
+
     /* Print the adjacency matrix for the order graph
         - FOR DEVELOPER DEBUGING
      */
@@ -530,13 +542,13 @@ public class PrimaryController {
         bruteForcePath.findShortestPath(currentOrderGraph.matrix);
         shortestPathCoordIndices = bruteForcePath.minPath;
         shortestPathCost = bruteForcePath.minPathCost;
+        setShortestPathByID();
 
+        System.out.println();
+        System.out.println("Path Distance: " + shortestPathCost + " units");
+        System.out.println("Items by ID Pickup Order: " + shortestPathByID);
         markFullPath();
         printWarehouseMatrix();
-        System.out.println();
-
-        System.out.println("Path Cost ");
-        System.out.println(shortestPathCost);
         System.out.println();
 
         printFullPathInstructions(filename);
@@ -548,18 +560,23 @@ public class PrimaryController {
         tsp_ga.init(start, end, currentOrderItems, warehouseMatrix);
 
         double timeOut = timeOutMax;
+        System.out.println();
         ArrayList<Integer> route = tsp_ga.solve(timeOut);
-        System.out.println("pickup order: "+route +"\n");
+        route.removeAll(Collections.singleton(0));
+        System.out.println("Items by ID Pickup Order: " + route);
         warehouseMatrix = tsp_ga.getMatrix();
         printWarehouseMatrix();
+        System.out.println();
         String inst = tsp_ga.getInstructions();
-        exportTxt(file, "" + inst);
         System.out.println(inst);
+        exportTxt(file, "" + inst);
+        System.out.println();
     }
 
     void resetWareHouse() {
         setWarehouseMatrix();
         currentOrderItems.clear();
+        shortestPathByID.clear();
         currentOrderItemsByShelf = null;
         currentOrderGraph = null;
         currentOrderCoordinates4N = null;
@@ -622,7 +639,7 @@ public class PrimaryController {
                 System.out.println("File created: " + file.getName());
                 append=false;
             } else {
-                System.out.println("File already exists. Content will be covered.");
+                System.out.println("File already exists. Content will be overwritten.");
                 FileWriter fileWriter =new FileWriter(file);
                 fileWriter.write("");
                 fileWriter.flush();

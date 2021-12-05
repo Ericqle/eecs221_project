@@ -62,7 +62,6 @@ public class Main {
         /* Initiate user interaction
             - also show all warehouse data is reflected on map
          */
-//        Scanner scanner = new Scanner(System.in);
         primaryController.setStartAndEndPoint(start, end);
         primaryController.setWarehouseMatrix();
         System.out.println("Here is a layout of the warehouse with the loaded data");
@@ -83,9 +82,9 @@ public class Main {
 
         while (loopFlag) {
             System.out.println("What would you like to do?");
-            System.out.println("1: find a specific product");
+            System.out.println("1: navigate to a specific product");
             System.out.println("2: find an order of products");
-            System.out.println("3: load and find orders from file");
+            System.out.println("3: load and find multiple orders from file");
             System.out.println("4: exit");
             if (scanner.hasNextInt()) {
                 choice = scanner.nextInt();
@@ -109,13 +108,13 @@ public class Main {
                         System.out.println();
 
                         System.out.println("The item for id: " + itemID + " is marked as '$' on the map.");
-                        System.out.println("The path from your location 'U' to the item '$' is marked with 'P' on the map.");
+                        System.out.println("The path from your location 'S' to the item '$' is marked with 'P' on the map.");
                         String shortestPathOutput = primaryController.findItemAndCallPath(start,itemID);
                         System.out.println(shortestPathOutput);
                         primaryController.markI2IPathOnWarehouseMatrix();
+                        primaryController.markItemInWarehouseMatrix(itemID);
+                        primaryController.warehouseMatrix[0][0] = 'S';
                         primaryController.printWarehouseMatrix();
-                        primaryController.unmarkI2IPathOnWarehouseMatrix();
-                        primaryController.unmarkItemInWarehouseMatrix(itemID);
                         System.out.println();
                     } else {
                         String str = scanner.next();
@@ -125,70 +124,9 @@ public class Main {
                     break;
 
                 case 2:
-                    boolean startflag = true;
-                    while(startflag) {
-                        boolean isNumber = true;
-                        System.out.println("Please enter the START point location seperated by a blank.");
-                        for (int i = 0; i < 2; i++) {
-                            String j = scanner.next();
-                            if (checkNumber(j)) {
-                                int temp = Integer.parseInt(j);
-                                start[i] = temp;
-                            } else {
-                                isNumber = false;
-                            }
-                        }
-                        if(!isNumber){
-                            System.out.println("please input the correct START location(only Positive Integer Number)");
-                        }
-                        else if(start[0]>=40 || start[0]< 0 || start[1]>=25 || start[1] < 0)
-                            System.out.println("please input the START location within the COL[0,40) ROW[0,25)");
-                        else if (primaryController.warehouseMatrix[start[0]][start[1]] == 'X') {
-                            System.out.println("You can't start in one of item shelves");
-                        } else
-                            startflag = false;
-                    }
+                    setStartAndEndLocations(primaryController, scanner, start, end);
 
-                    boolean endflag1 = true;
-                    while(endflag1) {
-                        boolean isNumber = true;
-                        System.out.println("Please enter the END point location seperated by a blank.");
-                        for (int i = 0; i < 2; i++) {
-                            String j = scanner.next();
-                            if (checkNumber(j)) {
-                                int temp = Integer.parseInt(j);
-                                end[i] = temp;
-                            } else {
-                                isNumber = false;
-                            }
-                        }
-                        if(!isNumber){
-                            System.out.println("please input the correct END location(only Positive Integer Number)");
-                        }
-                        else if(end[0]>=40 || end[0]< 0 || end[1]>=25 || end[1] < 0)
-                            System.out.println("please input the END location within the COL[0,40) ROW[0,25)");
-                        else if (primaryController.warehouseMatrix[end[0]][end[1]] == 'X') {
-                            System.out.println("You can't end in one of item shelves");
-                        } else
-                            endflag1 = false;
-                    }
-
-                    System.out.println("Your start and end points are (" + start[0] + "," + start[1] + ") and (" + end[0] + "," + end[1] + ")\n");
-
-                    boolean timeFlag = true;
-                    while(timeFlag) {
-                        System.out.println("Please enter the time limit to find the path in seconds");
-                        String j = scanner.next();
-
-                        if(checkNumber2(j) && Double.parseDouble(j) > 0){
-                            primaryController.timeOutMax = Double.parseDouble(j)* 1000;
-                            timeFlag = false;
-                        }
-                        else{
-                            System.out.println("please input the correct time limit (only positive number)");
-                        }
-                    }
-                    System.out.println();
+                    setTimeoutTime(primaryController, scanner);
 
                     boolean sizeFlag = true;
                     int size = 0;
@@ -200,13 +138,13 @@ public class Main {
                             sizeFlag = false;
                         }
                         else{
-                            System.out.println("please input the correct size (only positive integer number)");
+                            System.out.println("please input a valid size (only positive integer number)");
                         }
                     }
 
                     boolean productFlag = true;
-                    System.out.println("please type id of products separated by blanks: \n" +
-                            "(we will only accept the first "+size+" products)");
+                    System.out.println("please type id of products separated by spaces: \n" +
+                            "(we will only accept the first "+size+" products entered)");
                     while(productFlag) {
                         int i = 0;
                         int a = 0, b = 0;
@@ -228,13 +166,13 @@ public class Main {
                         }
                         if(a==1 ){
                             System.out.println("please input the items that are placed in the warehouse");
-                            System.out.println("please type id of products separated by blanks: \n" +
-                                    "(we will only accept the first "+size+" products)");
+                            System.out.println("please type id of products separated by spaces: \n" +
+                                    "(we will only accept the first "+size+" products entered)");
                         }
                         else if(b == 1){
                             System.out.println("please input " +size + " corresponding products");
-                            System.out.println("please type id of products separated by blanks: \n" +
-                                    "(we will only accept the first "+size+" products)");
+                            System.out.println("please type id of products separated by spaces: \n" +
+                                    "(we will only accept the first "+size+" products entered)");
                         }
                         else{
                             productFlag = false;
@@ -270,7 +208,7 @@ public class Main {
 
                     try {
                         primaryController.readOrderFile(orderListFilePath);
-                        System.out.println("Orders Have been successfully loaded! \n");
+                        System.out.println("Orders Have been successfully loaded!");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -300,84 +238,18 @@ public class Main {
 
                         if ((fileOrderActionChoice == 1) || (fileOrderActionChoice == 2)) {
                             if (fileOrderActionChoice == 1) {
-//                                primaryController.currentOrderItems = primaryController.fileOrders.get(unfullfilledOrderIndex);
                                 primaryController.currentOrderItems = new ArrayList<>(primaryController.fileOrders.get(unfullfilledOrderIndex));
                                 unfullfilledOrderIndex++;
                             } else {
                                 System.out.println("Please input the order number from the file");
                                 unfullfilledOrderIndex = scanner.nextInt();
-//                                primaryController.currentOrderItems = primaryController.fileOrders.get(unfullfilledOrderIndex - 1);
                                 primaryController.currentOrderItems = new ArrayList<>(primaryController.fileOrders.get(unfullfilledOrderIndex - 1));
                             }
 
-                            boolean startflag2 = true;
-                            while(startflag2) {
-                                boolean isNumber = true;
-                                System.out.println("Please enter the START point location seperated by a blank.");
-                                for (int i = 0; i < 2; i++) {
-                                    String j = scanner.next();
-                                    if (checkNumber(j)) {
-                                        int temp = Integer.parseInt(j);
-                                        start[i] = temp;
-                                    } else {
-                                        isNumber = false;
-                                    }
-                                }
-                                if(!isNumber){
-                                    System.out.println("please input the correct START location(only Positive Integer Number)");
-                                }
-                                else if(start[0]>=40 || start[0]< 0 || start[1]>=25 || start[1] < 0)
-                                    System.out.println("please input the START location within the COL[0,40) ROW[0,25)");
-                                else if (primaryController.warehouseMatrix[start[0]][start[1]] == 'X') {
-                                    System.out.println("You can't start in one of item shelves");
-                                } else
-                                    startflag2 = false;
-                            }
-
-                            boolean endflag2 = true;
-                            while(endflag2) {
-                                boolean isNumber = true;
-                                System.out.println("Please enter the END point location seperated by a blank.");
-                                for (int i = 0; i < 2; i++) {
-                                    String j = scanner.next();
-                                    if (checkNumber(j)) {
-                                        int temp = Integer.parseInt(j);
-                                        end[i] = temp;
-                                    } else {
-                                        isNumber = false;
-                                    }
-                                }
-                                if(!isNumber){
-                                    System.out.println("please input the correct END location(only Positive Integer Number)");
-                                }
-                                else if(end[0]>=40 || end[0]< 0 || end[1]>=25 || end[1] < 0)
-                                    System.out.println("please input the END location within the COL[0,40) ROW[0,25)");
-                                else if (primaryController.warehouseMatrix[end[0]][end[1]] == 'X') {
-                                    System.out.println("You can't end in one of item shelves");
-                                } else
-                                    endflag2 = false;
-                            }
-
-                            primaryController.setStartAndEndPoint(start, end);
-                            System.out.println("Your start and end points are (" + start[0] + "," + start[1] + ") and (" + end[0] + "," + end[1] + ")\n");
-
-                            boolean timeFlag2 = true;
-                            while(timeFlag2) {
-                                System.out.println("Please enter the time limit to find the path in seconds");
-                                String j = scanner.next();
-                                if(checkNumber2(j) && Double.parseDouble(j) > 0){
-                                    primaryController.timeOutMax = Double.parseDouble(j)* 1000;
-                                    timeFlag2 = false;
-                                }
-                                else{
-                                    System.out.println("please input the correct time limit (only positive number)");
-                                }
-                            }
                             System.out.println();
+                            setStartAndEndLocations(primaryController, scanner, start, end);
 
-//                            System.out.println("Please enter the time limit to find the path in seconds");
-//                            primaryController.timeOutMax = scanner.nextDouble()*1000;
-//                            System.out.println();
+                            setTimeoutTime(primaryController, scanner);
 
                             if(primaryController.currentOrderItems.size() <= 8){
                                 primaryController.findPathsBruteForce(filename);
@@ -405,6 +277,75 @@ public class Main {
                     System.out.println("Invalid input! Please input '1' or '2' or '3' or '4'.");
             }
         }
+    }
+
+    static void setTimeoutTime(PrimaryController primaryController, Scanner scanner) {
+        boolean timeFlag2 = true;
+        while(timeFlag2) {
+            System.out.println("Please enter the time limit to find the path in seconds");
+            String j = scanner.next();
+            if(checkNumber2(j) && Double.parseDouble(j) > 0){
+                primaryController.timeOutMax = Double.parseDouble(j)* 1000;
+                timeFlag2 = false;
+            }
+            else{
+                System.out.println("please input a valid time limit (only positive numbers)");
+            }
+        }
+        System.out.println();
+
+    }
+
+    static void setStartAndEndLocations(PrimaryController primaryController, Scanner scanner, int[] start, int[] end) {
+        boolean startflag = true;
+        while(startflag) {
+            boolean isNumber = true;
+            System.out.println("Please enter the START point warehouse coordinates separated by a single space.");
+            for (int i = 0; i < 2; i++) {
+                String j = scanner.next();
+                if (checkNumber(j)) {
+                    int temp = Integer.parseInt(j);
+                    start[i] = temp;
+                } else {
+                    isNumber = false;
+                }
+            }
+            if(!isNumber){
+                System.out.println("please input a valid START location(only Positive Integer Numbers)");
+            }
+            else if(start[0]>=40 || start[0]< 0 || start[1]>=25 || start[1] < 0)
+                System.out.println("please input the START location within the COL[0,40) ROW[0,25)");
+            else if (primaryController.warehouseMatrix[start[0]][start[1]] == 'X') {
+                System.out.println("You can't start in one of item shelves");
+            } else
+                startflag = false;
+        }
+
+        boolean endflag1 = true;
+        while(endflag1) {
+            boolean isNumber = true;
+            System.out.println("Please enter the END point warehouse coordinates separated by a single space.");
+            for (int i = 0; i < 2; i++) {
+                String j = scanner.next();
+                if (checkNumber(j)) {
+                    int temp = Integer.parseInt(j);
+                    end[i] = temp;
+                } else {
+                    isNumber = false;
+                }
+            }
+            if(!isNumber){
+                System.out.println("please input a valid END location(only Positive Integer Numbers)");
+            }
+            else if(end[0]>=40 || end[0]< 0 || end[1]>=25 || end[1] < 0)
+                System.out.println("please input the END location within the COL[0,40) ROW[0,25)");
+            else if (primaryController.warehouseMatrix[end[0]][end[1]] == 'X') {
+                System.out.println("You can't end in one of item shelves");
+            } else
+                endflag1 = false;
+        }
+
+        System.out.println("Your start and end points are (" + start[0] + "," + start[1] + ") and (" + end[0] + "," + end[1] + ")\n");
     }
 
     static boolean checkNumber2(String j) {
