@@ -462,6 +462,8 @@ public class PrimaryController {
      */
     void printFullPathInstructions (String file) {
         StringBuilder inst = new StringBuilder();
+        ArrayList<Integer> orderListID = new ArrayList<>();
+
         inst.append("\n Path Instructions:");
         System.out.println("Path Instructions:");
         for (int i = 0; i < shortestPathCoordIndices.size() -1; i++) {
@@ -479,11 +481,15 @@ public class PrimaryController {
 
             if ((itemIndex >= 0) && (itemIndex < currentOrderItemsByShelf.size())) {
                 Item item = currentOrderItemsByShelf.get(itemIndex);
+                int id = item.id;
+                orderListID.add(id);
                 System.out.print("Pickup item(s) (" + item.id + ")");
                 inst.append("\nPickup item(s) (" + item.id + ") ");
                 if (itemsOnSameShelfMap.get(itemIndex) != null) {
                     for (int itemOnSameShelfIndex : itemsOnSameShelfMap.get(itemIndex)) {
                         Item itemOnSameShelf = currentOrderItems.get(itemOnSameShelfIndex);
+                        int idSameShelf = itemOnSameShelf.id;
+                        orderListID.add(idSameShelf);
                         System.out.print(" (" + itemOnSameShelf.id + ")");
                         inst.append(" (" + itemOnSameShelf.id + ") ");
                     }
@@ -491,13 +497,13 @@ public class PrimaryController {
                 System.out.print(" from the shelf directly " + getShelfDirection(dest.x, dest.y, item.row, item.col)
                         + " to you" );
                 inst.append(" from the shelf directly " + getShelfDirection(dest.x, dest.y, item.row, item.col)
-                        + " to you \n" );
+                        + " to you" );
                 System.out.println();
             }
         }
         System.out.println("Path complete");
         inst.append("\nPath complete");
-        exportTxt(file, inst.toString().trim());
+        exportTxt(file, inst.toString().trim(), orderListID);
     }
 
     void setShortestPathByID() {
@@ -533,6 +539,7 @@ public class PrimaryController {
         - sets lookup table
         - calls brute force algorithm
         - saves path indices and cost
+        - prints information to console
      */
     void findPathsBruteForce(String filename) {
         setCurrentOrderGraph4N();
@@ -569,7 +576,7 @@ public class PrimaryController {
         System.out.println();
         String inst = tsp_ga.getInstructions();
         System.out.println(inst);
-        exportTxt(file, "" + inst);
+        exportTxt(file, "" + inst, route);
         System.out.println();
     }
 
@@ -613,13 +620,13 @@ public class PrimaryController {
      * export a txt with direction
      * @param direction: string of route instruction
      */
-    static void exportTxt(String filename, String direction) {
+    static void exportTxt(String filename, String direction, ArrayList<Integer> orderIds) {
         if (filename.isEmpty())
             return;
         try {
             creatfile(filename);
             FileWriter myWriter = new FileWriter(filename, append);
-
+            myWriter.write("Path Traversal for Order including Items:" + orderIds + "\n\n");
             myWriter.write(direction);
             myWriter.close();
             System.out.printf("Successfully wrote to %s.\n", filename);

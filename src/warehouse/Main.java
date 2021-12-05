@@ -61,6 +61,7 @@ public class Main {
             }
         }
 
+        System.out.println();
         System.out.println("All items from data file have been stored and set in the warehouse map");
 
         /* Initiate user interaction
@@ -86,7 +87,7 @@ public class Main {
 
         while (loopFlag) {
             System.out.println("What would you like to do?");
-            System.out.println("1: navigate to a specific product");
+            System.out.println("1: navigate to a specific product from warehouse origin (coordinate 0 0)");
             System.out.println("2: find an order of products");
             System.out.println("3: load and find multiple orders from file");
             System.out.println("4: exit");
