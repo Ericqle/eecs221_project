@@ -614,7 +614,8 @@ public class PrimaryController {
      * @param direction: string of route instruction
      */
     static void exportTxt(String filename, String direction) {
-
+        if (filename.isEmpty())
+            return;
         try {
             creatfile(filename);
             FileWriter myWriter = new FileWriter(filename, append);

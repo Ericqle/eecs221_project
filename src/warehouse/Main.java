@@ -47,8 +47,12 @@ public class Main {
          */
         boolean exportFlag = false;
         while(!exportFlag) {
-            System.out.println("Please enter the filename to export the instructions to:");
+            System.out.println("If you wish to export order path instructions, enter the file name here: " +
+                    "\nOtherwise, leave it blank and hit 'enter'");
             filename = scanner.nextLine();
+            if (filename.isEmpty()) {
+                break;
+            }
             if(filename.endsWith(".txt"))
                 exportFlag = true;
             else {
