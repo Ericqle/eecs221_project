@@ -69,7 +69,7 @@ public class Main {
         primaryController.setStartAndEndPoint(start, end);
         primaryController.setWarehouseMatrix();
         System.out.println("Here is a layout of the warehouse with the loaded data");
-        System.out.println("'S' = start point | 'E' = end point | 'X' = shelves/items | '.' = open space");
+        System.out.println("'S' = start point | 'E' = end point -or start and end if the same point- | 'X' = shelves/items | '.' = open space");
         primaryController.printWarehouseMatrix();
         System.out.println();
 
