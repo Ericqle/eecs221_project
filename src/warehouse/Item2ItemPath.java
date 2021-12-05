@@ -6,7 +6,7 @@ import java.util.*;
     - This algorithm will return the shortest path between two vertices of a grid
         oriented graph -as in vertices are aligned in a grid and are connected to
         vertices adjacent to them in the 4 cardinal directions-.
-    - It is basically a modification to BFS to find a path
+    - It considers the shortest item to item path from all 4 points of entry
     - It will be used to find the path between two Item vertices in warehouseGraph
         and for finding the weights of the warehouseGraph edges
  */

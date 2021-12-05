@@ -6,9 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /* Primary Control of program
-    - Is used with GUI when implemented, but for now just contains all the functions
-        that the GUIS method calls will utilize -Main module is using these functions
-        for a text UI instead of a GUI for this release-
+    - Contains all the functionality need for Driver class to implement the applications flow
  */
 public class PrimaryController {
     int ROW = 40;
@@ -506,6 +504,9 @@ public class PrimaryController {
         exportTxt(file, inst.toString().trim(), orderListID);
     }
 
+    /**
+     * Dereference and save the shortest path in terms of ids
+     */
     void setShortestPathByID() {
         for (int i = 0; i < shortestPathCoordIndices.size() -1; i++) {
             int itemIndex = (int) (Math.ceil(shortestPathCoordIndices.get(i + 1) / 4.0) - 1);
@@ -580,6 +581,9 @@ public class PrimaryController {
         System.out.println();
     }
 
+    /**
+     * Clear the changes made to the warehouse matrix from an item order operation
+     */
     void resetWareHouse() {
         setWarehouseMatrix();
         currentOrderItems.clear();
@@ -593,7 +597,7 @@ public class PrimaryController {
         timeOutMax = 60000;
     }
 
-    /* Read file of orders and store in filrOrders
+    /* Read file of orders and store in fileOrders
      */
     void readOrderFile(String filePath) throws IOException {
 
@@ -660,28 +664,32 @@ public class PrimaryController {
         }
     }
 
+    /**
+     * Set start and end points of an order traversal
+     * @param s
+     * @param e
+     */
     public void setStartAndEndPoint(int[] s, int[] e) {
         start = s;
         end = e;
     }
 
-    public static void main(String[] args) {
-        String filePath = "src/warehouse/qvBox-warehouse-data-f21-v01.txt";
-        PrimaryController primaryController = new PrimaryController();
-
-        try {
-            primaryController.readAllItems(filePath);
-            primaryController.readOrderFile("/Users/eric/Downloads/qvBox-warehouse-orders-list-part01.txt");
-            for (ArrayList<Item> order: primaryController.fileOrders) {
-                for (Item i : order) {
-                    System.out.print(i.id + " ");
-                }
-                System.out.println();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+//    public static void main(String[] args) {
+//        String filePath = "src/warehouse/qvBox-warehouse-data-f21-v01.txt";
+//        PrimaryController primaryController = new PrimaryController();
+//
+//        try {
+//            primaryController.readAllItems(filePath);
+//            primaryController.readOrderFile("/Users/eric/Downloads/qvBox-warehouse-orders-list-part01.txt");
+//            for (ArrayList<Item> order: primaryController.fileOrders) {
+//                for (Item i : order) {
+//                    System.out.print(i.id + " ");
+//                }
+//                System.out.println();
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 //        try {
 //            primaryController.readAllItems(filePath);
 //        }
@@ -705,5 +713,5 @@ public class PrimaryController {
 //            System.out.println(item.id + " " + item.row + " " + item.col);
 //        };
 //        System.out.println();
-    }
+//    }
 }

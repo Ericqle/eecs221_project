@@ -6,10 +6,11 @@ import java.util.Scanner;
 
 /* Driver class of application
     - In this version, controls text-base UI
-    - Will be responsible for launching GUI in future versions
  */
 public class Main {
 
+    /* Driver function for application
+         */
     public static void main(String[] args) {
         /* Member to make backed function calls
          */
@@ -35,9 +36,7 @@ public class Main {
                 primaryController.readAllItems(filePath);
                 readSuccessful = true;
             }
-//        try {
-//            primaryController.readAllItems("src/warehouse/qvBox-warehouse-data-f21-v01.txt");
-//        }
+
             catch (IOException e){
                 System.out.println("Invalid file path!");
             }
@@ -74,14 +73,6 @@ public class Main {
         primaryController.printWarehouseMatrix();
         System.out.println();
 
-        /* Primary program flow -loop-
-            - either search for item or exit
-            - if search for item
-                - prompt for then input item id
-                - backend path algorithm called
-                - display location and path to get to item on map
-            - otherwise exit program
-         */
         int choice;
         boolean loopFlag = true;
 
@@ -287,6 +278,11 @@ public class Main {
         }
     }
 
+    /**
+     * Helper to set dynamic timeout
+     * @param primaryController
+     * @param scanner
+     */
     static void setTimeoutTime(PrimaryController primaryController, Scanner scanner) {
         boolean timeFlag2 = true;
         while(timeFlag2) {
@@ -304,6 +300,13 @@ public class Main {
 
     }
 
+    /**
+     * Helper to set dynamic start and end locations
+     * @param primaryController
+     * @param scanner
+     * @param start
+     * @param end
+     */
     static void setStartAndEndLocations(PrimaryController primaryController, Scanner scanner, int[] start, int[] end) {
         boolean startflag = true;
         while(startflag) {
@@ -356,6 +359,11 @@ public class Main {
         System.out.println("Your start and end points are (" + start[0] + "," + start[1] + ") and (" + end[0] + "," + end[1] + ")\n");
     }
 
+    /**
+     * Check valid input for timeout
+     * @param j
+     * @return
+     */
     static boolean checkNumber2(String j) {
         if(j.matches("[0-9]*\\.?[0-9]+") || j.matches("[0-9]+"))
             return true;
@@ -363,6 +371,11 @@ public class Main {
             return false;
     }
 
+    /**
+     * Check valid input for ints
+     * @param j
+     * @return
+     */
     static boolean checkNumber(String j) {
         if(j.matches("[0-9]+"))
             return true;
