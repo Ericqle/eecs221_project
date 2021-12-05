@@ -136,8 +136,8 @@ public class TSP_GA {
             countRate();
         }
 
-        System.out.println("the generation of the best length：");
-        System.out.println(bestT);
+//        System.out.println("the generation of the best length：");
+//        System.out.println(bestT);
 
 
         ArrayList<Integer> tour = new ArrayList<>();;
@@ -146,7 +146,7 @@ public class TSP_GA {
             tour.add(bestTour[i]);
         }
         tour.add(0);
-        System.out.println("distance:" + bestLength);
+        System.out.println("Path Distance: " + bestLength + " units");
         tourToInstructions(tour);
 //        System.out.println(instructions.toString().trim());
         return tour;

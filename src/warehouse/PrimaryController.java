@@ -1,17 +1,12 @@
 package warehouse;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.io.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /* Primary Control of program
-    - Is used with GUI when implemented, but for now just contains all the functions
-        that the GUIS method calls will utilize -Main module is using these functions
-        for a text UI instead of a GUI for this release-
+    - Contains all the functionality need for Driver class to implement the applications flow
  */
 public class PrimaryController {
     int ROW = 40;
@@ -220,8 +215,6 @@ public class PrimaryController {
         }
         String currDirection;
         currDirection = directionList.get(0);
-//        else
-//            currDirection = " ";
 
         int currentDirCount = 1;
 
@@ -256,12 +249,6 @@ public class PrimaryController {
 
         return instructions.toString().trim();
     }
-
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //  Beta Release Implementation     ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      *  store start and end location
@@ -305,6 +292,10 @@ public class PrimaryController {
     /* The indices of a shortest path that correspond to coordinates in currentOrderCoordinates4N
      */
     ArrayList<Integer> shortestPathCoordIndices = null;
+
+    /* The ids of the items in the shortest path in order
+     */
+    ArrayList<Integer> shortestPathByID = new ArrayList<>();
 
     /* Shortest path cost
      */
@@ -469,8 +460,10 @@ public class PrimaryController {
      */
     void printFullPathInstructions (String file) {
         StringBuilder inst = new StringBuilder();
-        inst.append("\n Path Instructions");
-        System.out.println("Path Instructions");
+        ArrayList<Integer> orderListID = new ArrayList<>();
+
+        inst.append("\n Path Instructions:");
+        System.out.println("Path Instructions:");
         for (int i = 0; i < shortestPathCoordIndices.size() -1; i++) {
             int itemIndex = (int) (Math.ceil(shortestPathCoordIndices.get(i + 1) / 4.0) - 1);
 
@@ -486,11 +479,15 @@ public class PrimaryController {
 
             if ((itemIndex >= 0) && (itemIndex < currentOrderItemsByShelf.size())) {
                 Item item = currentOrderItemsByShelf.get(itemIndex);
+                int id = item.id;
+                orderListID.add(id);
                 System.out.print("Pickup item(s) (" + item.id + ")");
                 inst.append("\nPickup item(s) (" + item.id + ") ");
                 if (itemsOnSameShelfMap.get(itemIndex) != null) {
                     for (int itemOnSameShelfIndex : itemsOnSameShelfMap.get(itemIndex)) {
                         Item itemOnSameShelf = currentOrderItems.get(itemOnSameShelfIndex);
+                        int idSameShelf = itemOnSameShelf.id;
+                        orderListID.add(idSameShelf);
                         System.out.print(" (" + itemOnSameShelf.id + ")");
                         inst.append(" (" + itemOnSameShelf.id + ") ");
                     }
@@ -498,13 +495,35 @@ public class PrimaryController {
                 System.out.print(" from the shelf directly " + getShelfDirection(dest.x, dest.y, item.row, item.col)
                         + " to you" );
                 inst.append(" from the shelf directly " + getShelfDirection(dest.x, dest.y, item.row, item.col)
-                        + " to you \n" );
+                        + " to you" );
                 System.out.println();
             }
         }
         System.out.println("Path complete");
         inst.append("\nPath complete");
-        exportTxt(file, inst.toString().trim());
+        exportTxt(file, inst.toString().trim(), orderListID);
+    }
+
+    /**
+     * Dereference and save the shortest path in terms of ids
+     */
+    void setShortestPathByID() {
+        for (int i = 0; i < shortestPathCoordIndices.size() -1; i++) {
+            int itemIndex = (int) (Math.ceil(shortestPathCoordIndices.get(i + 1) / 4.0) - 1);
+            if ((itemIndex >= 0) && (itemIndex < currentOrderItemsByShelf.size())) {
+                Item item = currentOrderItemsByShelf.get(itemIndex);
+                int id = item.id;
+                shortestPathByID.add(id);
+
+                if (itemsOnSameShelfMap.get(itemIndex) != null) {
+                    for (int itemOnSameShelfIndex : itemsOnSameShelfMap.get(itemIndex)) {
+                        Item itemOnSameShelf = currentOrderItems.get(itemOnSameShelfIndex);
+                        int idSameShelf = itemOnSameShelf.id;
+                        shortestPathByID.add(idSameShelf);
+                    }
+                }
+            }
+        }
     }
 
     /* Print the adjacency matrix for the order graph
@@ -521,6 +540,7 @@ public class PrimaryController {
         - sets lookup table
         - calls brute force algorithm
         - saves path indices and cost
+        - prints information to console
      */
     void findPathsBruteForce(String filename) {
         setCurrentOrderGraph4N();
@@ -530,36 +550,56 @@ public class PrimaryController {
         bruteForcePath.findShortestPath(currentOrderGraph.matrix);
         shortestPathCoordIndices = bruteForcePath.minPath;
         shortestPathCost = bruteForcePath.minPathCost;
+        setShortestPathByID();
 
+        System.out.println();
+        System.out.println("Path Distance: " + shortestPathCost + " units");
+        System.out.println("Items by ID Pickup Order: " + shortestPathByID);
         markFullPath();
         printWarehouseMatrix();
-        System.out.println();
-
-        System.out.println("Path Cost ");
-        System.out.println(shortestPathCost);
         System.out.println();
 
         printFullPathInstructions(filename);
         System.out.println();
     }
 
+    /**
+     * Primary function call to solve the shortest path using Genetic Algorithm
+     *  - initiate the basic parameters of GA
+     *      - chromosomes' length and size
+     *      - generation's size
+     *      - possibility of crossover and mutation
+     *  - sets graph and pickup items
+     *  - calls genetic algorithm
+     *  - prints information to console
+     *  - save the instructions and route to the export file
+     * @param file the path of export file
+     */
     void findPathGeneticAlgorithm(String file){
         tsp_ga = new TSP_GA(30, currentOrderItems.size(), 1000, 0.8f, 0.9f);
         tsp_ga.init(start, end, currentOrderItems, warehouseMatrix);
 
         double timeOut = timeOutMax;
+        System.out.println();
         ArrayList<Integer> route = tsp_ga.solve(timeOut);
-        System.out.println("pickup order: "+route +"\n");
+        route.removeAll(Collections.singleton(0));
+        System.out.println("Items by ID Pickup Order: " + route);
         warehouseMatrix = tsp_ga.getMatrix();
         printWarehouseMatrix();
+        System.out.println();
         String inst = tsp_ga.getInstructions();
-        exportTxt(file, "" + inst);
         System.out.println(inst);
+        exportTxt(file, "" + inst, route);
+        System.out.println();
     }
 
+    /**
+     * Clear the changes made to the warehouse matrix from an item order operation
+     */
     void resetWareHouse() {
         setWarehouseMatrix();
         currentOrderItems.clear();
+        shortestPathByID.clear();
         currentOrderItemsByShelf = null;
         currentOrderGraph = null;
         currentOrderCoordinates4N = null;
@@ -572,6 +612,7 @@ public class PrimaryController {
     /* Read file of orders and store in fileOrders
      */
     void readOrderFile(String filePath) throws IOException {
+        fileOrders.clear();
 
         File file = new File(filePath);
         BufferedReader br = new BufferedReader(new FileReader(file));
@@ -596,12 +637,13 @@ public class PrimaryController {
      * export a txt with direction
      * @param direction: string of route instruction
      */
-    static void exportTxt(String filename, String direction) {
-
+    static void exportTxt(String filename, String direction, ArrayList<Integer> orderIds) {
+        if (filename.isEmpty())
+            return;
         try {
             creatfile(filename);
             FileWriter myWriter = new FileWriter(filename, append);
-
+            myWriter.write("Path Traversal for Order including Items:" + orderIds + "\n\n");
             myWriter.write(direction);
             myWriter.close();
             System.out.printf("Successfully wrote to %s.\n", filename);
@@ -622,7 +664,7 @@ public class PrimaryController {
                 System.out.println("File created: " + file.getName());
                 append=false;
             } else {
-                System.out.println("File already exists. Content will be covered.");
+                System.out.println("File already exists. Content will be overwritten.");
                 FileWriter fileWriter =new FileWriter(file);
                 fileWriter.write("");
                 fileWriter.flush();
@@ -635,28 +677,32 @@ public class PrimaryController {
         }
     }
 
+    /**
+     * Set start and end points of an order traversal
+     * @param s
+     * @param e
+     */
     public void setStartAndEndPoint(int[] s, int[] e) {
         start = s;
         end = e;
     }
 
-    public static void main(String[] args) {
-        String filePath = "src/warehouse/qvBox-warehouse-data-f21-v01.txt";
-        PrimaryController primaryController = new PrimaryController();
-
-        try {
-            primaryController.readAllItems(filePath);
-            primaryController.readOrderFile("/Users/eric/Downloads/qvBox-warehouse-orders-list-part01.txt");
-            for (ArrayList<Item> order: primaryController.fileOrders) {
-                for (Item i : order) {
-                    System.out.print(i.id + " ");
-                }
-                System.out.println();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+//    public static void main(String[] args) {
+//        String filePath = "src/warehouse/qvBox-warehouse-data-f21-v01.txt";
+//        PrimaryController primaryController = new PrimaryController();
+//
+//        try {
+//            primaryController.readAllItems(filePath);
+//            primaryController.readOrderFile("/Users/eric/Downloads/qvBox-warehouse-orders-list-part01.txt");
+//            for (ArrayList<Item> order: primaryController.fileOrders) {
+//                for (Item i : order) {
+//                    System.out.print(i.id + " ");
+//                }
+//                System.out.println();
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 //        try {
 //            primaryController.readAllItems(filePath);
 //        }
@@ -680,5 +726,5 @@ public class PrimaryController {
 //            System.out.println(item.id + " " + item.row + " " + item.col);
 //        };
 //        System.out.println();
-    }
+//    }
 }
