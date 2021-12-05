@@ -233,30 +233,56 @@ public class Main {
                         }
 
                         if ((fileOrderActionChoice == 1) || (fileOrderActionChoice == 2)) {
+                            boolean continueFlag = true;
                             if (fileOrderActionChoice == 1) {
-                                primaryController.currentOrderItems = new ArrayList<>(primaryController.fileOrders.get(unfullfilledOrderIndex));
-                                unfullfilledOrderIndex++;
-                            } else {
+                                if (unfullfilledOrderIndex == 100) {
+                                    System.out.println();
+                                    System.out.println("This is the last order, there is no order after this to collect!");
+                                    System.out.println();
+                                    continueFlag = false;
+                                }
+                                else {
+                                    primaryController.currentOrderItems = new ArrayList<>(primaryController.fileOrders.get(unfullfilledOrderIndex));
+                                    unfullfilledOrderIndex++;
+                                }
+                            }
+                            else {
                                 System.out.println();
-                                System.out.println("Please input the order number from the file:");
-                                unfullfilledOrderIndex = scanner.nextInt();
+                                boolean fileOrderIndexFlag = false;
+                                while(!fileOrderIndexFlag) {
+                                    System.out.println("Please input the order number from the file:");
+                                    if (scanner.hasNextInt()) {
+                                        unfullfilledOrderIndex = scanner.nextInt();
+                                        if(unfullfilledOrderIndex <= primaryController.fileOrders.size())
+                                            fileOrderIndexFlag = true;
+                                        else
+                                            System.out.println("Invalid Input! The valid order numbers are from: 1 to "
+                                                    + primaryController.fileOrders.size());
+                                    } else {
+                                        String str = scanner.next();
+                                        System.out.println("Invalid Input! The valid order numbers are from: 1 to "
+                                                + primaryController.fileOrders.size());
+                                    }
+                                }
+
                                 primaryController.currentOrderItems = new ArrayList<>(primaryController.fileOrders.get(unfullfilledOrderIndex - 1));
                             }
 
-                            System.out.println();
-                            setStartAndEndLocations(primaryController, scanner, start, end);
+                            if (continueFlag) {
+                                System.out.println();
+                                setStartAndEndLocations(primaryController, scanner, start, end);
 
-                            setTimeoutTime(primaryController, scanner);
+                                setTimeoutTime(primaryController, scanner);
 
-                            System.out.println("Displaying path for order number: " + unfullfilledOrderIndex + " in the order file");
+                                System.out.println("Displaying path for order number: " + unfullfilledOrderIndex + " in the order file");
 
-                            if(primaryController.currentOrderItems.size() <= 8){
-                                primaryController.findPathsBruteForce(filename);
+                                if (primaryController.currentOrderItems.size() <= 8) {
+                                    primaryController.findPathsBruteForce(filename);
+                                } else {
+                                    primaryController.findPathGeneticAlgorithm(filename);
+                                }
+                                primaryController.resetWareHouse();
                             }
-                            else {
-                                primaryController.findPathGeneticAlgorithm(filename);
-                            }
-                            primaryController.resetWareHouse();
                         }
 
                         else {

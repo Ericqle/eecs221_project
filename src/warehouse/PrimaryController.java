@@ -600,6 +600,7 @@ public class PrimaryController {
     /* Read file of orders and store in fileOrders
      */
     void readOrderFile(String filePath) throws IOException {
+        fileOrders.clear();
 
         File file = new File(filePath);
         BufferedReader br = new BufferedReader(new FileReader(file));
