@@ -123,7 +123,7 @@ public class Main {
                         System.out.println();
                     } else {
                         String str = scanner.next();
-                        System.out.println("Invalid input! Please input a number.");
+                        System.out.println("Invalid input! Please input a number");
                     }
                     primaryController.resetWareHouse();
                     break;
@@ -143,12 +143,12 @@ public class Main {
                             sizeFlag = false;
                         }
                         else{
-                            System.out.println("please input a valid size (only positive integer number)");
+                            System.out.println("Please input a valid size (only positive integer number)");
                         }
                     }
 
                     boolean productFlag = true;
-                    System.out.println("please type id of products separated by spaces: \n" +
+                    System.out.println("Please type id of products separated by spaces: \n" +
                             "(we will only accept the first "+size+" products entered)");
                     while(productFlag) {
                         int i = 0;
@@ -170,13 +170,13 @@ public class Main {
                             }
                         }
                         if(a==1 ){
-                            System.out.println("please input the items that are placed in the warehouse");
-                            System.out.println("please type id of products separated by spaces: \n" +
+                            System.out.println("Please input the items that are placed in the warehouse");
+                            System.out.println("Please type id of products separated by spaces: \n" +
                                     "(we will only accept the first "+size+" products entered)");
                         }
                         else if(b == 1){
-                            System.out.println("please input " +size + " corresponding products");
-                            System.out.println("please type id of products separated by spaces: \n" +
+                            System.out.println("Please input " +size + " corresponding products");
+                            System.out.println("Please type id of products separated by spaces: \n" +
                                     "(we will only accept the first "+size+" products entered)");
                         }
                         else{
@@ -234,10 +234,10 @@ public class Main {
                                 if(fileOrderActionChoice == 1 ||fileOrderActionChoice == 2 || fileOrderActionChoice == 3)
                                 fileOrderActionFlag = true;
                                 else
-                                    System.out.println("Invalid input! please input '1' or '2' or '3' ");
+                                    System.out.println("Invalid input! Please input '1' or '2' or '3' ");
                             } else {
                                 String str = scanner.next();
-                                System.out.println("Invalid input! please input '1' or '2' or '3' ");
+                                System.out.println("Invalid input! Please input '1' or '2' or '3' ");
                             }
                         }
 
@@ -246,7 +246,8 @@ public class Main {
                                 primaryController.currentOrderItems = new ArrayList<>(primaryController.fileOrders.get(unfullfilledOrderIndex));
                                 unfullfilledOrderIndex++;
                             } else {
-                                System.out.println("Please input the order number from the file");
+                                System.out.println();
+                                System.out.println("Please input the order number from the file:");
                                 unfullfilledOrderIndex = scanner.nextInt();
                                 primaryController.currentOrderItems = new ArrayList<>(primaryController.fileOrders.get(unfullfilledOrderIndex - 1));
                             }
@@ -255,6 +256,8 @@ public class Main {
                             setStartAndEndLocations(primaryController, scanner, start, end);
 
                             setTimeoutTime(primaryController, scanner);
+
+                            System.out.println("Displaying path for order number: " + unfullfilledOrderIndex + " in the order file");
 
                             if(primaryController.currentOrderItems.size() <= 8){
                                 primaryController.findPathsBruteForce(filename);
@@ -287,14 +290,14 @@ public class Main {
     static void setTimeoutTime(PrimaryController primaryController, Scanner scanner) {
         boolean timeFlag2 = true;
         while(timeFlag2) {
-            System.out.println("Please enter the time limit to find the path in seconds");
+            System.out.println("Please enter the time limit to find the path in seconds:");
             String j = scanner.next();
             if(checkNumber2(j) && Double.parseDouble(j) > 0){
                 primaryController.timeOutMax = Double.parseDouble(j)* 1000;
                 timeFlag2 = false;
             }
             else{
-                System.out.println("please input a valid time limit (only positive numbers)");
+                System.out.println("Please input a valid time limit (only positive numbers)");
             }
         }
         System.out.println();
@@ -305,7 +308,7 @@ public class Main {
         boolean startflag = true;
         while(startflag) {
             boolean isNumber = true;
-            System.out.println("Please enter the START point warehouse coordinates separated by a single space.");
+            System.out.println("Please enter the START point warehouse coordinates separated by a single space:");
             for (int i = 0; i < 2; i++) {
                 String j = scanner.next();
                 if (checkNumber(j)) {
@@ -316,10 +319,10 @@ public class Main {
                 }
             }
             if(!isNumber){
-                System.out.println("please input a valid START location(only Positive Integer Numbers)");
+                System.out.println("Please input a valid START location(only Positive Integer Numbers)");
             }
             else if(start[0]>=40 || start[0]< 0 || start[1]>=25 || start[1] < 0)
-                System.out.println("please input the START location within the COL[0,40) ROW[0,25)");
+                System.out.println("Please input the START location within warehouse coordinates of X:0-40 Y:0-25");
             else if (primaryController.warehouseMatrix[start[0]][start[1]] == 'X') {
                 System.out.println("You can't start in one of item shelves");
             } else
@@ -329,7 +332,7 @@ public class Main {
         boolean endflag1 = true;
         while(endflag1) {
             boolean isNumber = true;
-            System.out.println("Please enter the END point warehouse coordinates separated by a single space.");
+            System.out.println("Please enter the END point warehouse coordinates separated by a single space:");
             for (int i = 0; i < 2; i++) {
                 String j = scanner.next();
                 if (checkNumber(j)) {
@@ -340,10 +343,10 @@ public class Main {
                 }
             }
             if(!isNumber){
-                System.out.println("please input a valid END location(only Positive Integer Numbers)");
+                System.out.println("Please input a valid END location(only Positive Integer Numbers)");
             }
             else if(end[0]>=40 || end[0]< 0 || end[1]>=25 || end[1] < 0)
-                System.out.println("please input the END location within the COL[0,40) ROW[0,25)");
+                System.out.println("Please input the END location within warehouse coordinates of X:0-40 Y:0-25");
             else if (primaryController.warehouseMatrix[end[0]][end[1]] == 'X') {
                 System.out.println("You can't end in one of item shelves");
             } else
