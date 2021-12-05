@@ -558,6 +558,9 @@ public class PrimaryController {
         markFullPath();
         printWarehouseMatrix();
         System.out.println();
+        System.out.println("'S' = start point | 'E' = end point -or start and end if the same point- | 'X' = shelves/items | '.' = open space");
+        System.out.println("The path from your location 'S' to the item '$' is marked with 'P' on the map.");
+        System.out.println();
 
         printFullPathInstructions(filename);
         System.out.println();
@@ -586,6 +589,9 @@ public class PrimaryController {
         System.out.println("Items by ID Pickup Order: " + route);
         warehouseMatrix = tsp_ga.getMatrix();
         printWarehouseMatrix();
+        System.out.println();
+        System.out.println("'S' = start point | 'E' = end point -or start and end if the same point- | 'X' = shelves/items | '.' = open space");
+        System.out.println("The path from your location 'S' to the item '$' is marked with 'P' on the map.");
         System.out.println();
         String inst = tsp_ga.getInstructions();
         System.out.println(inst);

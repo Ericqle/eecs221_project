@@ -2,6 +2,7 @@ package warehouse;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 /* Driver class of application
@@ -175,6 +176,12 @@ public class Main {
                         }
                     }
 
+                    ArrayList<Integer> id = new ArrayList<>();
+                    for(Item item: primaryController.currentOrderItems)
+                        id.add(item.id);
+
+                    System.out.println("This order includes items as follows:"+ id);
+
                     primaryController.setStartAndEndPoint(start, end);
                     if(size <= 8){
                         primaryController.findPathsBruteForce(filename);
@@ -276,7 +283,11 @@ public class Main {
                                 setTimeoutTime(primaryController, scanner);
 
                                 System.out.println("Displaying path for order number: " + unfullfilledOrderIndex + " in the order file");
+                                id = new ArrayList<>();
+                                for(Item item: primaryController.currentOrderItems)
+                                    id.add(item.id);
 
+                                System.out.println("This order includes items as follows:"+ id);
                                 if (primaryController.currentOrderItems.size() <= 8) {
                                     primaryController.findPathsBruteForce(filename);
                                 } else {
