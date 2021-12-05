@@ -569,7 +569,7 @@ public class PrimaryController {
         timeOutMax = 60000;
     }
 
-    /* Read file of orders and store in filrOrders
+    /* Read file of orders and store in fileOrders
      */
     void readOrderFile(String filePath) throws IOException {
 
